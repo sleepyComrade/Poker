@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 interface IPlayer {
   name: string;
   cards: ICard[];
@@ -58,6 +58,15 @@ export function Poker() {
   const [deck, setDeck] = useState<ICard[]>([]);
   const [tableCards, setTableCards] = useState<ICard[]>([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const myPlayerIndex = 0;
+  useEffect(() => {
+    console.log(currentPlayerIndex);
+    if (currentPlayerIndex !== myPlayerIndex) {
+      setTimeout(() => {
+        setCurrentPlayerIndex(last => (last + 1) % players.length);
+      }, 1000);
+    }
+  }, [currentPlayerIndex])
   return (
     <div>
       <div>
@@ -110,7 +119,9 @@ export function Poker() {
           // setPlayers(last => [])
         }}>Fold</button>
         <button onClick={() => {
-          setCurrentPlayerIndex(last => (last + 1) % players.length);
+          if (currentPlayerIndex === myPlayerIndex) {
+            setCurrentPlayerIndex(last => (last + 1) % players.length);
+          }
         }}>Check</button>
         <button onClick={() => {
 
