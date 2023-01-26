@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Socket from './components/socket';
+import { Poker } from "./game/poker";
 
 export function App() {
   const [messages, setMessages] = useState(['start']);
@@ -29,6 +30,7 @@ export function App() {
       <button type="button" onClick={() => {
         socket.sendState(text);
       }}>Send</button>
+      <Poker></Poker>
     </div>
   );
 }
