@@ -2,6 +2,8 @@ const a: number = 6;
 import * as webSocket from 'websocket';
 import { connection } from 'websocket';
 import * as http from 'http';
+import {example} from './mongo-example';
+
 const WebSocketServer = webSocket.server;
 const port = 3002;
 
@@ -44,3 +46,5 @@ socket.on('request', (request) => {
       console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
   });
 })
+
+example();
