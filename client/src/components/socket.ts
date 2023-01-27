@@ -4,7 +4,7 @@ export default class Socket {
   onMessage: ((states: string) => void);
 
   constructor() {
-    this.webSocket = new WebSocket('ws://localhost:3001');
+    this.webSocket = new WebSocket('ws://localhost:3002');
     this.webSocket.onmessage = (message) => {
       console.log(message);
       this.onMessage(JSON.parse(message.data));
