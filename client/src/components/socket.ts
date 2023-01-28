@@ -1,27 +1,27 @@
 export default class Socket {
-  webSocket: WebSocket;
+  webSocket: WebSocket
 
-  onMessage: ((states: string) => void);
+  onMessage: (states: string) => void
 
   constructor() {
-    this.webSocket = new WebSocket('ws://localhost:3002');
+    this.webSocket = new WebSocket('ws://localhost:3002/oleg')
     this.webSocket.onmessage = (message) => {
-      console.log(message);
-      this.onMessage(JSON.parse(message.data));
-    };
+      console.log(message)
+      this.onMessage(JSON.parse(message.data))
+    }
     this.webSocket.onopen = () => {
-      console.log('open');
-    };
+      console.log('open')
+    }
     this.webSocket.onclose = () => {
-      console.log('close');
-    };
+      console.log('close')
+    }
   }
 
   sendState(arr: string) {
-    this.webSocket.send(JSON.stringify(arr));
+    this.webSocket.send(JSON.stringify(arr))
   }
 
   destroy() {
-
+    this.webSocket.close()
   }
 }
