@@ -1,9 +1,5 @@
 import { ICard } from '../interfaces';
 
-export function getCombo(cards: Array<ICard>) {
-
-}
-
 function getMaxCard(cards: Array<ICard>) {
   return cards.sort((a, b) => a.value - b.value)[0];
 }
@@ -66,5 +62,102 @@ console.log(cards);
 console.log(getMaxPair(cards, 2));
 
 function getStraight(cards: Array<ICard>) {
-  cards.sort((a, b) => b.value - a.value).map((it, index) => cards[index + 1].value - 1 === it.value)
+  const straight:Array<ICard> = [];
+  const sorted = [...cards].sort((a, b) => b.value - a.value);
+  //console.log(sorted);
+  const res = sorted.findIndex((it, index, arr) => {
+    if (index >= arr.length - 1) return false;
+    if (straight.length == 0){
+      //console.log('it', it);
+      straight.push(it);
+    }
+   //console.log(JSON.stringify(straight.map(it=> it.value)), straight.length)
+    if(arr[index + 1].value + 1 === straight[straight.length-1].value){
+      straight.push(arr[index + 1])
+      if (straight.length == 5){
+        return true;
+      }
+    } else if(arr[index + 1].value === straight[straight.length-1].value){
+
+    } else {
+      straight.splice(0)
+    }
+  })
+
+  return res !== -1 ? straight : null
+}
+
+new Array(250).fill(null).forEach(it=>{
+  const cards = mixCards(createCards()).slice(0, 7);
+  const st = getStraight(cards)
+  st && console.log('straight ', st);
+})
+
+function getFlash(cards: Array<ICard>) {
+  const straight:Array<ICard> = [];
+  const sorted = [...cards].sort((a, b) => {
+    if (b.type > a.type){
+      return 1
+    } else if (b.type == a.type){
+      return b.value-a.value
+    } else {
+      return -1;
+    }
+  });
+  //console.log(sorted);
+  const res = sorted.findIndex((it, index, arr) => {
+    if (index>= arr.length - 1) return false;
+    if (straight.length == 0){
+      //console.log('it', it);
+      straight.push(it);
+    }
+   //console.log(JSON.stringify(straight.map(it=> it.value)), straight.length)
+    if(arr[index + 1].type === straight[straight.length-1].type){
+      straight.push(arr[index + 1])
+      if (straight.length == 5){
+        return true;
+      }
+    } else {
+      straight.splice(0)
+    }
+  })
+
+  return res !== -1 ? straight : null
+}
+
+export function getCombo(cards: Array<ICard>) {
+  const flash = getFlash(cards);
+  if (flash){
+    console.log('flash', flash);
+  }
+  const straight = getStraight(cards);
+  if (flash){
+    console.log('straight', straight);
+  }
+  if (straight){
+    const stFlash = getFlash(straight);
+    if (stFlash){
+      console.log('stflash', stFlash);
+    }  
+  }
+  const four = getMaxPair(cards, 4);
+  const three = getMaxPair(cards, 3);
+  if (three){
+   const nextCards = cards.filter(it=> !three.includes(it));
+   const th = getMaxPair(nextCards, 3);
+   const tw = getMaxPair(nextCards, 2);
+   if (th || tw){
+    console.log('fullhouse', three, (tw || th).slice(0, 2));
+   }
+  }
+  const pair = getMaxPair(cards, 2);
+  if (pair){
+    const nextCards = cards.filter(it=> !pair.includes(it));
+    const tw = getMaxPair(nextCards, 2);
+    if (tw){
+     console.log('two pair', pair, tw);
+    } else {
+      console.log('pair', pair)
+    }
+  }
 }
