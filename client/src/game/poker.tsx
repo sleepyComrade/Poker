@@ -43,16 +43,43 @@ const testPlayers: IPlayer[] = [
         value: 9
       }
     ]
+  },
+  {
+    name: 'Player4',
+    cards: [
+      {
+        type: 1,
+        value: 1
+      },
+      {
+        type: 2,
+        value: 2
+      }
+    ]
   }
-].map(player => ({...player, isFold: false}));
+].map(player => ({...player, isFold: false, chips: 10000, bet: 0}));
 
 export function Poker() {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
-  const [totalBet, setTotalBet] = useState(0);
+  const [Pot, setPot] = useState(0);
   const [deck, setDeck] = useState<ICard[]>([]);
   const [tableCards, setTableCards] = useState<ICard[]>([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const [dealerIndex, setDealerIndex] = useState(0);
+  const [minimalBet, setMinimalBet] = useState(100);
   const myPlayerIndex = 0;
+
+  const setBlinds = (player: IPlayer, index: number, small: number, big: number) => {
+    if (index === (dealerIndex + small) % players.length) {
+      player.bet = minimalBet / 2;
+      player.chips -= minimalBet / 2;
+    }
+    if (index === (dealerIndex + big) % players.length) {
+      player.bet = minimalBet;
+      player.chips -= minimalBet;
+    }
+  }
+
   useEffect(() => {
     console.log(currentPlayerIndex);
     if (currentPlayerIndex !== myPlayerIndex) {
@@ -60,14 +87,26 @@ export function Poker() {
         setCurrentPlayerIndex(last => (last + 1) % players.length);
       }, 1000);
     }
-  }, [currentPlayerIndex])
+  }, [currentPlayerIndex]);
+
+  useEffect(() => {
+    players.forEach((player, i) => {
+      if (players.length > 2) {
+        setBlinds(player, i, 1, 2);
+      }
+      if (players.length === 2) {
+        setBlinds(player, i, 0, 1);
+      }
+    })
+  }, []);
+
   return (
     <div>
       <div>
         Current Player {currentPlayerIndex}
       </div>
       <div>
-        Total Bet {totalBet}
+        Pot: {Pot}
       </div>
       <div>
         {deck.map(card => {
@@ -96,6 +135,9 @@ export function Poker() {
                 {player.isFold ? 'Player is out' : ''}
               </div>
               <div>
+                {player.chips}
+              </div>
+              <div>
                 {player.cards.map(card => {
                   return (
                     <div>
@@ -103,6 +145,9 @@ export function Poker() {
                     </div>
                   )
                 })}
+              </div>
+              <div>
+                {player.bet > 0 && player.bet}
               </div>
             </div>
           )
