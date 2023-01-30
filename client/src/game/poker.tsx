@@ -95,6 +95,7 @@ export function Poker() {
     const chipsToBet = currentBet - players[currentPlayerIndex].bet;
     players[currentPlayerIndex].bet += chipsToBet;
     players[currentPlayerIndex].chips -= chipsToBet;
+    setCurrentPlayerIndex(last => (last + 1) % players.length);
     console.log('call');
   }
 
@@ -103,64 +104,47 @@ export function Poker() {
     players[currentPlayerIndex].bet += chipsToBet;
     players[currentPlayerIndex].chips -= chipsToBet;
     setCurrentBet(last => last * 2);
+    setCurrentPlayerIndex(last => (last + 1) % players.length);
     console.log('raise');
   }
 
+  const fold = () => {
+    players[currentPlayerIndex].isFold = true;
+    console.log('fold');
+    if (players.filter(el => !el.isFold).length === 1) {
+      console.log('Start next game');
+    }
+    setCurrentPlayerIndex(last => (last + 1) % players.length);
+  }
+
   const preflop = () => {
-    let isRoundEnd = false;
     if (currentPlayerIndex === lastInRoundIndex && currentBet === players[currentPlayerIndex].bet) {
-      if (Math.floor(Math.random() * 2)) {
-        console.log('Flop');
-        isRoundEnd = true;
-      } else {
-        raise();
+      return {
+        raise: raise,
+        check: () => console.log('Flop')
       }
     } else if (currentPlayerIndex === lastInRoundIndex && currentBet > players[currentPlayerIndex].bet) {
-      // const randomChoise = Math.floor(Math.random() * 3);
-      const randomChoise = 1;
-      switch (randomChoise) {
-        case 0:
-          players[currentPlayerIndex].isFold = true;
-          if (players.filter(el => !el.isFold).length === 1) {
-            console.log('Start next game');
-            isRoundEnd = true;
-          }
-          break;
-        case 1:
+      return {
+        fold: fold,
+        call: () => {
           call();
           if (players.every(player => player.isFold || player.bet === currentBet)) {
             console.log('Flop');
-            isRoundEnd = true;
           }
-          break;
-        case 2:
-          raise();
-          break;
-        default:
-          break;
+        },
+        raise: raise
       }
     } else if (currentBet > players[currentPlayerIndex].bet) {
-      const randomChoise = Math.floor(Math.random() * 3);
-      switch (randomChoise) {
-        case 0:
-          players[currentPlayerIndex].isFold = true;
-          if (players.filter(el => !el.isFold).length === 1) {
-            console.log('Start next game');
-            isRoundEnd = true;
-          }
-          break;
-        case 1:
-          call();
-          break;
-        case 2:
-          raise();
-          break;
-        default:
-          break;
+      return {
+        fold: fold,
+        call: call,
+        raise: raise
       }
-    }
-    if (!isRoundEnd) {
-      setCurrentPlayerIndex(last => (last + 1) % players.length);
+    } else {
+      return {
+        // check: 
+        raise: raise
+      }
     }
   }
 
@@ -169,10 +153,12 @@ export function Poker() {
     if (currentPlayerIndex !== myPlayerIndex) {
       if (!players[currentPlayerIndex].isFold) {
         setTimeout(() => {
-          // const areEqualBets = players.every(el => el.isFold || el.bet === currentBet) && players.filter(el => !el.isFold).length > 1;
           switch (currentRound) {
             case 1:
-              preflop();
+              const actions = preflop();
+              const num = Math.floor(Math.random() * Object.keys(actions).length);
+              const method = Object.keys(actions)[num] as keyof typeof actions;
+              actions[method]();
               break;
             case 2:
               preflop();
@@ -186,28 +172,6 @@ export function Poker() {
             default:
               break;
           }
-
-          // if (currentBet === players[currentPlayerIndex].bet) {
-          //   if (currentPlayerIndex === lastInRoundIndex && areEqualBets) {
-          //     if (Math.floor(Math.random() * 2)) {
-          //       console.log('Flop');
-          //     } else {
-          //       raise();
-          //     }
-          //   } else {           
-          //     setCurrentPlayerIndex(last => (last + 1) % players.length);
-          //   }
-          // }
-          // if (currentBet > players[currentPlayerIndex].bet) {
-          //   if (Math.floor(Math.random() * 2)) {
-          //     const chipsToBet = currentBet - players[currentPlayerIndex].bet;
-          //     players[currentPlayerIndex].bet += chipsToBet;
-          //     players[currentPlayerIndex].chips -= chipsToBet;
-          //   } else {
-          //     players[currentPlayerIndex].isFold = true;
-          //   }
-          //   setCurrentPlayerIndex(last => (last + 1) % players.length);
-          // }
         }, 1000);
       } else {
         setCurrentPlayerIndex(last => (last + 1) % players.length);
@@ -295,7 +259,6 @@ export function Poker() {
         }}>Bet</button>}
         {(currentBet > players[currentPlayerIndex].bet) && <button onClick={() => {
           call();
-          setCurrentPlayerIndex(last => (last + 1) % players.length);
         }}>Call</button>}
         {(currentBet) && <button onClick={() => {
 
