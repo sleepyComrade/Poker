@@ -8,3 +8,8 @@
   display: flex;
   gap: 20px;
 }
+
+body{
+  --player-width: 200px;
+  --card-width: 80px;
+}
