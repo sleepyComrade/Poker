@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { getCombo} from './combinations';
 import {IPlayer, ICard} from '../interfaces';
 
@@ -142,7 +142,7 @@ export function Poker() {
       }
     } else {
       return {
-        // check: 
+        check: () => setCurrentPlayerIndex(last => (last + 1) % players.length),
         raise: raise
       }
     }
@@ -180,6 +180,8 @@ export function Poker() {
       setCurrentPlayerIndex(last => (last + 1) % players.length);
     }
   }, [currentPlayerIndex]);
+
+  const actions = useMemo(() => preflop(), [currentPlayerIndex]);
 
   useEffect(() => {
     players.forEach((player, i) => {
@@ -246,10 +248,8 @@ export function Poker() {
         })}
       </div>
       {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <div>
-        {(currentBet > players[currentPlayerIndex].bet) && <button onClick={() => {
-          // setPlayers(last => [])
-          players[currentPlayerIndex].isFold = true;
-          setCurrentPlayerIndex(last => (last + 1) % players.length);
+        {actions.fold && <button onClick={() => {
+          actions.fold();
         }}>Fold</button>}
         {(currentBet === players[currentPlayerIndex].bet) && <button onClick={() => {
           setCurrentPlayerIndex(last => (last + 1) % players.length);
@@ -257,11 +257,11 @@ export function Poker() {
         {(!currentBet) && <button onClick={() => {
 
         }}>Bet</button>}
-        {(currentBet > players[currentPlayerIndex].bet) && <button onClick={() => {
-          call();
+        {actions.call && <button onClick={() => {
+          actions.call();
         }}>Call</button>}
-        {(currentBet) && <button onClick={() => {
-
+        {actions.raise && <button onClick={() => {
+          actions.raise();
         }}>Raise</button>}
       </div>}
     </div>
