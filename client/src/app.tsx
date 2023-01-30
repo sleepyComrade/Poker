@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Socket from './components/socket';
 import { Poker } from "./game/poker";
+import { Pk } from "./game/pk";
+import  Garage  from "./game/g";
+import Game from './game/game';
 
 export function App() {
   const [messages, setMessages] = useState(['start']);
@@ -18,7 +21,7 @@ export function App() {
   
   return (
     <div>
-      <h1>Hello World</h1>
+      {/* <h1>Hello World</h1>
       { messages.map((mes: string) => <p>{mes}</p>) }
       <input
         type="text"
@@ -29,8 +32,11 @@ export function App() {
       />
       <button type="button" onClick={() => {
         socket.sendState(text);
-      }}>Send</button>
-      <Poker></Poker>
+      }}>Send</button> */}
+      {/* <Poker></Poker> */}
+      {/* <Pk></Pk> */}
+      {/* <Garage /> */}
+      <Game />
     </div>
   );
 }

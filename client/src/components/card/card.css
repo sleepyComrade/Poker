@@ -1,0 +1,40 @@
+.card_wrapper{
+    width: 100px;
+    height: 150px;
+    position: relative;
+    perspective: 1000px;
+    --c-phase: 0;
+    margin: 0px;    
+}
+
+.card_base{
+    border: 1px solid;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;  
+}
+
+.card_a{
+    background-color: #f00;
+    transform: rotateY(calc(180deg * var(--c-phase) / 100));
+}
+
+.card_b{
+    background-color: #ff0;
+    transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));
+}
+
+.card_img{
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    --type: 0;
+    --value: 0;
+    background-image: url("../../assets/card.png");
+    background-size: calc(100% * 13) calc(100% * 5);
+    background-position: calc(100% / 12  * var(--value)) calc(100% / 4 * var(--type));
+}
