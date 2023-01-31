@@ -1,0 +1,48 @@
+.card_stack{
+    display: flex;
+}
+
+.card_wrapper{
+    width: 50px;
+    height: 75px;
+    position: relative;
+    perspective: 1000px;
+    --c-phase: 0;
+    margin: 0px;
+
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-image: url('../../assets/card-back.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: -2px center;
+    
+}
+
+.card_base{
+    border: 1px solid;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;  
+}
+
+.card_a{
+    background-color: #f00;
+    transform: rotateY(calc(180deg * var(--c-phase) / 100));
+}
+
+.card_b{
+    background-color: #ff0;
+    transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));
+}
+
+.hand_zero{
+    width: 30px;
+}
+
+.card_wrapper_second{
+    transform: rotateZ(15deg);
+}
