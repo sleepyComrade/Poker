@@ -5,6 +5,7 @@
     height: 400px;
     padding: 50px;
     border-radius: 200px;
+    box-shadow: 0 0 0 1px #161414, 0 0 0 3px #a96c46, 0px 0 0 11px #6b3309;
 }
 
 .table__wrapper{  
