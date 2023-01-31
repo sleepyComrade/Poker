@@ -4,58 +4,32 @@ import {IPlayer, ICard} from '../interfaces';
 
 getCombo([]);
 
+const originDeck: ICard[] = [];
+for (let i = 1; i <= 4; i++) {
+  for (let j = 1; j <= 13; j++) {
+    originDeck.push({
+      type: i,
+      value: j
+    });
+  }
+}
+
 const testPlayers: IPlayer[] = [
   {
     name: 'Player1',
-    cards: [
-      {
-        type: 0,
-        value: 4
-      },
-      {
-        type: 3,
-        value: 5
-      }
-    ]
+    cards: []
   },
   {
     name: 'Player2',
-    cards: [
-      {
-        type: 1,
-        value: 4
-      },
-      {
-        type: 2,
-        value: 5
-      }
-    ]
+    cards: []
   },
   {
     name: 'Player3',
-    cards: [
-      {
-        type: 1,
-        value: 7
-      },
-      {
-        type: 3,
-        value: 9
-      }
-    ]
+    cards: []
   },
   {
     name: 'Player4',
-    cards: [
-      {
-        type: 1,
-        value: 1
-      },
-      {
-        type: 2,
-        value: 2
-      }
-    ]
+    cards: []
   }
 ].map(player => ({...player, isFold: false, chips: 10000, bet: 0}));
 
@@ -64,6 +38,15 @@ enum Round {
   Flop,
   Turn,
   River,
+}
+
+const shuffleCards = (deck: ICard[]) => {
+  for (let i = deck.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * i);
+    let temp = deck[i];
+    deck[i] = deck[j];
+    deck[j] = temp;
+  }
 }
 
 export function Poker() {
@@ -95,6 +78,11 @@ export function Poker() {
     const chipsToBet = currentBet - players[currentPlayerIndex].bet;
     players[currentPlayerIndex].bet += chipsToBet;
     players[currentPlayerIndex].chips -= chipsToBet;
+    if (currentPlayerIndex === lastInRoundIndex &&
+        currentBet > players[currentPlayerIndex].bet &&
+        (players.every(player => player.isFold || player.bet === currentBet))) {
+      return;
+    }
     setCurrentPlayerIndex(last => (last + 1) % players.length);
     console.log('call');
   }
@@ -110,18 +98,46 @@ export function Poker() {
 
   const fold = () => {
     players[currentPlayerIndex].isFold = true;
-    console.log('fold');
     if (players.filter(el => !el.isFold).length === 1) {
       console.log('Start next game');
+      return;
     }
+    // if (currentPlayerIndex === lastInRoundIndex) {
+    //   const reassignLast = () => {
+    //     setLastInRoundIndex(last => (last - 1) % players.length >= 0 ? (last - 1) % players.length : players.length - 1);
+    //     if (players[lastInRoundIndex].isFold) {
+    //       reassignLast();
+    //     }
+    //   }
+    //   reassignLast();
+    // }
     setCurrentPlayerIndex(last => (last + 1) % players.length);
+    console.log('fold');
+  }
+
+  const setToFlop = () => {
+    const sum = players.reduce((a, b) => a + b.bet, 0);
+    setPlayers(last => last.map(player => {
+      player.bet = 0;
+      return player;
+    }));
+    setPot(sum);
+    setCurrentRound(Round.Flop);
+    setCurrentBet(0);
+    const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 1) % players.length;
+    setCurrentPlayerIndex(initialIndex);
+    setLastInRoundIndex((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
+    setTableCards(last => [...last, deck.pop(), deck.pop(), deck.pop()]);
   }
 
   const preflop = () => {
     if (currentPlayerIndex === lastInRoundIndex && currentBet === players[currentPlayerIndex].bet) {
       return {
         raise: raise,
-        check: () => console.log('Flop')
+        check: () => {
+          console.log('Flop');
+          setToFlop();
+        }
       }
     } else if (currentPlayerIndex === lastInRoundIndex && currentBet > players[currentPlayerIndex].bet) {
       return {
@@ -130,6 +146,42 @@ export function Poker() {
           call();
           if (players.every(player => player.isFold || player.bet === currentBet)) {
             console.log('Flop');
+            setToFlop();
+          }
+        },
+        raise: raise
+      }
+    } else if (currentBet > players[currentPlayerIndex].bet) {
+      return {
+        fold: fold,
+        call: call,
+        raise: raise
+      }
+    } else {
+      return {
+        check: () => setCurrentPlayerIndex(last => (last + 1) % players.length),
+        raise: raise
+      }
+    }
+  }
+
+  const flop = () => {
+    if (currentPlayerIndex === lastInRoundIndex && currentBet === players[currentPlayerIndex].bet) {
+      return {
+        raise: raise,
+        check: () => {
+          console.log('Flop');
+          setToFlop();
+        }
+      }
+    } else if (currentPlayerIndex === lastInRoundIndex && currentBet > players[currentPlayerIndex].bet) {
+      return {
+        fold: fold,
+        call: () => {
+          call();
+          if (players.every(player => player.isFold || player.bet === currentBet)) {
+            console.log('Flop');
+            setToFlop();
           }
         },
         raise: raise
@@ -149,6 +201,16 @@ export function Poker() {
   }
 
   useEffect(() => {
+    const gameDeck = [...originDeck];  
+    shuffleCards(gameDeck);
+    testPlayers.forEach(player => {
+      player.cards.push(gameDeck.pop());
+      player.cards.push(gameDeck.pop());
+    })
+    setDeck(gameDeck);
+  }, [])
+
+  useEffect(() => {
     console.log(currentPlayerIndex);
     if (currentPlayerIndex !== myPlayerIndex) {
       if (!players[currentPlayerIndex].isFold) {
@@ -161,7 +223,10 @@ export function Poker() {
               actions[method]();
               break;
             case 2:
-              preflop();
+              const actions2 = flop();
+              const num2 = Math.floor(Math.random() * Object.keys(actions2).length);
+              const method2 = Object.keys(actions2)[num2] as keyof typeof actions2;
+              actions2[method2]();
               break;
             case 3:
               preflop();
@@ -203,13 +268,13 @@ export function Poker() {
         Pot: {Pot}
       </div>
       <div>
-        {deck.map(card => {
+        {/* {deck.map(card => {
           return (
             <div>
              {`${card.type}/${card.value}`}
             </div>
           )
-        })}
+        })} */}
       </div>
       <div>
         {tableCards.map(card => {
