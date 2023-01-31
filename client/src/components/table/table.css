@@ -1,13 +1,14 @@
 .table {
     background-color: rgb(50, 100, 50);
     position: relative;
-    width: 700px;
+    width: 750px;
     height: 400px;
     padding: 50px;
-    border-radius: 100px;
+    border-radius: 200px;
 }
 
-.table__wrapper{   
+.table__wrapper{  
+    position: relative; 
     width: 100%;
     height: 100%;
     position: relative;
@@ -25,6 +26,12 @@
     margin: 5px;
     width: var(--card-width);
     height: calc(var(--card-width) * 1.5);
+    border: 4px solid #fff;
+    border-radius: 5px;
+    background-image: url('../../assets/card-back.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: -2px center;
 }
 
 
@@ -68,9 +75,9 @@
     0%{
         transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 2)) rotate(75deg);
     }
-    50%{
+    /* 50%{
         transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 2), 0px)
-    }
+    } */
     100%{
         transform: translate(0, 0) rotate(0deg);
     } 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Card from '../card/card';
-import PlayerList from '../player-list/player-list';
 import '../../style.css';
 import './table.css';
 
@@ -20,7 +19,7 @@ export default function Table() {
                     <div className='table_card ani_card4'></div>                   
                 </div>               
             </div>  
-            <PlayerList />          
+             
         </div>   
     )
 }
