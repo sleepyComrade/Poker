@@ -12,7 +12,6 @@ export default function PlayerList() {
             <Player place={4} />
             <Player place={5} />
             <Player place={6} />
-            <Player place={7} />
             <Player place={8} />
             <Player place={9} />
         </div>
