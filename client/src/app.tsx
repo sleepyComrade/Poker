@@ -34,7 +34,7 @@ export function App() {
         socket.sendState(text);
       }}>Send</button> */}
       {/* <Poker></Poker> */}
-      {/* <Pk></Pk> */}
+      {/* <Pk /> */}
       {/* <Garage /> */}
       <Game />
     </div>
