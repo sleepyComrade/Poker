@@ -1,0 +1,25 @@
+.buttons-panel {
+    position: absolute;
+    bottom: 50px;
+}
+
+.button-player {
+    width: 174px;
+    background-color: rgb(219, 22, 22);
+    background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
+    border-bottom: 1px solid #680202;
+    padding: 10px 5px;
+    font-size: 24px;
+    color: #fff;
+    border-radius: 7px;
+    transition: all 0.3s ease;
+}
+
+.button-player:not(:last-child) {
+    margin-right: 15px;
+}
+
+.button-player:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+}

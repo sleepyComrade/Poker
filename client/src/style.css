@@ -8,3 +8,9 @@ body{
   --player-width: 200px;
   --card-width: 80px;
 }
+
+.btn {
+  border: 1px solid transparent;
+  vertical-align: middle;
+  cursor: pointer;
+}
