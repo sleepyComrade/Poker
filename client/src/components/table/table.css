@@ -1,5 +1,6 @@
 .table {
     background-color: rgb(50, 100, 50);
+    background: radial-gradient(#3da125, #046415, #05360d);
     position: relative;
     width: 750px;
     height: 400px;

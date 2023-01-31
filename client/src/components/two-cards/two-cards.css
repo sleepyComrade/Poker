@@ -20,7 +20,7 @@
 }
 
 .card_base{
-    border: 1px solid;
+    /* border: 1px solid; */
     backface-visibility: hidden;
     position: absolute;
     top: 0;
@@ -32,6 +32,10 @@
 .card_a{
     background-color: #f00;
     transform: rotateY(calc(180deg * var(--c-phase) / 100));
+    background-image: url('../../assets/card-back.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: -2px center;
 }
 
 .card_b{
