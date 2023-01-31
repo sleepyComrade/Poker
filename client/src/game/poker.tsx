@@ -102,15 +102,22 @@ export function Poker() {
       console.log('Start next game');
       return;
     }
-    // if (currentPlayerIndex === lastInRoundIndex) {
-    //   const reassignLast = () => {
-    //     setLastInRoundIndex(last => (last - 1) % players.length >= 0 ? (last - 1) % players.length : players.length - 1);
-    //     if (players[lastInRoundIndex].isFold) {
-    //       reassignLast();
-    //     }
-    //   }
-    //   reassignLast();
-    // }
+    if (currentPlayerIndex === lastInRoundIndex) {
+      // const getNewLastInRoundIndex = (last: number) => {
+      //   let i = (last - 1) % players.length >= 0 ? (last - 1) % players.length : players.length - 1;
+      //   if (players[i].isFold) {
+      //     i = getNewLastInRoundIndex(i);
+      //   }
+      //   return i;
+      // }
+      const getPreviousIndex = (cur: number) => (cur - 1) % players.length >= 0 ?
+                                                (cur - 1) % players.length :
+                                                players.length - 1;
+      const getNewLastInRoundIndex = (last: number): number => players[getPreviousIndex(last)].isFold ?
+                                                               getNewLastInRoundIndex(getPreviousIndex(last)) :
+                                                               getPreviousIndex(last);
+      setLastInRoundIndex(last => getNewLastInRoundIndex(last));
+    }
     setCurrentPlayerIndex(last => (last + 1) % players.length);
     console.log('fold');
   }
