@@ -1,0 +1,66 @@
+.abs{
+    position: absolute;
+}
+
+.player{
+    background-color: #fff5;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: var(--player-width);
+    padding: 5px;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.main-player_ava{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    color: #fff;
+    font-size: 32px;
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+}
+
+.main-player_nc_wrapper{
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.main-player_name{
+    background-color: #0000;
+    font-size: 14px;
+}
+
+.main-player_cash{
+    background-color: #0000;
+    font-size: 24px;
+}
+
+.main-player_time{
+    background-color: #ff0;
+    padding: 5px;
+    border: 1px solid #000;
+    margin-right: 10px;
+    border-radius: 100%;
+    --progress: 30;
+    background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%))
+}
+
+.main-player__chair {
+    position: absolute;
+    width: 200px;
+    height: 130px;
+    top: 458px;
+    left: 306px;
+}
+
+.tp7{
+    top: calc((100% - 40px) / 0.8);
+    left: calc((100% - var(--player-width)) / 2);
+}
