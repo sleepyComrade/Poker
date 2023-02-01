@@ -4,6 +4,14 @@ import {IPlayer, ICard} from '../interfaces';
 
 getCombo([]);
 
+type IActions = {
+  raise?: () => void;
+  check?: () => void;
+  fold?: () => void;
+  call?: () => void;
+  bet?: () => void; 
+}
+
 const originDeck: ICard[] = [];
 for (let i = 1; i <= 4; i++) {
   for (let j = 1; j <= 13; j++) {
@@ -250,9 +258,13 @@ export function Poker() {
     setDeck(gameDeck);
   }, [])
 
+  const gameLogic = (): IActions => {
+    return currentRound === Round.Preflop ? preflop() : flop();
+  }
+
   useEffect(() => {
     const setBotChoise = () => {
-      const actions = currentRound === Round.Preflop ? preflop() : flop();
+      const actions = gameLogic();
       console.log(actions);
       const num = Math.floor(Math.random() * Object.keys(actions).length);
       const method = Object.keys(actions)[num] as keyof typeof actions;
@@ -272,8 +284,7 @@ export function Poker() {
     }
   }, [currentPlayerIndex]);
 
-  const actions = useMemo(() => preflop(), [currentPlayerIndex]);
-  const flopActions = useMemo(() => flop(), [currentPlayerIndex]);
+  const actions = useMemo(() => gameLogic(), [currentPlayerIndex]);
 
   useEffect(() => {
     players.forEach((player, i) => {
@@ -340,24 +351,20 @@ export function Poker() {
         })}
       </div>
       {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <div>
-        {(actions.fold || flopActions.fold) && <button onClick={() => {
-          if (currentRound === Round.Preflop) actions.fold();
-          if (currentRound !== Round.Preflop) flopActions.fold();
+        {actions.fold && <button onClick={() => {
+          actions.fold();
         }}>Fold</button>}
-        {(actions.check || flopActions.check) && <button onClick={() => {
-          if (currentRound === Round.Preflop) actions.check();
-          if (currentRound !== Round.Preflop) flopActions.check();
+        {actions.check && <button onClick={() => {
+          actions.check();
         }}>Check</button>}
-        {flopActions.bet && <button onClick={() => {
-          flopActions.bet();
+        {actions.bet && <button onClick={() => {
+          actions.bet();
         }}>Bet</button>}
-        {(actions.call || flopActions.call) && <button onClick={() => {
-          if (currentRound === Round.Preflop) actions.call();
-          if (currentRound !== Round.Preflop) flopActions.call();
+        {actions.call && <button onClick={() => {
+          actions.call();
         }}>Call</button>}
-        {(actions.raise || flopActions.raise) && <button onClick={() => {
-          if (currentRound === Round.Preflop) actions.raise();
-          if (currentRound !== Round.Preflop) flopActions.raise();
+        {actions.raise && <button onClick={() => {
+          actions.raise();
         }}>Raise</button>}
       </div>}
     </div>
