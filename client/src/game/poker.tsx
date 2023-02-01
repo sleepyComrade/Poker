@@ -78,12 +78,6 @@ export function Poker() {
     const chipsToBet = currentBet - players[currentPlayerIndex].bet;
     players[currentPlayerIndex].bet += chipsToBet;
     players[currentPlayerIndex].chips -= chipsToBet;
-    if (currentPlayerIndex === lastInRoundIndex &&
-        currentBet > players[currentPlayerIndex].bet &&
-        (players.every(player => player.isFold || player.bet === currentBet))) {
-      return;
-    }
-    setCurrentPlayerIndex(last => (last + 1) % players.length);
     console.log('call');
   }
 
@@ -96,6 +90,15 @@ export function Poker() {
     console.log('raise');
   }
 
+  const bet = () => {
+    const chipsToBet = minimalBet;
+    players[currentPlayerIndex].bet += chipsToBet;
+    players[currentPlayerIndex].chips -= chipsToBet;
+    setCurrentBet(last => last + chipsToBet);
+    setCurrentPlayerIndex(last => (last + 1) % players.length);
+    console.log('bet');
+  }
+
   const fold = () => {
     players[currentPlayerIndex].isFold = true;
     if (players.filter(el => !el.isFold).length === 1) {
@@ -103,13 +106,6 @@ export function Poker() {
       return;
     }
     if (currentPlayerIndex === lastInRoundIndex) {
-      // const getNewLastInRoundIndex = (last: number) => {
-      //   let i = (last - 1) % players.length >= 0 ? (last - 1) % players.length : players.length - 1;
-      //   if (players[i].isFold) {
-      //     i = getNewLastInRoundIndex(i);
-      //   }
-      //   return i;
-      // }
       const getPreviousIndex = (cur: number) => (cur - 1) % players.length >= 0 ?
                                                 (cur - 1) % players.length :
                                                 players.length - 1;
@@ -122,19 +118,30 @@ export function Poker() {
     console.log('fold');
   }
 
-  const setToFlop = () => {
+  const setNextRound = () => {
     const sum = players.reduce((a, b) => a + b.bet, 0);
     setPlayers(last => last.map(player => {
       player.bet = 0;
       return player;
     }));
-    setPot(sum);
-    setCurrentRound(Round.Flop);
+    setPot(last => last + sum);
+    const round = currentRound;
+    if (round === Round.Preflop) setCurrentRound(Round.Flop);
+    if (round === Round.Flop) setCurrentRound(Round.Turn);
+    if (round === Round.Turn) setCurrentRound(Round.River);
     setCurrentBet(0);
-    const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 1) % players.length;
-    setCurrentPlayerIndex(initialIndex);
-    setLastInRoundIndex((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
-    setTableCards(last => [...last, deck.pop(), deck.pop(), deck.pop()]);
+    if (round !== Round.River) {
+      const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 1) % players.length;
+      setCurrentPlayerIndex(initialIndex);
+      setLastInRoundIndex((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
+      if (round === Round.Preflop) {
+        setTableCards(last => [...last, deck.pop(), deck.pop(), deck.pop()]);
+      } else {
+        setTableCards(last => [...last, deck.pop()]);
+      }
+    } else {
+      console.log('Get Winner');
+    }
   }
 
   const preflop = () => {
@@ -143,7 +150,7 @@ export function Poker() {
         raise: raise,
         check: () => {
           console.log('Flop');
-          setToFlop();
+          setNextRound();
         }
       }
     } else if (currentPlayerIndex === lastInRoundIndex && currentBet > players[currentPlayerIndex].bet) {
@@ -153,7 +160,9 @@ export function Poker() {
           call();
           if (players.every(player => player.isFold || player.bet === currentBet)) {
             console.log('Flop');
-            setToFlop();
+            setNextRound();
+          } else {
+            setCurrentPlayerIndex(last => (last + 1) % players.length);
           }
         },
         raise: raise
@@ -161,7 +170,10 @@ export function Poker() {
     } else if (currentBet > players[currentPlayerIndex].bet) {
       return {
         fold: fold,
-        call: call,
+        call: () => {
+          call();
+          setCurrentPlayerIndex(last => (last + 1) % players.length);
+        },
         raise: raise
       }
     } else {
@@ -173,12 +185,27 @@ export function Poker() {
   }
 
   const flop = () => {
-    if (currentPlayerIndex === lastInRoundIndex && currentBet === players[currentPlayerIndex].bet) {
+    if (currentPlayerIndex === lastInRoundIndex && !currentBet) {
+      return {
+        bet: bet,
+        check: () => {
+          if (currentRound === Round.Flop) console.log('Turn');
+          if (currentRound === Round.Turn) console.log('River');
+          setNextRound();
+        }
+      }
+    } else if (!currentBet) {
+      return {
+        bet: bet,
+        check: () => setCurrentPlayerIndex(last => (last + 1) % players.length),
+      }
+    } else if (currentPlayerIndex === lastInRoundIndex && currentBet === players[currentPlayerIndex].bet) {
       return {
         raise: raise,
         check: () => {
-          console.log('Flop');
-          setToFlop();
+          if (currentRound === Round.Flop) console.log('Turn');
+          if (currentRound === Round.Turn) console.log('River');
+          setNextRound();
         }
       }
     } else if (currentPlayerIndex === lastInRoundIndex && currentBet > players[currentPlayerIndex].bet) {
@@ -187,8 +214,11 @@ export function Poker() {
         call: () => {
           call();
           if (players.every(player => player.isFold || player.bet === currentBet)) {
-            console.log('Flop');
-            setToFlop();
+            if (currentRound === Round.Flop) console.log('Turn');
+            if (currentRound === Round.Turn) console.log('River');
+            setNextRound();
+          } else {
+            setCurrentPlayerIndex(last => (last + 1) % players.length);
           }
         },
         raise: raise
@@ -196,10 +226,13 @@ export function Poker() {
     } else if (currentBet > players[currentPlayerIndex].bet) {
       return {
         fold: fold,
-        call: call,
+        call: () => {
+          call();
+          setCurrentPlayerIndex(last => (last + 1) % players.length);
+        },
         raise: raise
       }
-    } else {
+    } else if (currentBet === players[currentPlayerIndex].bet) {
       return {
         check: () => setCurrentPlayerIndex(last => (last + 1) % players.length),
         raise: raise
@@ -218,32 +251,18 @@ export function Poker() {
   }, [])
 
   useEffect(() => {
+    const setBotChoise = () => {
+      const actions = currentRound === Round.Preflop ? preflop() : flop();
+      console.log(actions);
+      const num = Math.floor(Math.random() * Object.keys(actions).length);
+      const method = Object.keys(actions)[num] as keyof typeof actions;
+      actions[method]();
+    }
     console.log(currentPlayerIndex);
     if (currentPlayerIndex !== myPlayerIndex) {
       if (!players[currentPlayerIndex].isFold) {
         setTimeout(() => {
-          switch (currentRound) {
-            case 1:
-              const actions = preflop();
-              const num = Math.floor(Math.random() * Object.keys(actions).length);
-              const method = Object.keys(actions)[num] as keyof typeof actions;
-              actions[method]();
-              break;
-            case 2:
-              const actions2 = flop();
-              const num2 = Math.floor(Math.random() * Object.keys(actions2).length);
-              const method2 = Object.keys(actions2)[num2] as keyof typeof actions2;
-              actions2[method2]();
-              break;
-            case 3:
-              preflop();
-              break;
-            case 4:
-              preflop();
-              break;
-            default:
-              break;
-          }
+          setBotChoise();
         }, 1000);
       } else {
         setCurrentPlayerIndex(last => (last + 1) % players.length);
@@ -254,6 +273,7 @@ export function Poker() {
   }, [currentPlayerIndex]);
 
   const actions = useMemo(() => preflop(), [currentPlayerIndex]);
+  const flopActions = useMemo(() => flop(), [currentPlayerIndex]);
 
   useEffect(() => {
     players.forEach((player, i) => {
@@ -320,20 +340,24 @@ export function Poker() {
         })}
       </div>
       {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <div>
-        {actions.fold && <button onClick={() => {
-          actions.fold();
+        {(actions.fold || flopActions.fold) && <button onClick={() => {
+          if (currentRound === Round.Preflop) actions.fold();
+          if (currentRound !== Round.Preflop) flopActions.fold();
         }}>Fold</button>}
-        {(currentBet === players[currentPlayerIndex].bet) && <button onClick={() => {
-          setCurrentPlayerIndex(last => (last + 1) % players.length);
+        {(actions.check || flopActions.check) && <button onClick={() => {
+          if (currentRound === Round.Preflop) actions.check();
+          if (currentRound !== Round.Preflop) flopActions.check();
         }}>Check</button>}
-        {(!currentBet) && <button onClick={() => {
-
+        {flopActions.bet && <button onClick={() => {
+          flopActions.bet();
         }}>Bet</button>}
-        {actions.call && <button onClick={() => {
-          actions.call();
+        {(actions.call || flopActions.call) && <button onClick={() => {
+          if (currentRound === Round.Preflop) actions.call();
+          if (currentRound !== Round.Preflop) flopActions.call();
         }}>Call</button>}
-        {actions.raise && <button onClick={() => {
-          actions.raise();
+        {(actions.raise || flopActions.raise) && <button onClick={() => {
+          if (currentRound === Round.Preflop) actions.raise();
+          if (currentRound !== Round.Preflop) flopActions.raise();
         }}>Raise</button>}
       </div>}
     </div>
