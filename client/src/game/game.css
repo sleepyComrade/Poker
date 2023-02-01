@@ -6,6 +6,7 @@
 
 .game__wrapper {
     width: 950px;
+    position: relative;
     border: 1px solid red;
     margin: 0 auto;
     height: 100vh;
