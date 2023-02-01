@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { getCombo} from './combinations';
 import {IPlayer, ICard} from '../interfaces';
+import { getWinner } from './combo2';
 
 getCombo([]);
+console.log(getWinner([['4d', '5d'], ['6b', '7c'], ['1b', '2c']], ['2a', '2b', '5c', '2d', '3c']));
 
 type IActions = {
   raise?: () => void;
