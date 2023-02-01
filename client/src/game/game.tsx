@@ -10,9 +10,9 @@ export default function Game() {
         <div className="game">
             <div className="game__wrapper">
                 <PlayerList />         
-                <Table />                        
-                <ButtonsPanel />                       
-            </div>            
+                <Table />  
+                <ButtonsPanel />   
+            </div> 
         </div>
     )
 }

@@ -10,14 +10,19 @@ export default function Table() {
             <div className='table__wrapper'>
                 <div className="table_stack">
                     <div className='table_card ani_card0'>
-                        <Card value={7} type={2}></Card>
+                        <Card value={5} type={3}></Card>
                     </div>
                     <div className='table_card ani_card1'>
-                        <Card value={7} type={2}></Card>
+                        <Card value={10} type={2}></Card>
                     </div>
-                    <div className='table_card ani_card2'></div>
-                    <div className='table_card ani_card3'></div>
-                    <div className='table_card ani_card4'></div>                                   
+                    <div className='table_card ani_card2'>
+                    <Card value={9} type={1}></Card>
+                    </div>
+                    {/* <div className='table_card ani_card3'>
+                    <Card value={8} type={1}></Card>
+                    </div>
+                    <div className='table_card ani_card4'>
+                    <Card value={3} type={0}></Card></div>                                    */}
                 </div>   
                 <BankCoin topValue={0} leftValue={182} />   
                 <BankCoin topValue={30} leftValue={243}/>   
