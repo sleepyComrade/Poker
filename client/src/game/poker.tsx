@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
-interface IPlayer {
-  name: string;
-  cards: ICard[];
-  isFold: boolean;
-}
+import { getCombo} from './combinations';
+import {IPlayer, ICard} from '../interfaces';
 
-interface ICard {
-  type: number;
-  value: number;
-}
+getCombo([]);
 
 const testPlayers: IPlayer[] = [
   {
