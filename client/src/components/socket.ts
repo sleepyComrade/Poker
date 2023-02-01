@@ -1,13 +1,25 @@
+import { IRoom } from '../../../interfaces/IRoom'
+
 export default class Socket {
   webSocket: WebSocket
 
   onMessage: (states: string) => void
+  onRoomCreate: (rooms: Record<string, IRoom>) => void
 
   constructor() {
-    this.webSocket = new WebSocket('ws://localhost:3002/')
+    this.webSocket = new WebSocket('ws://localhost:4002/')
     this.webSocket.onmessage = (message) => {
       console.log(message)
-      this.onMessage(JSON.parse(message.data))
+      const parsedData = JSON.parse(message.data)
+      if (parsedData.type === 'chatMessage') {
+        console.log('recevied chatMessage: ', message)
+        this.onMessage(JSON.parse(message.data).message)
+      }
+      if (parsedData.type === 'createRoom') {
+        console.log('room create')
+        console.log('room name', parsedData.roomName)
+        this.onRoomCreate(parsedData.rooms)
+      }
     }
     this.webSocket.onopen = () => {
       console.log('open')
@@ -17,8 +29,8 @@ export default class Socket {
     }
   }
 
-  sendState(arr: string) {
-    this.webSocket.send(JSON.stringify(arr))
+  sendState(state: Record<string, any>) {
+    this.webSocket.send(JSON.stringify(state))
   }
 
   destroy() {
