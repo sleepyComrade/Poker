@@ -4,6 +4,10 @@ import { Poker } from './game/poker'
 import { CreateRoom } from './CreateRoom/CreateRoom'
 import { IRoom } from '../../interfaces/IRoom'
 
+import { Pk } from "./game/pk";
+import  Garage  from "./game/g";
+import Game from './game/game';
+
 export function App() {
   const [messages, setMessages] = useState<string[]>([])
   const [rooms, setRooms] = useState<Record<string, IRoom>>({})
@@ -30,6 +34,8 @@ export function App() {
   return (
     <div>
       {currentRoom && <h1>You Are in Room: {currentRoom}</h1>}
+      {/* <h1>Hello World</h1>
+      { messages.map((mes: string) => <p>{mes}</p>) }
       <input
         type='text'
         placeholder='nick name here'
@@ -90,6 +96,13 @@ export function App() {
         Send
       </button>
       <Poker></Poker>
+      <button type="button" onClick={() => {
+        socket.sendState(text);
+      }}>Send</button> */}
+      {/* <Poker></Poker> */}
+      {/* <Pk /> */}
+      {/* <Garage /> */}
+      <Game />
     </div>
   )
 }

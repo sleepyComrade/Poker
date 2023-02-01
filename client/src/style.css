@@ -8,3 +8,14 @@
   display: flex;
   gap: 20px;
 }
+
+body{
+  --player-width: 200px;
+  --card-width: 75px;
+}
+
+.btn {
+  border: 1px solid transparent;
+  vertical-align: middle;
+  cursor: pointer;
+}
