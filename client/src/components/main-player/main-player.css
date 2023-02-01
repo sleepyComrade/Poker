@@ -2,15 +2,21 @@
     position: absolute;
 }
 
-.player{
-    background-color: #fff5;
+.player1{
+    /* background-color: #fff5; */
+    background-color: #fff0;
     display: flex;
-    flex-direction: row;
-    align-items: stretch;
+    flex-direction: column-reverse;
+    align-items: center;
     width: var(--player-width);
     padding: 5px;
     border-radius: 10px;
     z-index: 1000;
+}
+
+.main-player {
+    flex-direction: column;
+    align-items: center;
 }
 
 .main-player_ava{
@@ -20,8 +26,8 @@
     background-color: #000;
     color: #fff;
     font-size: 32px;
-    width: 64px;
-    height: 64px;
+    width: 100px;
+    height: 100px;
     border-radius: 100%;
 }
 
@@ -48,8 +54,33 @@
     border: 1px solid #000;
     margin-right: 10px;
     border-radius: 100%;
-    --progress: 30;
-    background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%))
+    --progress: 0;
+    background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%));
+    /* animation: timer 5s linear infinite; */
+    /* transition: --progress 5s linear; */
+}
+
+.main-player_time_100 { 
+    --progress: 100;
+}
+
+
+@keyframes timer{
+    0%{
+        --progress: 0;
+    }
+    25%{
+        --progress: 25;
+    }
+    50%{
+        --progress: 50;
+    }
+    75%{
+        --progress: 75;
+    }
+    100%{
+        --progress: 100;
+    } 
 }
 
 .main-player__chair {
@@ -61,6 +92,6 @@
 }
 
 .tp7{
-    top: calc((100% - 40px) / 0.8);
+    top: calc((100% - 40px) / 1.1);
     left: calc((100% - var(--player-width)) / 2);
 }
