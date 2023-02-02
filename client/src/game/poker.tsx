@@ -46,7 +46,7 @@ const testPlayers: IPlayer[] = [
     cards: []
   },
   {
-    name: 'Player7',
+    name: 'Player9',
     cards: []
   },
   {
@@ -349,12 +349,9 @@ export function Poker() {
       <div>
         {tableCards.map(card => {
           return (
-            <div className="sss">
+            <div>
              {`${card.type}/${card.value}`}
             </div>
-          // <div className='table_card ani_card0'>
-          //   <Card value={5} type={3}></Card>
-          // </div>
           )
         })}
       </div>

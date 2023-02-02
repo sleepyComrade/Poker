@@ -52,7 +52,7 @@ export default function MainPlayer() {
     return (
         <div className="main-player">
             <img className="main-player__chair" src={img} alt="" />
-            <div className={`abs player1 tp7`}>
+            <div className={`abs player1 tp9`}>
                 <button style={{ width: 100, height: 20 }} onClick={() => {
                     setTimerAnimation(last => !last);
                 }}>Start timer</button>

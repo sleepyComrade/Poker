@@ -91,7 +91,7 @@
     left: 306px;
 }
 
-.tp7{
+.tp9{
     top: calc((100% - 40px) / 1.1);
     left: calc((100% - var(--player-width)) / 2);
 }

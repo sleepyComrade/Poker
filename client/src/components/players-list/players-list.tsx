@@ -9,10 +9,11 @@ type PlayersListProps = {
   players: Array<IPlayer>;
 }
 
-export default function PlayersList({players}: PlayersListProps) {
+export default function PlayersList({ players }: PlayersListProps) {
   return (
-    <div className="player-list">
-      {/* <Player place={1} />
+    <>
+      <div className="player-list">
+        {/* <Player place={1} />
             <Player place={2} />
             <Player place={3} />
             <Player place={4} />
@@ -22,9 +23,11 @@ export default function PlayersList({players}: PlayersListProps) {
             <Player place={8} />
             <Player place={9} /> */}
 
-      {players.map((player, index) =>  
-        <Player key={index} player={player} place={index + 1} /> 
-      )}
-    </div>
+        {players.map((player, index) =>
+          <Player key={index} player={player} place={index + 1} />
+        )}
+      </div>
+    </>
+
   )
 }
