@@ -4,12 +4,17 @@ import Table from '../components/table/table';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 import './game.css';
+import { IPlayer } from "../interfaces";
 
-export default function Game() {
+type GameProps = {
+    players: Array<IPlayer>
+}
+
+export default function Game({players}: GameProps) {
     return (
         <div className="game">
             <div className="game__wrapper">
-                {/* <PlayerList />          */}
+                <PlayerList players={players}/>         
                 <Table />  
                 <ButtonsPanel />   
             </div> 

@@ -3,6 +3,7 @@ import { getCombo} from './combinations';
 import { IPlayer, ICard, Round, IGameMessage, IActions } from '../interfaces';
 import { getWinner } from './combo2';
 import { GameLogic } from './game-logic';
+import Game from '../game/game';
 import Card from '../components/card/card';
 import PlayersList from '../components/players-list/players-list';
 import '../style.css';
@@ -331,6 +332,7 @@ export function Poker() {
 
   return (
     <div>
+      <Game players={players}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
@@ -346,6 +348,7 @@ export function Poker() {
           )
         })} */}
       </div>
+    
       <div>
         {tableCards.map(card => {
           return (
@@ -355,7 +358,7 @@ export function Poker() {
           )
         })}
       </div>
-      <PlayersList players={players} />
+   
       {/* <div className="players">
         {players.map(player => {
           return (
