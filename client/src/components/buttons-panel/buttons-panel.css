@@ -4,16 +4,29 @@
 }
 
 .button-player {
-    width: 174px;
-    background-color: rgb(219, 22, 22);
-    background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
-    border-bottom: 1px solid #680202;
+    width: 174px;   
     padding: 10px 5px;
     font-size: 24px;
     color: #fff;
     border-radius: 7px;
     transition: all 0.3s ease;
 }
+
+.button-player--fold,
+.button-player--call,
+.button-player--raise {
+    background-color: rgb(219, 22, 22);
+    background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
+    border-bottom: 1px solid #680202;
+}
+
+.button-player--check,
+.button-player--bet {
+    background-color: rgb(235, 98, 6);
+    background: linear-gradient(to bottom, #e75f04 0%, #b32d04 100%);
+    border-bottom: 1px solid #b32d04;
+}
+
 
 .button-player:not(:last-child) {
     margin-right: 15px;

@@ -4,19 +4,22 @@ import Table from '../components/table/table';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 import './game.css';
-import { IPlayer } from "../interfaces";
+import { IActions, IPlayer } from "../interfaces";
 
 type GameProps = {
-    players: Array<IPlayer>
+    players: Array<IPlayer>;
+    actions: IActions;
 }
 
-export default function Game({players}: GameProps) {
+export default function Game({players, actions}: GameProps) {
     return (
         <div className="game">
             <div className="game__wrapper">
                 <PlayerList players={players}/>         
                 <Table />  
-                <ButtonsPanel />   
+                {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}
+                <ButtonsPanel actions={actions} />
+                {/* } */}
             </div> 
         </div>
     )

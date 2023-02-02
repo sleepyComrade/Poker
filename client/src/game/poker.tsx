@@ -4,8 +4,7 @@ import { IPlayer, ICard, Round, IGameMessage, IActions } from '../interfaces';
 import { getWinner } from './combo2';
 import { GameLogic } from './game-logic';
 import Game from '../game/game';
-import Card from '../components/card/card';
-import PlayersList from '../components/players-list/players-list';
+import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 
 // getCombo([]);
@@ -332,7 +331,7 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players}/>
+      <Game players={players} actions={actions}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
@@ -359,6 +358,7 @@ export function Poker() {
         })}
       </div>
    
+   {/* // players - перенесено в компоненты players-list и player */}
       {/* <div className="players">
         {players.map(player => {
           return (
@@ -385,24 +385,28 @@ export function Poker() {
             </div>
           )
         })}
-      </div>
-      {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <div> */}
-        {actions.fold && <button onClick={() => {
-          actions.fold();
-        }}>Fold</button>}
-        {actions.check && <button onClick={() => {
-          actions.check();
-        }}>Check</button>}
-        {actions.bet && <button onClick={() => {
-          actions.bet();
-        }}>Bet</button>}
-        {actions.call && <button onClick={() => {
-          actions.call();
-        }}>Call</button>}
-        {actions.raise && <button onClick={() => {
-          actions.raise();
-        }}>Raise</button>}
-      {/* </div>} */}
+      </div> */}
+      
+      {/* // перенесено в buttons-panel */}
+      {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <ButtonsPanel actions={actions} />
+      // <div>
+      //   {actions.fold && <button onClick={() => {
+      //     actions.fold();
+      //   }}>Fold</button>}
+      //   {actions.check && <button onClick={() => {
+      //     actions.check();
+      //   }}>Check</button>}
+      //   {actions.bet && <button onClick={() => {
+      //     actions.bet();
+      //   }}>Bet</button>}
+      //   {actions.call && <button onClick={() => {
+      //     actions.call();
+      //   }}>Call</button>}
+      //   {actions.raise && <button onClick={() => {
+      //     actions.raise();
+      //   }}>Raise</button>}
+      // </div>
+      } */}
     </div>
   )
 }

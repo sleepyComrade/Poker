@@ -16,18 +16,17 @@ export interface IGameMessage {
   data: any;
 }
 
-export type IActions = {
-  raise?: () => void;
-  check?: () => void;
-  fold?: () => void;
-  call?: () => void;
-  bet?: () => void; 
-}
-
 export enum Round {
   Preflop = 1,
   Flop,
   Turn,
   River,
-}
-  
+}  
+
+  export interface IActions {
+    raise?: () => void;
+    check?: () => void;
+    fold?: () => void;
+    call?: () => void;
+    bet?: () => void; 
+  }
