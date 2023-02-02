@@ -56,31 +56,10 @@
     border-radius: 100%;
     --progress: 0;
     background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%));
-    /* animation: timer 5s linear infinite; */
-    /* transition: --progress 5s linear; */
 }
 
 .main-player_time_100 { 
     --progress: 100;
-}
-
-
-@keyframes timer{
-    0%{
-        --progress: 0;
-    }
-    25%{
-        --progress: 25;
-    }
-    50%{
-        --progress: 50;
-    }
-    75%{
-        --progress: 75;
-    }
-    100%{
-        --progress: 100;
-    } 
 }
 
 .main-player__chair {

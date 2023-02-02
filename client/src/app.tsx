@@ -99,7 +99,7 @@ export function App() {
       <button type="button" onClick={() => {
         socket.sendState(text);
       }}>Send</button> */}
-      <Poker></Poker>
+      <Poker />
       {/* <Pk /> */}
       {/* <Garage /> */}
       {/* <Game /> */}
