@@ -3,6 +3,9 @@ import { getCombo} from './combinations';
 import { IPlayer, ICard, Round, IGameMessage, IActions } from '../interfaces';
 import { getWinner } from './combo2';
 import { GameLogic } from './game-logic';
+import Card from '../components/card/card';
+import PlayersList from '../components/players-list/players-list';
+import '../style.css';
 
 // getCombo([]);
 // console.log(getWinner([['4d', '5d'], ['6b', '7c'], ['1b', '2c']], ['2a', '2b', '5c', '2d', '3c']));
@@ -32,6 +35,22 @@ const testPlayers: IPlayer[] = [
   },
   {
     name: 'Player4',
+    cards: []
+  },
+  {
+    name: 'Player5',
+    cards: []
+  },
+  {
+    name: 'Player6',
+    cards: []
+  },
+  {
+    name: 'Player7',
+    cards: []
+  },
+  {
+    name: 'Player8',
     cards: []
   }
 ].map(player => ({...player, isFold: false, chips: 10000, bet: 0}));
@@ -330,13 +349,17 @@ export function Poker() {
       <div>
         {tableCards.map(card => {
           return (
-            <div>
+            <div className="sss">
              {`${card.type}/${card.value}`}
             </div>
+          // <div className='table_card ani_card0'>
+          //   <Card value={5} type={3}></Card>
+          // </div>
           )
         })}
       </div>
-      <div className="players">
+      <PlayersList players={players} />
+      {/* <div className="players">
         {players.map(player => {
           return (
             <div>

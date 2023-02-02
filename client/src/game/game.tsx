@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PlayerList from '../components/player-list/player-list';
+import PlayerList from '../components/players-list/players-list';
 import Table from '../components/table/table';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
@@ -9,7 +9,7 @@ export default function Game() {
     return (
         <div className="game">
             <div className="game__wrapper">
-                <PlayerList />         
+                {/* <PlayerList />          */}
                 <Table />  
                 <ButtonsPanel />   
             </div> 

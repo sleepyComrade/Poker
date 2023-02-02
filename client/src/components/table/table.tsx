@@ -22,7 +22,7 @@ export default function Table() {
                     <Card value={8} type={1}></Card>
                     </div>
                     <div className='table_card ani_card4'>
-                    <Card value={3} type={0}></Card></div>                                    */}
+                    <Card value={3} type={0}></Card></div> */}
                 </div>   
                 <BankCoin topValue={0} leftValue={182} />   
                 <BankCoin topValue={30} leftValue={243}/>   
