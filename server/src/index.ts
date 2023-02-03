@@ -10,7 +10,20 @@ const port = 4002
 
 const rooms: Record<string, IRoomServer> = {}
 
-const server = http.createServer((request, response) => {})
+const server = http.createServer((req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+  })
+
+  console.log('reqeust', req.url, req.method)
+  if (req.method === 'GET' && req.url === '/rooms') {
+    console.log('rooms request')
+    res.end(JSON.stringify(Object.keys(rooms)))
+  }
+})
 
 server.listen(port, () => {
   console.log(new Date() + ` Server is listening on port ${port}`)
@@ -32,8 +45,6 @@ socket.on('request', (request) => {
     if (message.type === 'utf8') {
       const parsed = JSON.parse(message.utf8Data)
 
-      console.log('parsed', parsed)
-
       if (!('type' in parsed)) {
         return
       }
@@ -44,10 +55,10 @@ socket.on('request', (request) => {
         if (rooms[parsed.roomName]) {
           return
         }
-        console.log('before', rooms)
         rooms[parsed.roomName] = new Room(parsed.roomName)
-        const roomsToSend = JSON.parse(JSON.stringify(rooms))
+        const roomsToSend = structuredClone(rooms)
         Object.keys(roomsToSend).forEach((key) => {
+          delete roomsToSend[key].startGame
           delete roomsToSend[key].players
         })
         connections.forEach((connection) => {
@@ -55,21 +66,24 @@ socket.on('request', (request) => {
             JSON.stringify({ type: 'createRoom', rooms: roomsToSend })
           )
         })
+        console.log('create Room; rooms now:', rooms)
       }
 
       if (parsed.type === 'chatMessage') {
-        rooms[parsed.room].messages.push(parsed.data)
-
         if (!rooms[parsed.room]) {
           return
         }
 
+        rooms[parsed.room].messages.push(parsed.data)
+
+        console.log('on message', rooms[parsed.room])
         Object.keys(rooms[parsed.room].players).forEach((key) => {
-          rooms[parsed.rooom].players[key].socketConnection.sendUTF(
+          console.log('Player to send', key)
+          rooms[parsed.room].players[key].socketConnection.sendUTF(
             JSON.stringify({
               type: 'chatMessage',
               message: parsed.data,
-              author: '',
+              author: parsed.author,
             })
           )
         })
@@ -81,6 +95,7 @@ socket.on('request', (request) => {
           `User Name: ${parsed.userName} room Name: ${parsed.roomName}`
         )
         if (rooms[parsed.roomName]) {
+          console.log(rooms[parsed.roomName])
           if (rooms[parsed.roomName].players[parsed.userName]) {
             return
           }
@@ -90,6 +105,21 @@ socket.on('request', (request) => {
           )
           console.log(rooms)
         }
+      }
+
+      if (parsed.type === 'gameStart') {
+        console.log(`game start in room ${parsed.roomName}`)
+        if (!rooms[parsed.roomName]) {
+          connection.send(
+            JSON.stringify({
+              type: 'error',
+              errortext: 'There is no such room',
+            })
+          )
+          return
+        }
+
+        rooms[parsed.roomName].startGame()
       }
     }
   })
