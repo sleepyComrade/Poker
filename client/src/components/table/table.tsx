@@ -7,9 +7,52 @@ import { ICard } from "../../interfaces";
 
 type TableProps ={
     cards: Array<ICard>;
+    bets: Array<number>;
 }
+const bankPosition = {
+    top: 0,
+    left: 304,
+}
+const coinPositions = [
+    {
+        top: 37,
+        left: 114,
+    },
+    {
+        top: -26,
+        left: 170,
+    },
+    {
+        top: -26,
+        left: 438,
+    },
+    {
+        top: 52,
+        left: 494,
+    },
+    {
+        top: 183,
+        left: 494,
+    },  
+    {
+        top: 284,
+        left: 495,
+    },
+    {
+        top: 284,
+        left: 268,
+    },
+    {
+        top: 284,
+        left: 67,
+    },
+    {
+        top: 196,
+        left: 114,
+    }
+]
 
-export default function Table({cards}: TableProps) {
+export default function Table({cards, bets}: TableProps) {
     return (
         <div className="table">            
             <div className='table__wrapper'>
@@ -19,9 +62,13 @@ export default function Table({cards}: TableProps) {
                         <Card key={index} value={card.value - 1} type={card.type - 1}></Card>
                     </div>))}
                 </div>   
-                <BankCoin topValue={0} leftValue={182} />   
+                {/* <BankCoin topValue={0} leftValue={182} />   
                 <BankCoin topValue={30} leftValue={243}/>   
-                <BankCoin topValue={40} leftValue={165}/>             
+                <BankCoin topValue={40} leftValue={165}/>   */}
+                {bets.map((it, index) => {
+                    if(it == 0) return ;
+                    return <BankCoin topValue={coinPositions[index].top} leftValue={coinPositions[index].left} />
+                })}           
             </div>  
              
         </div>   

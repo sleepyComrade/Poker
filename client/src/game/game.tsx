@@ -19,7 +19,7 @@ export default function Game({ players, actions, cards, player }: GameProps) {
             <div className="game__wrapper">
                 <div className="game__center-container">
                     <PlayerList players={players} player={player} />
-                    <Table cards={cards} />
+                    <Table cards={cards} bets={players.map(it => it.bet)}/>
                 </div>
                 {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}
                 <ButtonsPanel actions={actions} />

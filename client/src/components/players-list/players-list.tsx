@@ -32,7 +32,7 @@ export default function PlayersList({ players, player }: PlayersListProps) {
           return (
           <>
             <Player key={index} player={_player} place={index+1} />
-            <BankCoin topValue={10} leftValue={100}/>
+            {/* <BankCoin topValue={10} leftValue={100}/> */}
           </>
           )           
         }          
