@@ -64,7 +64,7 @@ export default function MainPlayer() {
                     <div className='main-player_cash'>23 456</div>
                 </div>
 
-                <TwoCards />
+                {/* <TwoCards /> */}
             </div>
         </div>
 

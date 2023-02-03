@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { ICard } from "../../interfaces";
 import '../../style.css';
 import './two-cards.css';
 
+type TwoCardsProps = {
+  cards: Array<ICard>;
+}
 
-export default function TwoCards() {
-    return (
-        <div className='card_stack'>
-            <div className='hand_zero'>
-                <div className='card_wrapper'>
-                    <div className='card_base card_a'>
-                    </div>
-                    <div className='card_base card_b'>
-                    </div>
-                </div>
+export default function TwoCards({ cards }: TwoCardsProps) {
+  return (
+    <div className='card_stack'>
+      {cards.map(card => {
+        return (
+          <div className='hand_zero'>
+            <div className='card_wrapper'>
+              <div className='card_base card_a card_img' style={{ '--value': card.value - 1, '--type': card.type - 1 }}>
+              </div>
+              <div className='card_base card_b card_img' style={{ '--value': card.value - 1, '--type': card.type - 1 }}>
+              </div>
             </div>
-            <div className='hand_zero'>
-                <div className='card_wrapper card_wrapper_second'>
-                    <div className='card_base card_a'>
-                    </div>
-                    <div className='card_base card_b'>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    )
+          </div>
+        )
+      })}
+    </div>
+  )
 }

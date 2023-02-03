@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Player from '../player/player';
 import MainPlayer from '../main-player/main-player';
-import { IPlayer } from "../../interfaces";
+import { ICard, IPlayer } from "../../interfaces";
 import '../../style.css';
 import './players-list.css';
 

@@ -16,7 +16,7 @@ export default function Game({players, actions, cards}: GameProps) {
     return (
         <div className="game">
             <div className="game__wrapper">
-                <PlayerList players={players}/>         
+                <PlayerList players={players} />         
                 <Table cards={cards}/>  
                 {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}
                 <ButtonsPanel actions={actions} />
