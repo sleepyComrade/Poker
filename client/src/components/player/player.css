@@ -13,6 +13,13 @@
     z-index: 1000;
 }
 
+.player__timer {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 .player_ava{
     display: flex;
     align-items: center;
