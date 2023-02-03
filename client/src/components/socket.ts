@@ -1,9 +1,10 @@
 import { IRoom } from '../../../interfaces/IRoom'
+import { IMessage } from '../interfaces/IMessage'
 
 export default class Socket {
   webSocket: WebSocket
 
-  onMessage: (states: string) => void
+  onMessage: (message: IMessage) => void
   onRoomCreate: (rooms: Record<string, IRoom>) => void
 
   constructor() {
@@ -13,7 +14,10 @@ export default class Socket {
       const parsedData = JSON.parse(message.data)
       if (parsedData.type === 'chatMessage') {
         console.log('recevied chatMessage: ', message)
-        this.onMessage(JSON.parse(message.data).message)
+        this.onMessage({
+          message: parsedData.message,
+          author: parsedData.author,
+        })
       }
       if (parsedData.type === 'createRoom') {
         console.log('room create')
