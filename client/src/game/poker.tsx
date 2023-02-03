@@ -3,6 +3,9 @@ import { getCombo} from './combinations';
 import { IPlayer, ICard, Round, IGameMessage, IActions } from '../interfaces';
 import { getWinner } from './combo2';
 import { GameLogic } from './game-logic';
+import Game from '../game/game';
+import ButtonsPanel from '../components/buttons-panel/buttons-panel';
+import '../style.css';
 
 // getCombo([]);
 // console.log(getWinner([['4d', '5d'], ['6b', '7c'], ['1b', '2c']], ['2a', '2b', '5c', '2d', '3c']));
@@ -32,6 +35,22 @@ const testPlayers: IPlayer[] = [
   },
   {
     name: 'Player4',
+    cards: []
+  },
+  {
+    name: 'Player5',
+    cards: []
+  },
+  {
+    name: 'Player6',
+    cards: []
+  },
+  {
+    name: 'Player7',
+    cards: []
+  },
+  {
+    name: 'Player8',
     cards: []
   }
 ].map(player => ({...player, isFold: false, chips: 10000, bet: 0}));
@@ -312,6 +331,7 @@ export function Poker() {
 
   return (
     <div>
+      <Game players={players} actions={actions} cards={tableCards} player={players[6]}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
@@ -327,6 +347,7 @@ export function Poker() {
           )
         })} */}
       </div>
+    
       <div>
         {tableCards.map(card => {
           return (
@@ -336,7 +357,9 @@ export function Poker() {
           )
         })}
       </div>
-      <div className="players">
+   
+   {/* // players - перенесено в компоненты players-list и player */}
+      {/* <div className="players">
         {players.map(player => {
           return (
             <div>
@@ -362,24 +385,28 @@ export function Poker() {
             </div>
           )
         })}
-      </div>
-      {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <div> */}
-        {actions.fold && <button onClick={() => {
-          actions.fold();
-        }}>Fold</button>}
-        {actions.check && <button onClick={() => {
-          actions.check();
-        }}>Check</button>}
-        {actions.bet && <button onClick={() => {
-          actions.bet();
-        }}>Bet</button>}
-        {actions.call && <button onClick={() => {
-          actions.call();
-        }}>Call</button>}
-        {actions.raise && <button onClick={() => {
-          actions.raise();
-        }}>Raise</button>}
-      {/* </div>} */}
+      </div> */}
+
+      {/* // перенесено в buttons-panel */}
+      {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <ButtonsPanel actions={actions} />
+      // <div>
+      //   {actions.fold && <button onClick={() => {
+      //     actions.fold();
+      //   }}>Fold</button>}
+      //   {actions.check && <button onClick={() => {
+      //     actions.check();
+      //   }}>Check</button>}
+      //   {actions.bet && <button onClick={() => {
+      //     actions.bet();
+      //   }}>Bet</button>}
+      //   {actions.call && <button onClick={() => {
+      //     actions.call();
+      //   }}>Call</button>}
+      //   {actions.raise && <button onClick={() => {
+      //     actions.raise();
+      //   }}>Raise</button>}
+      // </div>
+      } */}
     </div>
   )
 }

@@ -1,19 +1,76 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TwoCards from '../two-cards/two-cards';
 import '../../style.css';
 import './player.css';
+import { ICard, IPlayer } from "../../interfaces";
 
-export default function Player({ place }: { place: number }) {
-    return (
-        <div className={`abs player tp${place}`}>
-            <div className='player_time'>
-                <div className='player_ava'>AA</div>
-            </div>
-            <div className='player_nc_wrapper'>
-                <div className='player_name'>Anyj Anykiewicz</div>
-                <div className='player_cash'>23 456</div>
-            </div>
-            <TwoCards />
+type PlayerProps = {
+  player: IPlayer;
+  place: number;
+}
+
+export default function Player({ player, place }: PlayerProps) {
+  const { name, isFold, chips, cards, bet } = player;
+  const [timerAnimation, setTimerAnimation] = useState(false);
+  const timer = useRef<HTMLDivElement>();
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    let pr = 0;
+    let frame: number = null;
+    const render = (lastTime?: number) => {
+      frame = requestAnimationFrame((time) => {
+        if (lastTime) {
+          const delta = time - lastTime;
+          console.log(delta);
+          setProgress(last => {
+            let next = last + delta / 50;
+            if (next > 100) {
+              next = 100;
+              setTimerAnimation(false);
+            }
+            return next;
+          })
+          // let next = pr + delta / 50;
+          // if (next > 100) {
+          //     next = 100;
+          //     setTimerAnimation(false);
+          // }
+          // pr = next;
+          // timer.current.style.setProperty('--progress', pr.toString());
+        }
+
+        render(time)
+      })
+    }
+    if (timerAnimation) {
+      render();
+    }
+    return () => {
+      if (frame) {
+        cancelAnimationFrame(frame);
+        frame = null;
+      }
+    }
+  }, [timerAnimation]);
+  return (
+    <div className={`abs player tp${place}`}>
+      <div className="player__timer">
+        <button style={{ width: 70, height: 20 }} onClick={() => {
+          setTimerAnimation(last => !last);
+        }}>Start timer</button>
+        <div ref={timer} className='player_time' style={{ '--progress': progress }}>
+          <div className='player_ava'>AA</div>
         </div>
-    )
+      </div>
+
+      <div className='player_nc_wrapper'>
+        <div className='player_name'>{name}</div>
+        <div className='player_cash'>23 456</div>
+        {isFold ? 'Player is out' : ''}
+        <div>{chips}</div>
+      </div>
+      <div>{bet > 0 && bet}</div>
+      <TwoCards cards={cards} />
+    </div>
+  )
 }
