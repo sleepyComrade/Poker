@@ -3,4 +3,5 @@ import { Player } from '../player'
 
 export interface IRoomServer extends IRoom {
   players: Record<string, Player>
+  startGame(): void
 }
