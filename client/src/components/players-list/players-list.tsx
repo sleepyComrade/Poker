@@ -7,13 +7,14 @@ import './players-list.css';
 
 type PlayersListProps = {
   players: Array<IPlayer>;
+  player: IPlayer;
 }
 
-export default function PlayersList({ players }: PlayersListProps) {
+export default function PlayersList({ players, player }: PlayersListProps) {
   return (
     <>
       <div className="players-list">
-        <MainPlayer />
+        <MainPlayer player={player}/>
         {players.map((player, index) =>
           <Player key={index} player={player} place={index + 1} />
         )}

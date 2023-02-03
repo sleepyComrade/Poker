@@ -10,14 +10,15 @@ type GameProps = {
     players: Array<IPlayer>;
     actions: IActions;
     cards: Array<ICard>;
+    player: IPlayer;
 }
 
-export default function Game({ players, actions, cards }: GameProps) {
+export default function Game({ players, actions, cards, player }: GameProps) {
     return (
         <div className="game">
             <div className="game__wrapper">
                 <div className="game__center-container">
-                    <PlayerList players={players} />
+                    <PlayerList players={players} player={player} />
                     <Table cards={cards} />
                 </div>
                 {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}

@@ -46,7 +46,7 @@ const testPlayers: IPlayer[] = [
     cards: []
   },
   {
-    name: 'Player9',
+    name: 'Player7',
     cards: []
   },
   {
@@ -331,7 +331,7 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards}/>
+      <Game players={players} actions={actions} cards={tableCards} player={players[6]}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
