@@ -1,6 +1,6 @@
 .buttons-panel {
-    position: absolute;
-    bottom: 50px;
+    position: relative;
+    bottom: -20%;
 }
 
 .button-player {

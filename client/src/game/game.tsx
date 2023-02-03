@@ -12,16 +12,18 @@ type GameProps = {
     cards: Array<ICard>;
 }
 
-export default function Game({players, actions, cards}: GameProps) {
+export default function Game({ players, actions, cards }: GameProps) {
     return (
         <div className="game">
             <div className="game__wrapper">
-                <PlayerList players={players} />         
-                <Table cards={cards}/>  
+                <div className="game__center-container">
+                    <PlayerList players={players} />
+                    <Table cards={cards} />
+                </div>
                 {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}
                 <ButtonsPanel actions={actions} />
                 {/* } */}
-            </div> 
+            </div>
         </div>
     )
 }
