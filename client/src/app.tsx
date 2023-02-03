@@ -3,18 +3,20 @@ import Socket from './components/socket'
 import { Poker } from './game/poker'
 import { CreateRoom } from './CreateRoom/CreateRoom'
 import { IRoom } from '../../interfaces/IRoom'
+import { IMessage } from './interfaces/IMessage'
 
-import { Pk } from "./game/pk";
-import  Garage  from "./game/g";
-import Game from './game/game';
+import { Pk } from './game/pk'
+import Garage from './game/g'
+import Game from './game/game'
 
 export function App() {
-  const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<IMessage[]>([])
   const [rooms, setRooms] = useState<Record<string, IRoom>>({})
   const [text, setText] = useState('')
-  const [userName, setUserName] = useState('')
+  const [userName, setUserName] = useState(Math.random().toString())
   const [socket, setSocket] = useState<Socket | null>(null)
   const [currentRoom, setCurrentRoom] = useState<null | string>(null)
+  const [playerTurn, setPlayerTurn] = useState(false)
 
   useEffect(() => {
     const socket = new Socket()
@@ -31,14 +33,30 @@ export function App() {
     return () => socket.destroy()
   }, [])
 
+  useEffect(() => {
+    console.log('try fetch')
+    fetch('http://localhost:4002/rooms')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('!!!!!!!!', data)
+        setRooms(data)
+      })
+  }, [])
+
   return (
     <div>
       {currentRoom && <h1>You Are in Room: {currentRoom}</h1>}
-      {/* <h1>Hello World</h1>
-      { messages.map((mes: string) => <p>{mes}</p>) }
+      {playerTurn && <h1>Your Turn</h1>}
+      <button
+        onClick={() => {
+          socket.sendState({ type: 'gameStart', roomName: currentRoom })
+        }}
+      >
+        Start
+      </button>
       <input
         type='text'
-        placeholder='nick name here'
+        placeholder={userName + ' (nickName)'}
         onChange={(e) => {
           setUserName(e.target.value)
         }}
@@ -70,10 +88,17 @@ export function App() {
         ))}
       {currentRoom && (
         <>
+          <div>
+            <button>1</button>
+            <button>2</button>
+          </div>
           <h2>chat</h2>
-          {messages.map((mes, i) => {
-            console.log(mes)
-            return <p key={i}>{mes}</p>
+          {messages.map((messageData, i) => {
+            return (
+              <p key={i}>
+                {messageData.author}: {messageData.message}
+              </p>
+            )
           })}
         </>
       )}
@@ -90,16 +115,14 @@ export function App() {
             type: 'chatMessage',
             data: text,
             room: currentRoom,
+            author: userName,
           })
         }}
       >
         Send
       </button>
-      <Poker></Poker>
-      <button type="button" onClick={() => {
-        socket.sendState(text);
-      }}>Send</button> */}
       <Poker />
+      {/* <Poker></Poker> */}
       {/* <Pk /> */}
       {/* <Garage /> */}
       {/* <Game /> */}
