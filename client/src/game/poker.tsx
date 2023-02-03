@@ -331,7 +331,7 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions}/>
+      <Game players={players} actions={actions} cards={tableCards}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
@@ -386,7 +386,7 @@ export function Poker() {
           )
         })}
       </div> */}
-      
+
       {/* // перенесено в buttons-panel */}
       {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) && <ButtonsPanel actions={actions} />
       // <div>
