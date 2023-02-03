@@ -98,12 +98,14 @@ export class GameLogic {
     this.setLastPlayer(currentIndex);
     // this.onMessage({type: bet, data: {chipsToBet, currentBet: this.currentBet, playerId: this.currentPlayerIndex}});
     this.sendState(bet);
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-    this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+    this.setNextPlayer();
   }
 
   private call = () => {
     const chipsToBet = this.currentBet - this.players[this.currentPlayerIndex].bet;
+    // if () {
+      
+    // }
     this.players[this.currentPlayerIndex].bet += chipsToBet;
     this.players[this.currentPlayerIndex].chips -= chipsToBet;
     this.sendState('call');
@@ -131,18 +133,22 @@ export class GameLogic {
       this.setLastPlayer(currentIndex);
     }
     this.sendState('fold');
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-    this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+    this.setNextPlayer();
     console.log('fold');
   }
 
   private setNextRound() {
-    const sum = this.players.reduce((a, b) => a + b.bet, 0);
-    this.players = this.players.map(player => {
-      player.bet = 0;
-      return player;
-    });
-    this.pot = this.pot + sum;
+    // const sum = this.players.reduce((a, b) => a + b.bet, 0);
+    if (this.currentBet) {
+      const banks = split(this.players);
+      console.log(banks);
+      const sum = banks[0].bank;
+      this.pot = this.pot + sum;
+    }
+    // this.players = this.players.map(player => {
+    //   player.bet = 0;
+    //   return player;
+    // });
     const round = this.currentRound;
     if (round === Round.Preflop) this.currentRound = Round.Flop;
     if (round === Round.Flop) this.currentRound = Round.Turn;
@@ -181,8 +187,7 @@ export class GameLogic {
         bet: this.bet,
         check: () => {
           this.sendState('check');
-          this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-          this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+          this.setNextPlayer();
         },
       }
     } else if (this.currentPlayerIndex === this.lastInRoundIndex && this.currentBet === this.players[this.currentPlayerIndex].bet) {
@@ -206,8 +211,7 @@ export class GameLogic {
             if (this.currentRound === Round.Turn) console.log('River');
             this.setNextRound();
           } else {
-            this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-            this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+            this.setNextPlayer();
           }
         },
         raise: this.raise
@@ -217,8 +221,7 @@ export class GameLogic {
         fold: this.fold,
         call: () => {
           this.call();
-          this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-          this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+          this.setNextPlayer();
         },
         raise: this.raise
       }
@@ -226,8 +229,7 @@ export class GameLogic {
       return {
         check: () => {
           this.sendState('check');
-          this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-          this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+          this.setNextPlayer();
         },
         raise: this.raise
       }
@@ -236,23 +238,55 @@ export class GameLogic {
 
   sendState(move: string) {
     this.onMessage({type: 'state', data: {
-    move,
-    players: this.players,
-    pot: this.pot,
-    deck: this.deck,
-    tableCards: this.tableCards,
-    dealerIndex: this.dealerIndex,
-    initialIndex: this.initialIndex,
-    currentPlayerIndex: this.currentPlayerIndex,
-    minimalBet: this.minimalBet,
-    currentBet: this.currentBet,
-    lastInRoundIndex: this.lastInRoundIndex,
-    currentRound: this.currentRound,
-    myPlayerIndex: this.myPlayerIndex
-  }})
-}
+      move,
+      players: this.players,
+      pot: this.pot,
+      deck: this.deck,
+      tableCards: this.tableCards,
+      dealerIndex: this.dealerIndex,
+      initialIndex: this.initialIndex,
+      currentPlayerIndex: this.currentPlayerIndex,
+      minimalBet: this.minimalBet,
+      currentBet: this.currentBet,
+      lastInRoundIndex: this.lastInRoundIndex,
+      currentRound: this.currentRound,
+      myPlayerIndex: this.myPlayerIndex
+    }})
+  }
+
+  setNextPlayer() {
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    if (this.players[this.currentPlayerIndex].isFold) {
+      this.setNextPlayer();
+    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+  }
 
   destroy() {
 
   }
 }
+
+function split(players: IPlayer[]){
+  const res: {bank: number, players: IPlayer[]}[] = [];
+  const sorted = [...players].sort((a,b)=>a.bet-b.bet);
+  console.log(sorted);
+  sorted.forEach(it=>{
+      const pls: IPlayer[] = [];
+      const ib = it.bet;
+      const bank = sorted.reduce((ac, jt)=> {
+          console.log(it.bet, jt.bet)
+          const next = ac + ib;
+          if (jt.bet>0){
+              jt.bet -= ib;
+              pls.push(jt);
+          }
+          return next;
+      }, 0)
+      if (bank >0){
+          res.push({bank, players: pls});
+      }
+  })
+  return res;
+}
+
+// console.log(split([{id:1, bet:1}, {id:2, bet:10}, {id:3, bet:30}, {id:4, bet:100}, {id:5, bet:100} ]));
