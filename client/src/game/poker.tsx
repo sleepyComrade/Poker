@@ -52,6 +52,10 @@ const testPlayers: IPlayer[] = [
   {
     name: 'Player8',
     cards: []
+  },
+  {
+    name: 'Player9',
+    cards: []
   }
 ].map(player => ({...player, isFold: false, chips: 10000, bet: 0}));
 
@@ -331,7 +335,7 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[6]}/>
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>

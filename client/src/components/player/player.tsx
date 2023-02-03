@@ -52,6 +52,7 @@ export default function Player({ player, place }: PlayerProps) {
       }
     }
   }, [timerAnimation]);
+  console.log(name, place);
   return (
     <div className={`abs player tp${place}`}>
       <div className="player__timer">
