@@ -8,13 +8,14 @@
 }
 
 .card_base{
-    /* border: 1px solid; */
     backface-visibility: hidden;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;  
+    height: 100%; 
+    border: 2px solid #fff;
+    border-radius: 5px;  
 }
 
 .card_a{
@@ -30,8 +31,8 @@
 .card_img{
     width: 100%;
     height: 100%;
-    border: none;
-    border-radius: 10px;
+    /* border: none;
+    border-radius: 10px; */
     --type: 0;
     --value: 0;
     background-image: url("../../assets/card.png");

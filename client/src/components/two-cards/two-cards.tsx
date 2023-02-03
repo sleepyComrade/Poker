@@ -10,13 +10,13 @@ type TwoCardsProps = {
 export default function TwoCards({ cards }: TwoCardsProps) {
   return (
     <div className='card_stack'>
-      {cards.map(card => {
+      {cards.map((card, index) => {
         return (
-          <div className='hand_zero'>
+          <div className={`hand_zero ${index === 1 ? 'card_rotate' : ''}`} >
             <div className='card_wrapper'>
               <div className='card_base card_a card_img' style={{ '--value': card.value - 1, '--type': card.type - 1 }}>
               </div>
-              <div className='card_base card_b card_img' style={{ '--value': card.value - 1, '--type': card.type - 1 }}>
+              <div className='card_base card_b'>
               </div>
             </div>
           </div>
