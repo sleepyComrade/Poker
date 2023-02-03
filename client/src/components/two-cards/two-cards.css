@@ -3,13 +3,13 @@
 }
 
 .card_wrapper{
-    width: 50px;
-    height: 75px;
+    width: 60px;
+    height: 88px;
     position: relative;
     perspective: 1000px;
     --c-phase: 0;
     margin: 0px;   
-    transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));   
+    /* transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));    */
 }
 
 .card_a{
@@ -23,7 +23,7 @@
 
 .card_b{
     background-color: #ff0;
-    /* transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100))); */
+    transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));
     background-image: url('../../assets/card-back.png');
     background-size: cover;
     background-repeat: no-repeat;
