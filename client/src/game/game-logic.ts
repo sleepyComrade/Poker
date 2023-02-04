@@ -1,4 +1,4 @@
-import { IPlayer, ICard, Round, IGameMessage } from '../interfaces';
+import { IPlayer, ICard, Round, IGameMessage, IBank } from '../interfaces';
 import { getCombo} from './combinations';
 import { getWinner, values } from './combo2';
 
@@ -20,6 +20,7 @@ export class GameLogic {
   myPlayerIndex: number;
   onMessage: (message: IGameMessage) => void;
   currentRaise: number;
+  banks: IBank[];
 
   constructor(playerss: IPlayer[], originDeck: ICard[]) {
     this.players = playerss;
@@ -34,6 +35,7 @@ export class GameLogic {
     this.minimalBet = 100;
     this.currentBet = this.minimalBet;
     this.currentRaise = this.minimalBet;
+    this.banks = [];
     this.lastInRoundIndex = (this.initialIndex - 1) % this.players.length >= 0 ?
                             (this.initialIndex - 1) % this.players.length :
                             this.players.length - 1;
@@ -106,12 +108,12 @@ export class GameLogic {
         this.players[this.currentPlayerIndex].isAllIn = true;
       }
       const currentIndex = this.currentPlayerIndex;
-      if (bet === 'raise') {
-        this.currentBet *= 2;
-      } else {
+      // if (bet === 'raise') {
+        // this.currentBet += chipsToBet;
+      // } else {
         this.currentBet += chipsToBet;
         this.currentRaise = chipsToBet;
-      }
+      // }
       this.setLastPlayer(currentIndex);
       // this.onMessage({type: bet, data: {chipsToBet, currentBet: this.currentBet, playerId: this.currentPlayerIndex}});
       this.sendState(bet);
@@ -183,13 +185,12 @@ export class GameLogic {
   }
 
   private setNextRound() {
-    // const sum = this.players.reduce((a, b) => a + b.bet, 0);
     if (this.currentBet) {
       const sum = this.players.reduce((a, b) => a + b.bet, 0);
-      console.log('Sum' + ' ' + this.players.reduce((a, b) => a + b.bet, 0));
       const banks = split(this.players);
+      this.banks = mergeBanks(this.banks, banks);
       console.log(banks);
-      console.log('Sum' + ' ' + this.players.reduce((a, b) => a + b.bet, 0));
+      console.log(this.banks);
       // const sum = banks[0].bank;
       this.pot = this.pot + sum;
     }
@@ -217,6 +218,7 @@ export class GameLogic {
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     } else {
       console.log('Get Winner');
+      this.sendState('finish');
       const convert = (card: ICard) => values[card.value - 1] + String.fromCharCode(96 + card.type);
       const leftPlayers = this.players.filter(player => !player.isFold);
       const leftP = this.players.filter(player => !player.isFold).map(player => [convert(player.cards[0]), convert(player.cards[1])]);
@@ -339,7 +341,7 @@ export class GameLogic {
 }
 
 function split(players: IPlayer[]){
-  const res: {bank: number, players: IPlayer[]}[] = [];
+  const res: IBank[] = [];
   const sorted = [...players].sort((a,b)=>a.bet-b.bet);
   console.log(sorted);
   sorted.forEach(it=>{
@@ -348,13 +350,13 @@ function split(players: IPlayer[]){
       const bank = sorted.reduce((ac, jt)=> {
           // console.log(it.bet, jt.bet)
           const next = ac + ib;
-          if (jt.bet>0){
+          if (jt.bet > 0){
               jt.bet -= ib;
               pls.push(jt);
           }
           return next;
-      }, 0)
-      if (bank >0){
+      }, 0);
+      if (bank > 0){
           res.push({bank, players: pls});
       }
   })
@@ -363,13 +365,8 @@ function split(players: IPlayer[]){
 
 // console.log(split([{id:1, bet:1}, {id:2, bet:10}, {id:3, bet:30}, {id:4, bet:100}, {id:5, bet:100} ]));
 
-function mergeBanks(currentBanks: {
-  bank: number;
-  players: IPlayer[];
-}[], newBanks: {
-  bank: number;
-  players: IPlayer[];
-}[]){
+function mergeBanks(currentBanks: IBank[], newBanks: IBank[]){
+  if (newBanks.length === 0) return currentBanks;
   if (currentBanks.length){
       const item = currentBanks[currentBanks.length-1];
       if (item.players.length == newBanks[0].players.length){

@@ -31,3 +31,8 @@ export enum Round {
     call?: () => void;
     bet?: () => void; 
   }
+
+  export interface IBank {
+    bank: number;
+    players: IPlayer[];
+  }
