@@ -15,6 +15,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
   const [progress, setProgress] = useState(0);
+  
   useEffect(() => {
     // if(isCurrent) {
       setProgress(0);
