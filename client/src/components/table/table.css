@@ -23,14 +23,11 @@
     display: flex;
 }
 
-.table_card{
-    background-color: #f00;
+.table_card {  
     margin: 5px;
     width: var(--card-width);
     height: calc(var(--card-width) * 1.5);
-    border: 4px solid #fff;
-    border-radius: 5px;
-    background-image: url('../../assets/card-back.png');
+    border-radius: 5px;    
     background-size: cover;
     background-repeat: no-repeat;
     background-position: -2px center;
