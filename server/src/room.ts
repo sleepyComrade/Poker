@@ -59,7 +59,7 @@ export class Room implements IRoomServer {
         name: 'Player8',
         cards: [],
       },
-    ].map((player) => ({ ...player, isFold: false, chips: 10000, bet: 0 }))
+    ].map((player) => ({ ...player, isFold: false, chips: 10000, bet: 0, isAllIn: false }))
     this.gameLogic = new GameLogic(testPlayers, originDeck)
     this.gameLogic.onMessage = (message) => {
       console.log(message)
@@ -137,6 +137,10 @@ export class Room implements IRoomServer {
       })
       this.currentPlayerIndex = 0
     }, 10000)
+  }
+
+  handleMessage(data: any) {
+    console.log(data)
   }
 
   public startGame(): void {

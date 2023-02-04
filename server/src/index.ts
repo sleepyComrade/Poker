@@ -115,6 +115,10 @@ socket.on('request', (request) => {
 
         rooms[parsed.roomName].startGame()
       }
+
+      if (parsed.type === "poker") {
+        rooms[parsed.roomName].handleMessage(parsed.data)
+      }
     }
   })
 

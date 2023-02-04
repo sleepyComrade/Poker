@@ -9,6 +9,7 @@ import { testPlayers, originDeck } from './players-and-deck';
 import { RoomLogic } from './room-logic';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
+import {SocketLogic} from "./socket-logic"
 
 export function Poker() {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
@@ -32,7 +33,10 @@ export function Poker() {
     // roomLogic.onMessage = () => {
 
     // }
-    const game = new RoomLogic();
+    // const game = new RoomLogic();
+    const isMultiPlayer = true;
+    
+    const game = isMultiPlayer ? new SocketLogic() : new GameLogic(testPlayers, originDeck);
     game.onMessage = (message: IGameMessage) => {
       console.log(message);
       switch (message.type) {
