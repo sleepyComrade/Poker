@@ -1,6 +1,6 @@
 import { ICard } from '../interfaces'
 
-const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
+export const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
 const comboNames = ['nothing',
     'pair', 'two pair', 'three-of-a-kind', 'straight', 'flush', 'full house', 'four-of-a-kind', 'straight-flush'
 ];
@@ -9,7 +9,7 @@ function getRankValue(arr: Array<string>): number {
     // ac * N + arr[i]
     const N = values.length;
     return arr.reduce((ac, it, i) => {
-        console.log(ac);
+        // console.log(ac);
         return ac * N + values.indexOf(it) + 1;
     }, 0)
 }

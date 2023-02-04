@@ -7,9 +7,6 @@ import Game from '../game/game';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 
-// getCombo([]);
-// console.log(getWinner([['4d', '5d'], ['6b', '7c'], ['1b', '2c']], ['2a', '2b', '5c', '2d', '3c']));
-
 const originDeck: ICard[] = [];
 for (let i = 1; i <= 4; i++) {
   for (let j = 1; j <= 13; j++) {
@@ -57,7 +54,7 @@ const testPlayers: IPlayer[] = [
     name: 'Player9',
     cards: []
   }
-].map(player => ({...player, isFold: false, chips: 10000, bet: 0}));
+].map(player => ({...player, isFold: false, isAllIn: false, chips: 5000, bet: 0}));
 
 // const shuffleCards = (deck: ICard[]) => {
 //   for (let i = deck.length - 1; i > 0; i--) {

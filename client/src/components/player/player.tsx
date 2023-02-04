@@ -31,7 +31,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
       frame = requestAnimationFrame((time) => {
         if (lastTime) {
           const delta = time - lastTime;
-          console.log(delta);
+          // console.log(delta);
           setProgress(last => {
             let next = last + delta / 50;
             if (next > 100) {
@@ -62,7 +62,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
       }
     }
   }, [timerAnimation]);
-  console.log(name, place);
+  // console.log(name, place);
   return (
     <div className={`abs player tp${place}`}>
       <div className="player__timer">
@@ -77,7 +77,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
       <div className='player_nc_wrapper'>
         <div className='player_name'>{name}</div>
         <div className='player_cash'>23 456</div>
-        {isFold ? 'Player is out' : ''}
+        {isFold ? <span style={{ color: 'White', fontSize: 26 }}>'Player is out'</span> : ''}
         <div>{chips}</div>
       </div>
       <div>{bet > 0 && bet}</div>

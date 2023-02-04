@@ -30,7 +30,7 @@ export default function MainPlayer({ player, isCurrent }: PlayerProps) {
       frame = requestAnimationFrame((time) => {
         if (lastTime) {
           const delta = time - lastTime;
-          console.log(delta);
+          // console.log(delta);
           setProgress(last => {
             let next = last + delta / 50;
             if (next > 100) {

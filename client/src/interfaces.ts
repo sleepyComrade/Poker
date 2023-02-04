@@ -2,6 +2,7 @@ export interface IPlayer {
   name: string;
   cards: ICard[];
   isFold: boolean;
+  isAllIn: boolean;
   chips: number;
   bet: number;
 }
