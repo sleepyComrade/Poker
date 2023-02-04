@@ -33,7 +33,7 @@ export class GameLogic {
     this.currentPlayerIndex = this.initialIndex;
     this.minimalBet = 100;
     this.currentBet = this.minimalBet;
-    this.currentRaise = 0;
+    this.currentRaise = this.minimalBet;
     this.lastInRoundIndex = (this.initialIndex - 1) % this.players.length >= 0 ?
                             (this.initialIndex - 1) % this.players.length :
                             this.players.length - 1;
