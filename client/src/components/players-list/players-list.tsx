@@ -12,25 +12,18 @@ type PlayersListProps = {
   currentPlayer: IPlayer;
 }
 
-
-export default function PlayersList({ players, player, currentPlayer }: PlayersListProps) {
-  
+export default function PlayersList({ players, player, currentPlayer }: PlayersListProps) {  
   return (
-    <>
       <div className="players-list">
         <MainPlayer player={player}/>
         {players.filter(it => it != player).map((_player, index) => {
           if(_player == player) return;
 
-          return (
-          <>
-            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer}/>
-            {/* <BankCoin topValue={10} leftValue={100}/> */}
-          </>
+          return (        
+            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} />      
           )           
         }          
         )}
       </div>
-    </>
   )
 }

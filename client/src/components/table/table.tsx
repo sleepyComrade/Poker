@@ -62,9 +62,6 @@ export default function Table({cards, bets}: TableProps) {
                         <Card key={index} value={card.value - 1} type={card.type - 1}></Card>
                     </div>))}
                 </div>   
-                {/* <BankCoin topValue={0} leftValue={182} />   
-                <BankCoin topValue={30} leftValue={243}/>   
-                <BankCoin topValue={40} leftValue={165}/>   */}
                 {bets.map((it, index) => {
                     if(it == 0) return ;
                     return <BankCoin topValue={coinPositions[index].top} leftValue={coinPositions[index].left} />
