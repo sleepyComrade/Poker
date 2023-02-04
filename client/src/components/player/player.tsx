@@ -81,7 +81,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
         <div>{chips}</div>
       </div>
       <div>{bet > 0 && bet}</div>
-      <TwoCards cards={cards} />
+      <TwoCards cards={cards} isFold={isFold} />
     </div>
   )
 }
