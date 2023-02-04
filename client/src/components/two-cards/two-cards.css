@@ -3,11 +3,11 @@
 }
 
 .card_wrapper{
-    width: 60px;
-    height: 88px;
+    width: 40px;
+    height: 60px;
     position: relative;
     perspective: 1000px;
-    --c-phase: 0;
+    --c-phase: 100;
     margin: 0px;   
     /* transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));    */
 }

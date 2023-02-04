@@ -17,7 +17,7 @@ const bankPosition = {
 const coinPositions = [
     {
         top: 37,
-        left: 114,
+        left: 55,
     },
     {
         top: -26,
@@ -29,11 +29,11 @@ const coinPositions = [
     },
     {
         top: 52,
-        left: 494,
+        left: 550,
     },
     {
         top: 183,
-        left: 494,
+        left: 550,
     },  
     {
         top: 284,
@@ -49,7 +49,7 @@ const coinPositions = [
     },
     {
         top: 196,
-        left: 114,
+        left: 55,
     }
 ]
 
