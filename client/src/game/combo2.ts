@@ -9,7 +9,7 @@ function getRankValue(arr: Array<string>): number {
     // ac * N + arr[i]
     const N = values.length;
     return arr.reduce((ac, it, i) => {
-        console.log(ac);
+        // console.log(ac);
         return ac * N + values.indexOf(it) + 1;
     }, 0)
 }
