@@ -2,16 +2,12 @@ import React, { useEffect, useState } from 'react'
 import Socket from './components/socket'
 import { Poker } from './game/poker'
 import { CreateRoom } from './CreateRoom/CreateRoom'
-import { IRoom } from '../../interfaces/IRoom'
+// import { IRoom } from '../../interfaces/IRoom'
 import { IMessage } from './interfaces/IMessage'
-
-import { Pk } from './game/pk'
-import Garage from './game/g'
-import Game from './game/game'
 
 export function App() {
   const [messages, setMessages] = useState<IMessage[]>([])
-  const [rooms, setRooms] = useState<Record<string, IRoom>>({})
+  const [rooms, setRooms] = useState<string[]>([])
   const [text, setText] = useState('')
   const [userName, setUserName] = useState(Math.random().toString())
   const [socket, setSocket] = useState<Socket | null>(null)
@@ -28,6 +24,9 @@ export function App() {
     socket.onRoomCreate = (rooms) => {
       setRooms(rooms)
       console.log(rooms)
+    }
+    socket.onTurn = (playerTurn) => {
+      setPlayerTurn(playerTurn)
     }
     setSocket(socket)
     return () => socket.destroy()
@@ -68,29 +67,35 @@ export function App() {
       />
       <h2>Rooms</h2>
       {!currentRoom &&
-        Object.keys(rooms).map((roomKey, i) => (
+        rooms.map((room, i) => (
           <p
             key={i}
             onClick={() => {
               if (!userName) {
                 return
               }
-              setCurrentRoom(rooms[roomKey].name)
+              setCurrentRoom(room)
               socket.sendState({
                 type: 'connect',
-                roomName: rooms[roomKey].name,
+                roomName: rooms,
                 userName: userName,
               })
             }}
           >
-            room {rooms[roomKey].name}
+            room {room}
           </p>
         ))}
       {currentRoom && (
         <>
           <div>
-            <button>1</button>
-            <button>2</button>
+            <button>Button 1</button>
+            <button
+              onClick={() => {
+                socket.sendState({ type: 'answer', roomName: currentRoom })
+              }}
+            >
+              Button 2
+            </button>
           </div>
           <h2>chat</h2>
           {messages.map((messageData, i) => {
