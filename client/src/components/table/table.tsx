@@ -8,6 +8,7 @@ import { ICard } from "../../interfaces";
 type TableProps ={
     cards: Array<ICard>;
     bets: Array<number>;
+    bank: number;
 }
 const bankPosition = {
     top: 0,
@@ -85,7 +86,7 @@ function sumToCoinsMerged(sum: number, values: Array<number>, lastCoins: Array<{
 }
 
 const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1]
-export default function Table({cards, bets}: TableProps) {
+export default function Table({cards, bets, bank}: TableProps) {
     /*const betCoins:{count: number, coinValue: number}[][] = useMemo(()=>{
         return bets.map((it, i)=> sumToCoinsMerged(it, coinValues, betCoins?.[i]||[]));
     }, [bets.join(', ')]);*/
@@ -95,7 +96,14 @@ export default function Table({cards, bets}: TableProps) {
             return bets.map((it, i)=> sumToCoinsMerged(it, coinValues, last?.[i]||[]));
         })
     }, [bets.join(', ')]);
-    
+
+    const [bankCoin, setBankCoin] = useState<{count: number, coinValue: number}[]>([]);
+    useEffect(()=>{
+        setBankCoin(last=>{
+            return sumToCoinsMerged(bank, coinValues, last || []);
+        })
+    }, [bank]);
+
     return (
         <div className="table">            
             <div className='table__wrapper'>
@@ -105,6 +113,14 @@ export default function Table({cards, bets}: TableProps) {
                         <Card key={index} value={card.value - 1} type={card.type - 1}></Card>
                     </div>))}
                 </div> 
+                {bankCoin.filter(it=> it.count).reverse().map((it, index) => {
+                        const stk = new Array(it.count).fill(null).map((jt, jdex)=> {
+                            return <BankCoin key={[index, jdex, it.coinValue].join(',')} topValue={bankPosition.top- jdex*6} leftValue={bankPosition.left - index * 35} coinValue={it.coinValue} />
+                        })
+                        return stk;
+                    })}
+
+
                 {betCoins.map((pl, pli)=>{
                     return pl.filter(it=> it.count).reverse().map((it, index) => {
                         const stk = new Array(it.count).fill(null).map((jt, jdex)=> {

@@ -70,7 +70,7 @@ const testPlayers: IPlayer[] = [
 
 export function Poker() {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
-  const [Pot, setPot] = useState(0);
+  const [pot, setPot] = useState(0);
   // const [deck, setDeck] = useState<ICard[]>([]);
   const [tableCards, setTableCards] = useState<ICard[]>([]);
   const [dealerIndex, setDealerIndex] = useState(0);
@@ -336,12 +336,12 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex}/>
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
       <div>
-        Pot: {Pot}
+        Pot: {pot}
       </div>
       <div>
         {/* {deck.map(card => {

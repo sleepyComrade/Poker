@@ -13,9 +13,10 @@ type GameProps = {
     cards: Array<ICard>;
     player: IPlayer;
     currentPlayerIndex: number;
+    bank: number;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank }: GameProps) {
     const _players = [...players];
     const playerIndex = _players.indexOf(player) + 3;
     shift(_players, playerIndex);
@@ -25,7 +26,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
             <div className="game__wrapper">
                 <div className="game__center-container">
                     <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]}/>
-                    <Table cards={cards} bets={_players.map(it => it.bet)}/>
+                    <Table cards={cards} bets={_players.map(it => it.bet)} bank={bank} />
                 </div>
                 {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}
                 <ButtonsPanel actions={actions} />
