@@ -54,7 +54,7 @@ const testPlayers: IPlayer[] = [
     name: 'Player9',
     cards: []
   }
-].map(player => ({...player, isFold: false, isAllIn: false, chips: 10000, bet: 0}));
+].map(player => ({...player, isFold: false, isAllIn: false, chips: 5000, bet: 0}));
 
 // const shuffleCards = (deck: ICard[]) => {
 //   for (let i = deck.length - 1; i > 0; i--) {

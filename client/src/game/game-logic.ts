@@ -81,6 +81,10 @@ export class GameLogic {
   }
 
   private setLastPlayer(currentIndex: number) {
+    if (this.players.every(player => player.isFold || player.isAllIn)) {
+      this.setNextRound();
+      return;
+    }
     const getPreviousIndex = (cur: number) => (cur - 1) % this.players.length >= 0 ?
                                               (cur - 1) % this.players.length :
                                               this.players.length - 1;
@@ -111,7 +115,7 @@ export class GameLogic {
       this.setLastPlayer(currentIndex);
       // this.onMessage({type: bet, data: {chipsToBet, currentBet: this.currentBet, playerId: this.currentPlayerIndex}});
       this.sendState(bet);
-      if (this.players.every(player => player.isFold || player.chips === 0)) {
+      if (this.players.every(player => player.isFold || player.chips === 0 || player.isAllIn)) {
         this.setNextRound();
       } else {
         this.setNextPlayer();
@@ -136,7 +140,7 @@ export class GameLogic {
 
   private call = () => {
     const chipsToBet = this.currentBet - this.players[this.currentPlayerIndex].bet;
-    if (chipsToBet > this.players[this.currentPlayerIndex].chips) {
+    if (chipsToBet >= this.players[this.currentPlayerIndex].chips) {
       this.players[this.currentPlayerIndex].bet += this.players[this.currentPlayerIndex].chips;
       this.players[this.currentPlayerIndex].chips = 0;
       this.players[this.currentPlayerIndex].isAllIn = true;
@@ -271,7 +275,7 @@ export class GameLogic {
         fold: this.fold,
         call: () => {
           this.call();
-          if (this.players.every(player => player.isFold || player.bet === this.currentBet)) {
+          if (this.players.every(player => player.isFold || player.bet === this.currentBet || player.isAllIn)) {
             if (this.currentRound === Round.Preflop) console.log('Flop');
             if (this.currentRound === Round.Flop) console.log('Turn');
             if (this.currentRound === Round.Turn) console.log('River');
@@ -294,7 +298,7 @@ export class GameLogic {
     } else if (this.currentBet === this.players[this.currentPlayerIndex].bet) {
       return {
         check: () => {
-          this.sendState('check');
+          this.sendState('check1');
           this.setNextPlayer();
         },
         raise: this.raise
@@ -322,10 +326,10 @@ export class GameLogic {
 
   setNextPlayer() {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-    if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
-      this.setNextPlayer();
-    } else if (this.players.every(player => player.isFold || player.chips === 0)) {
+    if (this.players.every(player => player.isFold || player.chips === 0 || player.isAllIn)) {
       this.setNextRound();
+    } else if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
+      this.setNextPlayer();
     } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
   }
 
