@@ -245,11 +245,12 @@ export function Poker() {
           setPlayers(message.data.players);
           setPot(message.data.pot);
           setTableCards(message.data.tableCards);
-          setCurrentPlayerIndex(message.data.currentPlayerIndex);
+          // setCurrentPlayerIndex(message.data.currentPlayerIndex);
           break;}
         case 'ask':
         {
           const currentPlayerIndex = message.data.playerId;
+          setCurrentPlayerIndex(message.data.playerId);
           const setBotChoise = () => {
             const actions1 = message.data.actions;
             console.log(actions1);
