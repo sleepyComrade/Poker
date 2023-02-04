@@ -1,6 +1,6 @@
 import { ICard } from '../interfaces'
 
-const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
+export const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
 const comboNames = ['nothing',
     'pair', 'two pair', 'three-of-a-kind', 'straight', 'flush', 'full house', 'four-of-a-kind', 'straight-flush'
 ];

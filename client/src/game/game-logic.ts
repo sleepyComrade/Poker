@@ -1,6 +1,6 @@
 import { IPlayer, ICard, Round, IGameMessage } from '../interfaces';
 import { getCombo} from './combinations';
-import { getWinner } from './combo2';
+import { getWinner, values } from './combo2';
 
 // getCombo([]);
 // console.log(getWinner([['4d', '5d'], ['6b', '7c'], ['1b', '2c']], ['2a', '2b', '5c', '2d', '3c']));
@@ -217,7 +217,7 @@ export class GameLogic {
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     } else {
       console.log('Get Winner');
-      const convert = (card: ICard) => card.value + String.fromCharCode(96 + card.type);
+      const convert = (card: ICard) => values[card.value - 1] + String.fromCharCode(96 + card.type);
       const leftPlayers = this.players.filter(player => !player.isFold);
       const leftP = this.players.filter(player => !player.isFold).map(player => [convert(player.cards[0]), convert(player.cards[1])]);
       const tableC = this.tableCards.map(card => convert(card));
