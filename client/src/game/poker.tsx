@@ -335,7 +335,7 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]}/>
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex}/>
       <div>
         Current Player {currentPlayerIndex}
       </div>
