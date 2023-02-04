@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import TwoCards from '../two-cards/two-cards';
+import TwoCardsMainPlayer from '../two-cards--main-player/two-cards--main-player';
 import '../../style.css';
 import './main-player.css';
 import img from '../../assets/222.png';
@@ -80,7 +80,7 @@ export default function MainPlayer({ player, isCurrent }: PlayerProps) {
             </div>
 
             <div className='main-player__bank'>
-              <TwoCards cards={cards} isFold={isFold} />
+              <TwoCardsMainPlayer cards={cards} isFold={isFold} />
               {isFold ? 'Player is out' : ''}
               <div className="main-player__chips">{chips}</div>
               <div className="main-player__bet">{bet > 0 && bet}</div>

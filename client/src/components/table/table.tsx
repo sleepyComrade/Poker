@@ -40,7 +40,7 @@ const coinPositions = [
         left: 495,
     },
     {
-        top: 284,
+        top: 270,
         left: 268,
     },
     {

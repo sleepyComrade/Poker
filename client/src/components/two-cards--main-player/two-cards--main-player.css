@@ -1,0 +1,13 @@
+.card_wrapper--main-player{
+    width: 65px;
+    height: 94px;
+    position: relative;
+    perspective: 1000px;
+    --c-phase: 0;
+    margin: 0px;   
+}
+
+.hand_zero--main-player {
+    width: 75px;
+}
+
