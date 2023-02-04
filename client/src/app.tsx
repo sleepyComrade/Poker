@@ -126,7 +126,7 @@ export function App() {
       >
         Send
       </button>
-      <Poker />
+      <Poker socket={socket} currentRoom={currentRoom}/>
       {/* <Poker></Poker> */}
       {/* <Pk /> */}
       {/* <Garage /> */}

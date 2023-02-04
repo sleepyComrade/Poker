@@ -10,6 +10,7 @@ import { RoomLogic } from './room-logic';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 import {SocketLogic} from "./socket-logic"
+import Socket from "../components/socket";
 
 export function Poker() {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
@@ -34,9 +35,13 @@ export function Poker() {
 
     // }
     // const game = new RoomLogic();
+    if (!props.socket){
+      return () => {}
+    }
+
     const isMultiPlayer = true;
     
-    const game = isMultiPlayer ? new SocketLogic() : new GameLogic(testPlayers, originDeck);
+    const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers, originDeck);
     game.onMessage = (message: IGameMessage) => {
       console.log(message);
       switch (message.type) {
@@ -60,6 +65,14 @@ export function Poker() {
             // setTimeout(() => {
             //   setBotChoise(message);
             // }, 1000);
+              if (!isMultiPlayer){
+                setTimeout(() => {
+                  setBotChoise();
+                }, 1000);
+              }
+            // } else {
+              // setCurrentPlayerIndex(last => (last + 1) % players.length);
+            // }
           } 
            else {
             setActions(message.data.actions);
@@ -85,7 +98,8 @@ export function Poker() {
     return () => {
       game.destroy();
     }
-  }, [])
+    // setGame(game);
+  }, [props.socket, props.currentRoom])
 
   return (
     <div>

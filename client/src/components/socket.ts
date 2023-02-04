@@ -8,14 +8,17 @@ export default class Socket {
   onMessage: (message: IMessage) => void
   onRoomCreate: (rooms: string[]) => void
   onTurn: (isPlayerTurn: boolean) => void
-  socketLogic: SocketLogic
+
+  onPokerResponse: (res:any) =>void;
+  //socketLogic: SocketLogic
 
   constructor() {
     this.webSocket = new WebSocket('ws://localhost:4002/')
-    this.socketLogic = new SocketLogic()
+    /*this.socketLogic = new SocketLogic()
     this.socketLogic.onResponse = (msg) => {
-      this.sendState({type: "poker", data: msg, roomName:})
-    }
+      this.onPokerResponse({type: "poker", data: msg});
+      //this.sendState({type: "poker", data: msg, roomName:})
+    }*/
     this.webSocket.onmessage = (message) => {
       console.log(message)
       const parsedData = JSON.parse(message.data)
@@ -35,7 +38,8 @@ export default class Socket {
         this.onTurn(parsedData.isPlayerTurn)
       }
       if (parsedData.type === "pocker") {
-        this.socketLogic.handleMessage(parsedData.data)
+        //this.onPokerResponse(msg);
+        this.onPokerResponse(parsedData.data)
       }
     }
     this.webSocket.onopen = () => {
