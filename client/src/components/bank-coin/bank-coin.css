@@ -11,6 +11,11 @@
     border-radius: 100%;
     transform: scaleY(0.6);
     box-shadow: #f00 0px 10px 0px, #000 0px 10px 0px, #000 0px 10px 7px;
+    transition-duration: 400ms;
+}
+
+.bank-coin_init{
+    transform: scale(0, 0);
 }
 
 .bank-coin__inner {

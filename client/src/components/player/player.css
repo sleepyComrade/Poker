@@ -93,12 +93,12 @@
     left: calc((100% - var(--player-width)) / 1.1);
 }
 
-.tp8{
+.tp7{
     top: calc((100% - 40px) / 1);
     left: calc((100% - var(--player-width)) / 17);
 }
 
-.tp7{
+.tp8{
     top: 53%;
     left: -8%;
 }

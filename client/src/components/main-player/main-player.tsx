@@ -7,14 +7,22 @@ import { IPlayer } from "../../interfaces";
 
 type PlayerProps = {
   player: IPlayer;
+  isCurrent: boolean;
 }
 
-export default function MainPlayer({ player }: PlayerProps) {
+export default function MainPlayer({ player, isCurrent }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
-
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
   const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // if(isCurrent) {
+      setProgress(0);
+      setTimerAnimation(isCurrent);
+    // } 
+  }, [isCurrent])
+
   useEffect(() => {
     let pr = 0;
     let frame: number = null;
@@ -59,9 +67,9 @@ export default function MainPlayer({ player }: PlayerProps) {
       <img className="main-player__chair" src={img} alt="" />
       <div className={`abs player1 tp9`}>
         <div className="player__timer">
-          <button style={{ width: 100, height: 20 }} onClick={() => {
+          {/* <button style={{ width: 100, height: 20 }} onClick={() => {
             setTimerAnimation(last => !last);
-          }}>Start timer</button>
+          }}>Start timer</button> */}
           <div ref={timer} className='main-player_time' style={{ '--progress': progress }}>
             <div className='main-player_ava'>YOU</div>
           </div>
@@ -74,9 +82,8 @@ export default function MainPlayer({ player }: PlayerProps) {
           <div>{chips}</div>
         </div>
         <div>{bet > 0 && bet}</div>
-        <TwoCards cards={cards} />
+        <TwoCards cards={cards} isFold={isFold} />
       </div>
     </div>
-
   )
 }

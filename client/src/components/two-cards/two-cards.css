@@ -34,6 +34,11 @@
     width: 30px;
 }
 
+.hand_fold {
+    transform: scale(0, 0);
+    transition-duration: 1s;
+}
+
 .card_rotate {
     transform: rotate(12deg);
 }
