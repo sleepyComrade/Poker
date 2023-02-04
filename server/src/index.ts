@@ -56,14 +56,9 @@ socket.on('request', (request) => {
           return
         }
         rooms[parsed.roomName] = new Room(parsed.roomName)
-        const roomsToSend = structuredClone(rooms)
-        Object.keys(roomsToSend).forEach((key) => {
-          delete roomsToSend[key].startGame
-          delete roomsToSend[key].players
-        })
         connections.forEach((connection) => {
           connection.sendUTF(
-            JSON.stringify({ type: 'createRoom', rooms: roomsToSend })
+            JSON.stringify({ type: 'createRoom', rooms: Object.keys(rooms) })
           )
         })
         console.log('create Room; rooms now:', rooms)
@@ -78,7 +73,6 @@ socket.on('request', (request) => {
 
         console.log('on message', rooms[parsed.room])
         Object.keys(rooms[parsed.room].players).forEach((key) => {
-          console.log('Player to send', key)
           rooms[parsed.room].players[key].socketConnection.sendUTF(
             JSON.stringify({
               type: 'chatMessage',

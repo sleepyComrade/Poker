@@ -5,7 +5,8 @@ export default class Socket {
   webSocket: WebSocket
 
   onMessage: (message: IMessage) => void
-  onRoomCreate: (rooms: Record<string, IRoom>) => void
+  onRoomCreate: (rooms: string[]) => void
+  onTurn: (isPlayerTurn: boolean) => void
 
   constructor() {
     this.webSocket = new WebSocket('ws://localhost:4002/')
@@ -23,6 +24,9 @@ export default class Socket {
         console.log('room create')
         console.log('room name', parsedData.roomName)
         this.onRoomCreate(parsedData.rooms)
+      }
+      if (parsedData.type === 'turn') {
+        this.onTurn(parsedData.isPlayerTurn)
       }
     }
     this.webSocket.onopen = () => {
