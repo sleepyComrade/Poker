@@ -8,9 +8,10 @@ import { IPlayer } from "../../interfaces";
 type PlayerProps = {
   player: IPlayer;
   isCurrent: boolean;
+  isWinner: boolean;
 }
 
-export default function MainPlayer({ player, isCurrent }: PlayerProps) {
+export default function MainPlayer({ player, isCurrent, isWinner }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -66,7 +67,7 @@ export default function MainPlayer({ player, isCurrent }: PlayerProps) {
     <div className="main-player">
       <img className="main-player__chair" src={img} alt="" />
 
-      <div className={`abs player1 tp9`}>
+      <div className={`abs player1 tp9 ${isWinner ? 'player--winner' : ''}`}>
         <div className="main-player__wrapper">
           <div className='main-player__name'>{name}</div>
           <div className="main-player__info">

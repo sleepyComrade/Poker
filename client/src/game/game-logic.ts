@@ -258,6 +258,7 @@ export class GameLogic {
       console.log(`${leftPlayers[winIndex].name} won this game with ${wins[winIndex].h.type}!`);
       console.log(leftP);
       console.log(tableC);
+      this.onMessage({type: 'winner', data: {winIndex: winIndex}});
     }
   }
 

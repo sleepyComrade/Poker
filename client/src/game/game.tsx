@@ -14,7 +14,7 @@ type GameProps = {
     player: IPlayer;
     currentPlayerIndex: number;
     bank: number;
-    winInfo: {} | null;
+    winInfo: {winIndex: number} | null;
 }
 
 export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo }: GameProps) {
@@ -26,7 +26,8 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         <div className="game">
             <div className="game__wrapper">
                 <div className="game__center-container">
-                    <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]} isOpened={winInfo != null}/>
+                    <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]} 
+                        isOpened={winInfo != null} winner={players[winInfo?.winIndex]}/>
                     <Table cards={cards} bets={_players.map(it => it.bet)} bank={bank} />
                 </div>
                 {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}

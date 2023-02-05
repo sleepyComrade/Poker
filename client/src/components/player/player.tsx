@@ -8,9 +8,11 @@ type PlayerProps = {
   player: IPlayer;
   place: number;
   isCurrent: boolean;
+  isOpened: boolean;
+  isWinner: boolean;
 }
 
-export default function Player({ player, place, isCurrent }: PlayerProps) {
+export default function Player({ player, place, isCurrent, isOpened, isWinner }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -64,7 +66,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
   }, [timerAnimation]);
   // console.log(name, place);
   return (
-    <div className={`abs player tp${place}`}>
+    <div className={`abs player tp${place} ${isWinner ? 'player--winner' : ''}`}>
       <div className="player__wrapper">
         <div className='player__name'>{name}</div>
         <div className="player__info">

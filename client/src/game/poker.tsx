@@ -276,7 +276,12 @@ export function Poker() {
             setActions(message.data.actions);
           }
         break;}
-      
+        case 'winner':
+          {
+            setWinInfo(message.data);
+            
+            break;
+          }
         default:
           break;
       }
