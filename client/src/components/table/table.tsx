@@ -86,7 +86,7 @@ function sumToCoinsMerged(sum: number, values: Array<number>, lastCoins: Array<{
 }
 
 const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
-const colors = ['red', 'blue', 'green', 'orange', '#dd0fcc', '#0fdd98', '#bb0fdd', '#0fc5dd ', '#86e08a', '#f04d55'];
+const colors = ['#960dcc', '#42c008', '#dd0f98', '#220ddd',  '#ff8800', '#f00', '#05b2c9', '#013a01', '#ddcf0f', '#f04d55'];
 
     
 export default function Table({cards, bets, bank}: TableProps) {
