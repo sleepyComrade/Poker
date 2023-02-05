@@ -5,61 +5,10 @@ import { getWinner } from './combo2';
 import { GameLogic } from './game-logic';
 import Game from '../game/game';
 import { setBotChoise } from './bot-logic';
+import { testPlayers, originDeck } from './players-and-deck';
+import { RoomLogic } from './room-logic';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
-
-const originDeck: ICard[] = [];
-for (let i = 1; i <= 4; i++) {
-  for (let j = 1; j <= 13; j++) {
-    originDeck.push({
-      type: i,
-      value: j
-    });
-  }
-}
-
-const testPlayers = () => {
-  const testPlayers: IPlayer[] = [
-    {
-      name: 'Player1',
-      cards: []
-    },
-    {
-      name: 'Player2',
-      cards: []
-    },
-    {
-      name: 'Player3',
-      cards: []
-    },
-    {
-      name: 'Player4',
-      cards: []
-    },
-    {
-      name: 'Player5',
-      cards: []
-    },
-    {
-      name: 'Player6',
-      cards: []
-    },
-    {
-      name: 'Player7',
-      cards: []
-    },
-    {
-      name: 'Player8',
-      cards: []
-    },
-    {
-      name: 'Player9',
-      cards: []
-    }
-  ].map(player => ({...player, isFold: false, isAllIn: false, chips: 5000, bet: 0}));
-  return testPlayers;
-}
-
 
 export function Poker() {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
@@ -79,12 +28,16 @@ export function Poker() {
   const [actions, setActions] = useState<IActions>({});
 
   useEffect(() => {
-    const game = new GameLogic(testPlayers(), originDeck);
+    // const roomLogic = new RoomLogic();
+    // roomLogic.onMessage = () => {
+
+    // }
+    const game = new RoomLogic();
     game.onMessage = (message: IGameMessage) => {
       console.log(message);
       switch (message.type) {
         case 'state':
-        {  
+        {
           setPlayers(message.data.players);
           setPot(message.data.pot);
           setTableCards(message.data.tableCards);
@@ -100,9 +53,9 @@ export function Poker() {
           if (withBots && currentPlayerIndex !== myPlayerIndex) {
             setActions({});
             // if (!players[currentPlayerIndex].isFold) {
-            setTimeout(() => {
-              setBotChoise(message);
-            }, 1000);
+            // setTimeout(() => {
+            //   setBotChoise(message);
+            // }, 1000);
           } 
            else {
             setActions(message.data.actions);
@@ -111,9 +64,16 @@ export function Poker() {
         case 'winner':
           {
             setWinInfo(message.data);
-
             break;
           }
+        case 'start': {
+          // setRound(last => last + 1);
+          setTableCards([]);
+          setPot(0);
+          setWinInfo(null);
+          setPlayers(testPlayers);
+          setDealerIndex(last => (last + 1) % testPlayers.length);
+        }
         default:
           break;
       }
@@ -121,7 +81,7 @@ export function Poker() {
     return () => {
       game.destroy();
     }
-  }, [round])
+  }, [])
 
   return (
     <div>
