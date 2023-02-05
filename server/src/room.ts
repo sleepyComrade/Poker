@@ -3,7 +3,7 @@ import { Player } from './player'
 import { GameLogic } from '../../client/src/game/game-logic'
 import { ICard, IPlayer } from '../../client/src/interfaces'
 
-export class Room implements IRoomServer {
+export class Room {
   players: Record<string, Player>
   messages: string[]
   isStarted: boolean

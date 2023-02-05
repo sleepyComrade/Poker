@@ -12,9 +12,5 @@ export class Player {
   constructor(socketConnection: connection, nickname: string) {
     this.socketConnection = socketConnection
     this.nickname = nickname
-    this.cards = []
-    this.isFold = false
-    this.chips = 0
-    this.bet = 0
   }
 }

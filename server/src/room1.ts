@@ -2,6 +2,7 @@ import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
 import { GameLogic } from '../../client/src/game/game-logic'
 import { ICard, IPlayer } from '../../client/src/interfaces'
+import {connection} from "websocket"
 
 export class Room implements IRoomServer {
   players: Record<string, Player>
@@ -31,54 +32,65 @@ export class Room implements IRoomServer {
       }
     }
 
-    const testPlayers: IPlayer[] = [
-      {
-        name: 'Player1',
-        cards: [],
-      },
-      {
-        name: 'Player2',
-        cards: [],
-      },
-      {
-        name: 'Player3',
-        cards: [],
-      },
-      {
-        name: 'Player4',
-        cards: [],
-      },
-      {
-        name: 'Player5',
-        cards: [],
-      },
-      {
-        name: 'Player6',
-        cards: [],
-      },
-      {
-        name: 'Player7',
-        cards: [],
-      },
-      {
-        name: 'Player8',
-        cards: [],
-      },
-    ].map((player) => ({ ...player, isFold: false, chips: 10000, bet: 0, isAllIn: false }))
-    this.gameLogic = new GameLogic(testPlayers, originDeck)
+    // const testPlayers: IPlayer[] = [
+    //   {
+    //     name: 'Player1',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player2',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player3',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player4',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player5',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player6',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player7',
+    //     cards: [],
+    //   },
+    //   {
+    //     name: 'Player8',
+    //     cards: [],
+    //   },
+    // ].map((player) => ({ ...player, isFold: false, chips: 10000, bet: 0, isAllIn: false }))
+
+    this.gameLogic = new GameLogic(Object.values(this.players).map(player => {
+      return {
+        name: player.nickname,
+        bet: 0,
+        chips: 10000,
+        isFold: false,
+        isAllIn: false,  
+        cards: []
+      }
+    }), originDeck)
+
     this.gameLogic.onMessage = (message) => {
       console.log(message)
       switch (message.type) {
         case 'state': {
-          const playersKeys = Object.keys(this.players)
-          this.players[playersKeys[this.currentPlayerIndex]].socketConnection.send(
+          // const playersKeys = Object.keys(this.players)
+          Object.values(this.players).forEach(player => player.socketConnection.send(
             JSON.stringify({
               type: 'pocker',
               data: {
                 ...message
               }
             })
-          )
+          ))
           // setPlayers(message.data.players);
           // setPot(message.data.pot);
           // setTableCards(message.data.tableCards);
@@ -117,7 +129,7 @@ export class Room implements IRoomServer {
             // setActions(message.data.actions);
             // send to client
             const playersKeys = Object.keys(this.players)
-            this.players[playersKeys[this.currentPlayerIndex]].socketConnection.send(
+            Object.values(this.players).forEach((player) => player.socketConnection.send(
               JSON.stringify({
                 type: 'pocker',
                 data: {
@@ -128,7 +140,7 @@ export class Room implements IRoomServer {
                   }
                 }
               })
-            )
+            ))
          // }
           //break
         }
@@ -179,5 +191,14 @@ export class Room implements IRoomServer {
     this.startPoker();
     //this.turnChange()
     this.isStarted = true
+  }
+
+  handleDisconnect(connection: connection) {
+    Object.keys(this.players).forEach(playerKey => {
+      if (this.players[playerKey].socketConnection === connection) {
+        delete this.players[playerKey]
+      }
+    })
+    console.log(this.players)
   }
 }

@@ -1,6 +1,6 @@
 import * as webSocket from 'websocket'
 import { connection } from 'websocket'
-import { Room } from './room'
+import { Room } from './room1'
 import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
@@ -124,6 +124,9 @@ socket.on('request', (request) => {
 
   connection.on('close', (reasonCode, description) => {
     connections.splice(connections.indexOf(connection), 1)
+    Object.values(rooms).forEach(room => {
+      room.handleDisconnect(connection)
+    })
     console.log(
       new Date() + ' Peer ' + connection.remoteAddress + ' disconnected.'
     )
