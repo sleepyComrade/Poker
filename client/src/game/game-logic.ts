@@ -201,6 +201,7 @@ export class GameLogic {
     this.players[this.currentPlayerIndex].isFold = true;
     if (this.players.filter(el => !el.isFold).length === 1) {
       console.log('Start next game');
+      this.onMessage({type: 'winner', data: {winIndex: this.players.findIndex(player => !player.isFold)}});
       return;
     }
     if (this.currentPlayerIndex === this.lastInRoundIndex) {
@@ -258,6 +259,8 @@ export class GameLogic {
       console.log(`${leftPlayers[winIndex].name} won this game with ${wins[winIndex].h.type}!`);
       console.log(leftP);
       console.log(tableC);
+      const playerIndex = this.players.findIndex(player => player.name == leftPlayers[winIndex].name);
+      this.onMessage({type: 'winner', data: {winIndex: playerIndex}});
     }
   }
 

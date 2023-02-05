@@ -17,7 +17,7 @@ const bankPosition = {
 const coinPositions = [
     {
         top: 37,
-        left: 114,
+        left: 55,
     },
     {
         top: -26,
@@ -29,18 +29,18 @@ const coinPositions = [
     },
     {
         top: 52,
-        left: 494,
+        left: 550,
     },
     {
         top: 183,
-        left: 494,
+        left: 550,
     },  
     {
         top: 284,
         left: 495,
     },
     {
-        top: 284,
+        top: 270,
         left: 268,
     },
     {
@@ -49,7 +49,7 @@ const coinPositions = [
     },
     {
         top: 196,
-        left: 114,
+        left: 55,
     }
 ]
 
@@ -85,7 +85,10 @@ function sumToCoinsMerged(sum: number, values: Array<number>, lastCoins: Array<{
     return lastCoins;
 }
 
-const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1]
+const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
+const colors = ['#960dcc', '#42c008', '#dd0f98', '#220ddd',  '#ff8800', '#f00', '#05b2c9', '#013a01', '#ddcf0f', '#f04d55'];
+
+    
 export default function Table({cards, bets, bank}: TableProps) {
     /*const betCoins:{count: number, coinValue: number}[][] = useMemo(()=>{
         return bets.map((it, i)=> sumToCoinsMerged(it, coinValues, betCoins?.[i]||[]));
@@ -109,13 +112,14 @@ export default function Table({cards, bets, bank}: TableProps) {
             <div className='table__wrapper'>
                 <div className="table_stack">
                     {cards.map((card, index) => (
-                    <div className={`table_card ani_card${index}`}>
-                        <Card key={index} value={card.value} type={card.type - 1}></Card>
+                    <div className={`table_card ani_card${index}`} >
+                        <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
                     </div>))}
                 </div> 
                 {bankCoin.filter(it=> it.count).reverse().map((it, index) => {
                         const stk = new Array(it.count).fill(null).map((jt, jdex)=> {
-                            return <BankCoin key={[index, jdex, it.coinValue].join(',')} topValue={bankPosition.top- jdex*6} leftValue={bankPosition.left - index * 35} coinValue={it.coinValue} />
+                            return <BankCoin color={colors[coinValues.indexOf(it.coinValue)]}
+                            key={[index, jdex, it.coinValue].join(',')} topValue={bankPosition.top- jdex*6} leftValue={bankPosition.left - index * 35} coinValue={it.coinValue} />
                         })
                         return stk;
                     })}
@@ -124,7 +128,8 @@ export default function Table({cards, bets, bank}: TableProps) {
                 {betCoins.map((pl, pli)=>{
                     return pl.filter(it=> it.count).reverse().map((it, index) => {
                         const stk = new Array(it.count).fill(null).map((jt, jdex)=> {
-                            return <BankCoin key={[index, jdex, it.coinValue].join(',')} topValue={coinPositions[pli].top- jdex*6} leftValue={coinPositions[pli].left - index * 35} coinValue={it.coinValue} />
+                            return <BankCoin color={colors[coinValues.indexOf(it.coinValue)]}
+                            key={[index, jdex, it.coinValue].join(',')} topValue={coinPositions[pli].top- jdex*6} leftValue={coinPositions[pli].left - index * 35} coinValue={it.coinValue} />
                         })
                         return stk;
                     })

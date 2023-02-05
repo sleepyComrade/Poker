@@ -6,6 +6,7 @@
     background-color: #fff5;
     display: flex;
     flex-direction: row;
+    justify-content: center;
     align-items: flex-start;
     width: var(--player-width);
     padding: 5px;
@@ -13,14 +14,41 @@
     z-index: 1000;
 }
 
+.player--winner {
+    border: 3px solid red;
+}
+
+.player__wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.player__info {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.player__name {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+}
+
 .player__timer {
+    margin-top: 10px;
     display: flex;
     flex-direction: column-reverse;
     justify-content: flex-start;
     align-items: center;
 }
 
-.player_ava{
+.player__ava{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -32,73 +60,79 @@
     border-radius: 100%;
 }
 
-.player_nc_wrapper{
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.player_name{
-    background-color: #0000;
-    font-size: 14px;
-}
-
-.player_cash{
-    background-color: #0000;
-    font-size: 24px;
-}
-
-.player_time{
+.player__time{
     background-color: #ff0;
     padding: 5px;
     border: 1px solid #000;
-    margin-right: 10px;
     border-radius: 100%;
     --progress: 30;
     background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%))
 }
 
-.tp1{
-    top: 18%;
-    left: -8%;
+.player__bank{
+    margin-top: 5px;
+    padding: 5px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.abs{
-    position: absolute;
+.player__chips {
+    font-size: 16px;
+    color: #fff;
+}
+
+.player__bet {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff0;
+}
+
+.tp1{
+    top: 12%;
+    left: -8%;   
 }
 
 .tp2{
-    top: -12%;
-    left: calc((100% - var(--player-width)) / 4);
+    top: -20%;
+    left: calc((100% - var(--player-width)) / 3.5);
 }
 
 .tp3{
-    top: -12%;
-    left: calc((100% - var(--player-width)) / 1.3);
+    top: -20%;
+    left: calc((100% - var(--player-width)) / 1.4);
 }
 
 .tp4{
-    top: 18%;
-    left:  calc((100% - var(--player-width)) / 0.97);
+    top: 12%;
+    left:  calc((100% - var(--player-width)) / 0.9);
 }
 
 .tp5{
-    top: 53%;
-    left: calc((100% - var(--player-width)) / 0.97);
+    top: 48%;
+    left: calc((100% - var(--player-width)) / 0.9);
 }
 
 .tp6{
-    top: calc((100% - 40px) / 1);
+    top: calc((100% - 40px) / 1.1);
     left: calc((100% - var(--player-width)) / 1.1);
 }
 
 .tp7{
-    top: calc((100% - 40px) / 1);
-    left: calc((100% - var(--player-width)) / 17);
+    top: calc((100% - 40px) / 1.1);
+    left: calc((100% - var(--player-width)) / 10);
 }
 
 .tp8{
-    top: 53%;
+    top: 48%;
     left: -8%;
+}
+
+.tp3 .player__info,
+.tp4 .player__info,
+.tp5 .player__info,
+.tp6 .player__info {
+    flex-direction: row-reverse;
 }

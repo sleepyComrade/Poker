@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import TwoCards from '../two-cards/two-cards';
+import TwoCardsMainPlayer from '../two-cards--main-player/two-cards--main-player';
 import '../../style.css';
 import './main-player.css';
 import img from '../../assets/222.png';
@@ -8,9 +8,10 @@ import { IPlayer } from "../../interfaces";
 type PlayerProps = {
   player: IPlayer;
   isCurrent: boolean;
+  isWinner: boolean;
 }
 
-export default function MainPlayer({ player, isCurrent }: PlayerProps) {
+export default function MainPlayer({ player, isCurrent, isWinner }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -18,8 +19,8 @@ export default function MainPlayer({ player, isCurrent }: PlayerProps) {
 
   useEffect(() => {
     // if(isCurrent) {
-      setProgress(0);
-      setTimerAnimation(isCurrent);
+    setProgress(0);
+    setTimerAnimation(isCurrent);
     // } 
   }, [isCurrent])
 
@@ -65,24 +66,28 @@ export default function MainPlayer({ player, isCurrent }: PlayerProps) {
   return (
     <div className="main-player">
       <img className="main-player__chair" src={img} alt="" />
-      <div className={`abs player1 tp9`}>
-        <div className="player__timer">
-          {/* <button style={{ width: 100, height: 20 }} onClick={() => {
+
+      <div className={`abs player1 tp9 ${isWinner ? 'player--winner' : ''}`}>
+        <div className="main-player__wrapper">
+          <div className='main-player__name'>{name}</div>
+          <div className="main-player__info">
+            <div className="main-player__timer">
+              {/* <button style={{ width: 100, height: 20 }} onClick={() => {
             setTimerAnimation(last => !last);
           }}>Start timer</button> */}
-          <div ref={timer} className='main-player_time' style={{ '--progress': progress }}>
-            <div className='main-player_ava'>YOU</div>
+              <div ref={timer} className='main-player__time' style={{ '--progress': progress }}>
+                <div className='main-player__ava'>YOU</div>
+              </div>
+            </div>
+
+            <div className='main-player__bank'>
+              <TwoCardsMainPlayer cards={cards} isFold={isFold} />
+              {isFold ? 'Player is out' : ''}
+              <div className="main-player__chips">{chips}</div>
+              <div className="main-player__bet">{bet > 0 && bet}</div>
+            </div>
           </div>
         </div>
-
-        <div className='main-player_nc_wrapper'>
-          <div className='main-player_name'>{name}</div>
-          <div className='main-player_cash'>23 456</div>
-          {isFold ? 'Player is out' : ''}
-          <div>{chips}</div>
-        </div>
-        <div>{bet > 0 && bet}</div>
-        <TwoCards cards={cards} isFold={isFold} />
       </div>
     </div>
   )

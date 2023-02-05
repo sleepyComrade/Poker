@@ -5,6 +5,7 @@ import './card.css';
 type CardProps = {
     value: number;
     type: number;
+    selected: boolean;
 }
 
 export default function Card({ value, type }: CardProps) {
@@ -12,7 +13,7 @@ export default function Card({ value, type }: CardProps) {
         <div className='card' style={{ width: "100%", height: "100%" }}>
             <div className='card_base card_a card_img' style={{ '--value': value, '--type': type }}>
             </div>
-            <div className='card_base card_b card_img' style={{ '--value': 2, '--type': 4 }}>
+            <div className='card_base card_b' style={{ '--value': 2, '--type': 4 }}>
             </div>
         </div>
     )

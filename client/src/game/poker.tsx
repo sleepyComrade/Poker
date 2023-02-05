@@ -17,53 +17,48 @@ for (let i = 1; i <= 4; i++) {
   }
 }
 
-const testPlayers: IPlayer[] = [
-  {
-    name: 'Player1',
-    cards: []
-  },
-  {
-    name: 'Player2',
-    cards: []
-  },
-  {
-    name: 'Player3',
-    cards: []
-  },
-  {
-    name: 'Player4',
-    cards: []
-  },
-  {
-    name: 'Player5',
-    cards: []
-  },
-  {
-    name: 'Player6',
-    cards: []
-  },
-  {
-    name: 'Player7',
-    cards: []
-  },
-  {
-    name: 'Player8',
-    cards: []
-  },
-  {
-    name: 'Player9',
-    cards: []
-  }
-].map(player => ({...player, isFold: false, isAllIn: false, chips: Math.floor(Math.random() * 1000 + 1000), bet: 0}));
+const testPlayers = () => {
+  const testPlayers: IPlayer[] = [
+    {
+      name: 'Player1',
+      cards: []
+    },
+    {
+      name: 'Player2',
+      cards: []
+    },
+    {
+      name: 'Player3',
+      cards: []
+    },
+    {
+      name: 'Player4',
+      cards: []
+    },
+    {
+      name: 'Player5',
+      cards: []
+    },
+    {
+      name: 'Player6',
+      cards: []
+    },
+    {
+      name: 'Player7',
+      cards: []
+    },
+    {
+      name: 'Player8',
+      cards: []
+    },
+    {
+      name: 'Player9',
+      cards: []
+    }
+  ].map(player => ({...player, isFold: false, isAllIn: false, chips: 5000, bet: 0}));
+  return testPlayers;
+}
 
-// const shuffleCards = (deck: ICard[]) => {
-//   for (let i = deck.length - 1; i > 0; i--) {
-//     let j = Math.floor(Math.random() * i);
-//     let temp = deck[i];
-//     deck[i] = deck[j];
-//     deck[j] = temp;
-//   }
-// }
 
 export function Poker() {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
@@ -73,6 +68,8 @@ export function Poker() {
   const [dealerIndex, setDealerIndex] = useState(0);
   const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 3) % players.length;
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(initialIndex);
+  const [winInfo, setWinInfo] = useState(null);
+  const [round, setRound] = useState(0);
   // const [minimalBet, setMinimalBet] = useState(100);
   // const [currentBet, setCurrentBet] = useState(minimalBet);
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
@@ -233,7 +230,7 @@ export function Poker() {
   const [actions, setActions] = useState<IActions>({});
 
   useEffect(() => {
-    const game = new GameLogic(testPlayers, originDeck);
+    const game = new GameLogic(testPlayers(), originDeck);
     game.onMessage = (message: IGameMessage) => {
       console.log(message);
       switch (message.type) {
@@ -275,7 +272,12 @@ export function Poker() {
             setActions(message.data.actions);
           }
         break;}
-      
+        case 'winner':
+          {
+            setWinInfo(message.data);
+
+            break;
+          }
         default:
           break;
       }
@@ -284,7 +286,7 @@ export function Poker() {
       game.destroy();
     }
     // setGame(game);
-  }, [])
+  }, [round])
 
   // useEffect(() => {
   //   const gameDeck = [...originDeck];  
@@ -333,7 +335,28 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot}/>
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot} 
+        winInfo={winInfo} />
+        <button onClick={() => setWinInfo({})}>Test</button>
+        <button onClick={() => {
+          setRound(last => last + 1);
+          setTableCards([]);
+          setPot(0);
+          setWinInfo(null);
+          setPlayers(testPlayers);
+          setDealerIndex(last => (last + 1) % testPlayers.length);
+          
+          // const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
+  // const [pot, setPot] = useState(0);
+  // // const [deck, setDeck] = useState<ICard[]>([]);
+  // const [tableCards, setTableCards] = useState<ICard[]>([]);
+  // const [dealerIndex, setDealerIndex] = useState(0);
+  // const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 3) % players.length;
+  // const [currentPlayerIndex, setCurrentPlayerIndex] = useState(initialIndex);
+  // const [winInfo, setWinInfo] = useState(null);
+  // const [round, setRound] = useState(0);
+        }
+          }>Restart</button>
       <div>
         Current Player {currentPlayerIndex}
       </div>

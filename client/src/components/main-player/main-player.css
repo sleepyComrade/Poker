@@ -2,21 +2,9 @@
     position: absolute;
 }
 
-.player1{
-    background-color: #fff5;
-    /* background-color: #fff0; */
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    width: var(--player-width);
-    padding: 5px;
-    border-radius: 10px;
-    z-index: 1000;
-}
-
 .main-player {
     position: absolute;
-    top: calc((100% - 40px) / 1.1);
+    top: calc((100% - 40px) / 1);
     left: calc((100% - var(--player-width)) / 1.9);
     border: 1px solid blue;
     width: var(--player-width);
@@ -25,7 +13,62 @@
     align-items: center;
 }
 
-.main-player_ava{
+.main-player__chair {
+    position: absolute;
+    width: 200px;
+    height: 130px;
+    top: 68px;
+    left: -10px;
+}
+
+.player1{
+    background-color: #fff5;
+    width: var(--player-width);
+    padding: 5px;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.player--winner {
+    border: 3px solid red;
+}
+
+.tp9{
+    top: calc((100% - 40px) / 1);
+    left: calc((100% - var(--player-width)) / 1.9);
+}
+
+.main-player__wrapper {
+   width: 100%;
+    display: flex;
+    flex-direction: column;  
+}
+
+.main-player__info {
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.main-player__name {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.main-player__timer {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.main-player__ava{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,46 +80,37 @@
     border-radius: 100%;
 }
 
-.main-player_nc_wrapper{
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.main-player_name{
-    background-color: #0000;
-    font-size: 14px;
-}
-
-.main-player_cash{
-    background-color: #0000;
-    font-size: 24px;
-}
-
-.main-player_time{
+.main-player__time{
     background-color: #ff0;
     padding: 5px;
     border: 1px solid #000;
-    margin-right: 10px;
     border-radius: 100%;
     --progress: 0;
     background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%));
 }
 
-.main-player_time_100 { 
+/* .main-player_time_100 { 
     --progress: 100;
+} */
+
+.main-player__bank{
+    margin-top: 5px;
+    padding: 5px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.main-player__chair {
-    position: absolute;
-    width: 200px;
-    height: 130px;
-    top: 68px;
-    left: -10px;
+.main-player__chips {
+    font-size: 16px;
+    color: #fff;
 }
 
-.tp9{
-    top: calc((100% - 40px) / 1.1);
-    left: calc((100% - var(--player-width)) / 10);
+.main-player__bet {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff0;
 }
+

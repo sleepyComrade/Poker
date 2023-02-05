@@ -8,18 +8,20 @@ type PlayerProps = {
   player: IPlayer;
   place: number;
   isCurrent: boolean;
+  isOpened: boolean;
+  isWinner: boolean;
 }
 
-export default function Player({ player, place, isCurrent }: PlayerProps) {
+export default function Player({ player, place, isCurrent, isOpened, isWinner }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
   const [progress, setProgress] = useState(0);
-  
+
   useEffect(() => {
     // if(isCurrent) {
-      setProgress(0);
-      setTimerAnimation(isCurrent);
+    setProgress(0);
+    setTimerAnimation(isCurrent);
     // } 
   }, [isCurrent])
 
@@ -64,24 +66,28 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
   }, [timerAnimation]);
   // console.log(name, place);
   return (
-    <div className={`abs player tp${place}`}>
-      <div className="player__timer">
-        {/* <button style={{ width: 70, height: 20 }} onClick={() => {
-          setTimerAnimation(last => !last);
-        }}>Start timer</button> */}
-        <div ref={timer} className='player_time' style={{ '--progress': progress }}>
-          <div className='player_ava'>AA</div>
+    <div className={`abs player tp${place} ${isWinner ? 'player--winner' : ''}`}>
+      <div className="player__wrapper">
+        <div className='player__name'>{name}</div>
+        <div className="player__info">
+
+          <div className="player__timer">
+            {/* <button style={{ width: 70, height: 20 }} onClick={() => {
+           setTimerAnimation(last => !last);
+          }}>Start timer</button> */}
+            <div ref={timer} className='player__time' style={{ '--progress': progress }}>
+              <div className='player__ava'>AA</div>
+            </div>
+          </div>
+
+          <div className='player__bank'>
+            <TwoCards cards={cards} isFold={isFold} isOpened={isOpened}/>
+            {isFold ? 'Player is out' : ''}
+            <div className="player__chips">{chips}</div>
+            <div className="player__bet">{bet > 0 && bet}</div>
+          </div>
         </div>
       </div>
-
-      <div className='player_nc_wrapper'>
-        <div className='player_name'>{name}</div>
-        <div className='player_cash'>23 456</div>
-        {isFold ? <span style={{ color: 'White', fontSize: 26 }}>'Player is out'</span> : ''}
-        <div>{chips}</div>
-      </div>
-      <div style={{ color: 'White', fontSize: 26}}>{bet > 0 && bet}</div>
-      <TwoCards cards={cards} isFold={isFold} />
     </div>
   )
 }
