@@ -6,16 +6,17 @@ import './two-cards.css';
 type TwoCardsProps = {
   cards: Array<ICard>;
   isFold: boolean;
+  isOpened: boolean;
 }
 
-export default function TwoCards({ cards, isFold }: TwoCardsProps) {
+export default function TwoCards({ cards, isFold, isOpened }: TwoCardsProps) {
 
   return (
     <div className='card_stack'>
       {cards.map((card, index) => {
         return (
-          <div className={`hand_zero ${isFold ? 'hand_fold' : ''}`} >
-            <div className={`card_wrapper ${index === 1 ? 'card_rotate' : ''}`}>
+          <div className={`hand_zero ${isFold ? 'hand_fold' : ''}`} key={index} >
+            <div className={`card_wrapper ${index === 1 ? 'card_rotate' : ''}`} style={{'--c-phase': isOpened ? 0 : 100}}>
               <div className='card_base card_a card_img' style={{ '--value': card.value, '--type': card.type - 1 }}>
               </div>
               <div className='card_base card_b'>

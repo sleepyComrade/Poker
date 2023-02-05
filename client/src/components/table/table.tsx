@@ -112,8 +112,8 @@ export default function Table({cards, bets, bank}: TableProps) {
             <div className='table__wrapper'>
                 <div className="table_stack">
                     {cards.map((card, index) => (
-                    <div className={`table_card ani_card${index}`}>
-                        <Card key={index} value={card.value} type={card.type - 1}></Card>
+                    <div className={`table_card ani_card${index}`} >
+                        <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
                     </div>))}
                 </div> 
                 {bankCoin.filter(it=> it.count).reverse().map((it, index) => {

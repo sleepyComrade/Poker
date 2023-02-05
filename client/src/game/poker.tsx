@@ -73,6 +73,7 @@ export function Poker() {
   const [dealerIndex, setDealerIndex] = useState(0);
   const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 3) % players.length;
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(initialIndex);
+  const [winInfo, setWinInfo] = useState(null);
   // const [minimalBet, setMinimalBet] = useState(100);
   // const [currentBet, setCurrentBet] = useState(minimalBet);
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
@@ -333,7 +334,9 @@ export function Poker() {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot}/>
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot} 
+        winInfo={winInfo} />
+        <button onClick={() => setWinInfo({})}>Test</button>
       <div>
         Current Player {currentPlayerIndex}
       </div>

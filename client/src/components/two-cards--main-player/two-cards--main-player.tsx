@@ -12,9 +12,9 @@ type TwoCardsMainPlayerProps = {
 export default function TwoCardsMainPlayer({ cards, isFold }: TwoCardsMainPlayerProps) {
   return (
     <div className='card_stack'>
-      {cards.map((card) => {
+      {cards.map((card, index) => {
         return (
-          <div className={`hand_zero hand_zero--main-player ${isFold ? 'hand_fold' : ''}`} >
+          <div className={`hand_zero hand_zero--main-player ${isFold ? 'hand_fold' : ''}`} key={index}>
             <div className={'card_wrapper card_wrapper--main-player'}>
               <div className='card_base card_a card_img' style={{ '--value': card.value - 1, '--type': card.type - 1 }}>
               </div>

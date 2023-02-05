@@ -10,9 +10,10 @@ type PlayersListProps = {
   players: Array<IPlayer>;
   player: IPlayer;
   currentPlayer: IPlayer;
+  isOpened: boolean;
 }
 
-export default function PlayersList({ players, player, currentPlayer }: PlayersListProps) {  
+export default function PlayersList({ players, player, currentPlayer, isOpened }: PlayersListProps) {  
   return (
       <div className="players-list">
         <MainPlayer player={player} isCurrent={player == currentPlayer} />
@@ -20,7 +21,7 @@ export default function PlayersList({ players, player, currentPlayer }: PlayersL
           if(_player == player) return;
 
           return (        
-            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} />      
+            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} isOpened={isOpened}/>      
           )           
         }          
         )}

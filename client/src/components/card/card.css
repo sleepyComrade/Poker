@@ -15,13 +15,13 @@
     width: 100%;
     height: 100%; 
     border: 2px solid #fff;
-    border-radius: 5px;  
-    box-shadow: inset -2px -2px 0px #fff, inset 2px 2px 0px #fff;
+    border-radius: 5px;
 }
 
 .card_a{
     background-color: #f00;
     transform: rotateY(calc(180deg * var(--c-phase) / 100));
+    box-shadow: inset -2px -2px 0px #fff, inset 2px 2px 0px #fff;
 }
 
 .card_b{

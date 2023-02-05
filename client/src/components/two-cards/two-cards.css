@@ -8,7 +8,8 @@
     position: relative;
     perspective: 1000px;
     --c-phase: 100;
-    margin: 0px;   
+    margin: 0px;  
+
     /* transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));    */
 }
 
@@ -18,6 +19,7 @@
     background-image: url('../../assets/card-back.png');
     background-size: cover;
     background-position: -2px center;
+    transition-duration: 1s; 
 }
 
 .card_b{
@@ -27,6 +29,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: -2px center;
+    transition-duration: 1s; 
 }
 
 .hand_zero{

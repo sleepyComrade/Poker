@@ -5,6 +5,7 @@ import './card.css';
 type CardProps = {
     value: number;
     type: number;
+    selected: boolean;
 }
 
 export default function Card({ value, type }: CardProps) {
