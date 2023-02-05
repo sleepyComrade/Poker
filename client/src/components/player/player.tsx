@@ -81,7 +81,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner }:
           </div>
 
           <div className='player__bank'>
-            <TwoCards cards={cards} isFold={isFold} />
+            <TwoCards cards={cards} isFold={isFold} isOpened={isOpened}/>
             {isFold ? 'Player is out' : ''}
             <div className="player__chips">{chips}</div>
             <div className="player__bet">{bet > 0 && bet}</div>
