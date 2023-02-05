@@ -9,8 +9,6 @@
     perspective: 1000px;
     --c-phase: 100;
     margin: 0px;  
-
-    /* transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));    */
 }
 
 .card_a{

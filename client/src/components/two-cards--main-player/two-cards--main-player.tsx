@@ -16,7 +16,7 @@ export default function TwoCardsMainPlayer({ cards, isFold }: TwoCardsMainPlayer
         return (
           <div className={`hand_zero hand_zero--main-player ${isFold ? 'hand_fold' : ''}`} key={index}>
             <div className={'card_wrapper card_wrapper--main-player'}>
-              <div className='card_base card_a card_img' style={{ '--value': card.value - 1, '--type': card.type - 1 }}>
+              <div className='card_base card_a card_img' style={{ '--value': card.value, '--type': card.type - 1 }}>
               </div>
               <div className='card_base card_b'>
               </div>
