@@ -220,13 +220,8 @@ export class GameLogic {
       this.banks = mergeBanks(this.banks, banks);
       console.log(banks);
       console.log(this.banks);
-      // const sum = banks[0].bank;
       this.pot = this.pot + sum;
     }
-    // this.players = this.players.map(player => {
-    //   player.bet = 0;
-    //   return player;
-    // });
     const round = this.currentRound;
     if (round === Round.Preflop) this.currentRound = Round.Flop;
     if (round === Round.Flop) this.currentRound = Round.Turn;
