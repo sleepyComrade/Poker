@@ -23,7 +23,42 @@ export class GameLogic {
   constructor(playerss: IPlayer[], originDeck: ICard[]) {
     this.players = playerss;
     this.pot = 0;
-    this.deck = [...originDeck];
+    // this.deck = [...originDeck];
+    this.deck = [
+      {
+        type: 2,
+        value: 5
+      },
+      {
+        type: 1,
+        value: 6
+      },
+      {
+        type: 2,
+        value: 13
+      },
+      {
+        type: 2,
+        value: 1
+      },
+      {
+        type: 3,
+        value: 13
+      },
+      {
+        type: 3,
+        value: 1
+      },
+      {
+        type: 4,
+        value: 13
+      },
+      {
+        type: 4,
+        value: 1
+      },
+      ...originDeck
+    ].reverse();
     this.tableCards = [];
     this.dealerIndex = 0;
     this.initialIndex = this.players.length === 2 ?
@@ -38,7 +73,7 @@ export class GameLogic {
     this.currentRound = Round.Preflop;
     this.myPlayerIndex = 0;
 
-    this.shuffleCards(this.deck);
+    // this.shuffleCards(this.deck);
     this.players.forEach(player => {
       player.cards.push(this.deck.pop());
       player.cards.push(this.deck.pop());
@@ -218,16 +253,6 @@ export class GameLogic {
       const wins = getWinner(leftP, tableC);
       const winsVals = wins.map(win => win.val);
       let winIndex = winsVals.indexOf(Math.max(...winsVals));
-      // wins.reduce((a, b) => {
-      //   if(b.val > a.val) {
-      //     a.val = b.val;
-      //     winIndex = a.i;
-      //     a.i += 1;
-      //   } else {
-      //     a.i += 1;
-      //   }
-      //   return a;
-      // }, {val: 0, i: 0});
       console.log(getWinner(leftP, tableC));
       console.log(leftPlayers);
       console.log(`${leftPlayers[winIndex].name} won this game with ${wins[winIndex].h.type}!`);
@@ -269,7 +294,8 @@ export class GameLogic {
         fold: this.fold,
         call: () => {
           this.call();
-          if (this.players.every(player => player.isFold || player.bet === this.getCallChips() || player.isAllIn)) {
+          const maxBet = Math.max(...this.players.map(player => player.bet));
+          if (this.players.every(player => player.isFold || player.bet === maxBet || player.isAllIn)) {
             if (this.currentRound === Round.Preflop) console.log('Flop');
             if (this.currentRound === Round.Flop) console.log('Turn');
             if (this.currentRound === Round.Turn) console.log('River');

@@ -25,7 +25,7 @@ export function getWinner(players: Array<Array<string>>, table: Array<string>) {
         const hnd = hand(it, table);
         return { h: hnd, val: getComboValue(hnd.type, hnd.ranks) }
     })
-    return playerHands.sort((a, b) => b.val - a.val);
+    return playerHands;
     /*return [...players].sort((a, b)=>{
         return compareHands(hand(a, table), hand(b, table))
     })*/
