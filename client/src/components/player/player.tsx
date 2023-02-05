@@ -80,7 +80,7 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
         {isFold ? <span style={{ color: 'White', fontSize: 26 }}>'Player is out'</span> : ''}
         <div>{chips}</div>
       </div>
-      <div>{bet > 0 && bet}</div>
+      <div style={{ color: 'White', fontSize: 26}}>{bet > 0 && bet}</div>
       <TwoCards cards={cards} isFold={isFold} />
     </div>
   )
