@@ -86,15 +86,6 @@ export default function Player({ player, place, isCurrent }: PlayerProps) {
           </div>
         </div>
       </div>
-
-      <div className='player_nc_wrapper'>
-        <div className='player_name'>{name}</div>
-        <div className='player_cash'>23 456</div>
-        {isFold ? <span style={{ color: 'White', fontSize: 26 }}>'Player is out'</span> : ''}
-        <div>{chips}</div>
-      </div>
-      <div style={{ color: 'White', fontSize: 26}}>{bet > 0 && bet}</div>
-      <TwoCards cards={cards} isFold={isFold} />
     </div>
   )
 }
