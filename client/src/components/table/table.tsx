@@ -85,7 +85,10 @@ function sumToCoinsMerged(sum: number, values: Array<number>, lastCoins: Array<{
     return lastCoins;
 }
 
-const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1]
+const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
+const colors = ['red', 'blue', 'green', 'orange', '#dd0fcc', '#0fdd98', '#bb0fdd', '#0fc5dd ', '#86e08a', '#f04d55'];
+
+    
 export default function Table({cards, bets, bank}: TableProps) {
     /*const betCoins:{count: number, coinValue: number}[][] = useMemo(()=>{
         return bets.map((it, i)=> sumToCoinsMerged(it, coinValues, betCoins?.[i]||[]));
@@ -115,7 +118,8 @@ export default function Table({cards, bets, bank}: TableProps) {
                 </div> 
                 {bankCoin.filter(it=> it.count).reverse().map((it, index) => {
                         const stk = new Array(it.count).fill(null).map((jt, jdex)=> {
-                            return <BankCoin key={[index, jdex, it.coinValue].join(',')} topValue={bankPosition.top- jdex*6} leftValue={bankPosition.left - index * 35} coinValue={it.coinValue} />
+                            return <BankCoin color={colors[coinValues.indexOf(it.coinValue)]}
+                            key={[index, jdex, it.coinValue].join(',')} topValue={bankPosition.top- jdex*6} leftValue={bankPosition.left - index * 35} coinValue={it.coinValue} />
                         })
                         return stk;
                     })}
@@ -124,7 +128,8 @@ export default function Table({cards, bets, bank}: TableProps) {
                 {betCoins.map((pl, pli)=>{
                     return pl.filter(it=> it.count).reverse().map((it, index) => {
                         const stk = new Array(it.count).fill(null).map((jt, jdex)=> {
-                            return <BankCoin key={[index, jdex, it.coinValue].join(',')} topValue={coinPositions[pli].top- jdex*6} leftValue={coinPositions[pli].left - index * 35} coinValue={it.coinValue} />
+                            return <BankCoin color={colors[coinValues.indexOf(it.coinValue)]}
+                            key={[index, jdex, it.coinValue].join(',')} topValue={coinPositions[pli].top- jdex*6} leftValue={coinPositions[pli].left - index * 35} coinValue={it.coinValue} />
                         })
                         return stk;
                     })
