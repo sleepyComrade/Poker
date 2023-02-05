@@ -89,6 +89,7 @@ export class GameLogic {
     })
 
     setTimeout(() => {
+      this.sendState('start');
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     }, 0);
   }

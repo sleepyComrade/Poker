@@ -4,6 +4,7 @@ import { IPlayer, ICard, Round, IGameMessage, IActions } from '../interfaces';
 import { getWinner } from './combo2';
 import { GameLogic } from './game-logic';
 import Game from '../game/game';
+import { setBotChoise } from './bot-logic';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 
@@ -74,7 +75,7 @@ export function Poker() {
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
   // const [currentRound, setCurrentRound] = useState(Round.Preflop);
   const myPlayerIndex = 0;
-  
+
   const [actions, setActions] = useState<IActions>({});
 
   useEffect(() => {
@@ -93,20 +94,14 @@ export function Poker() {
         {
           const currentPlayerIndex = message.data.playerId;
           setCurrentPlayerIndex(message.data.playerId);
-          const setBotChoise = () => {
-            const actions1 = message.data.actions;
-            console.log(actions1);
-            const num = Math.floor(Math.random() * Object.keys(actions1).length);
-            const method = Object.keys(actions1)[num] as keyof typeof actions1;
-            actions1[method]();
-          }
           console.log(currentPlayerIndex);
           // const myPlayerIndex = 0;
-          if (currentPlayerIndex !== myPlayerIndex) {
+          const withBots = true;
+          if (withBots && currentPlayerIndex !== myPlayerIndex) {
             setActions({});
             // if (!players[currentPlayerIndex].isFold) {
             setTimeout(() => {
-              setBotChoise();
+              setBotChoise(message);
             }, 1000);
           } 
            else {
