@@ -43,7 +43,7 @@ export default class Socket {
         this.onPokerResponse(parsedData.data)
       }
       if (parsedData.type === "roomStateConnections") {
-        this.onJoin(parsedData.connections)
+        this.onRoomConnectionsUpdate(parsedData.connections)
       }
     }
     this.webSocket.onopen = () => {
