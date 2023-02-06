@@ -4,19 +4,21 @@ import { Poker } from './game/poker'
 import { CreateRoom } from './CreateRoom/CreateRoom'
 // import { IRoom } from '../../interfaces/IRoom'
 import { IMessage } from './interfaces/IMessage'
+import { RoomLogic } from './game/room-logic'
 
 export function App() {
-  const [messages, setMessages] = useState<IMessage[]>([])
-  const [rooms, setRooms] = useState<string[]>([])
-  const [text, setText] = useState('')
-  const [userName, setUserName] = useState(Math.random().toString())
-  const [players, setPlayers] = useState<string[]>([])
-  const [socket, setSocket] = useState<Socket | null>(null)
-  const [currentRoom, setCurrentRoom] = useState<null | string>(null)
-  const [playerTurn, setPlayerTurn] = useState(false)
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [rooms, setRooms] = useState<string[]>([]);
+  const [text, setText] = useState('');
+  const [userName, setUserName] = useState(Math.random().toString());
+  const [players, setPlayers] = useState<string[]>([]);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [currentRoom, setCurrentRoom] = useState<null | string>(null);
+  const [playerTurn, setPlayerTurn] = useState(false);
+  const [roomLogic, setRoomLogic] = useState<RoomLogic | null>(null);
 
   useEffect(() => {
-    const socket = new Socket()
+    const socket = new Socket();
     socket.onMessage = (message) => {
       console.log('message', message)
       setMessages((last) => [...last, message])
@@ -32,7 +34,12 @@ export function App() {
     socket.onRoomConnectionsUpdate = (connections) => {
       setPlayers(connections)
     }
-    setSocket(socket)
+    setSocket(socket);
+    const room = new RoomLogic();
+    room.onMessage = () => {
+      
+    }
+    setRoomLogic(room);
     return () => socket.destroy()
   }, [])
 
@@ -140,7 +147,7 @@ export function App() {
       >
         Send
       </button>
-      <Poker socket={socket} currentRoom={currentRoom} name={userName}/>
+      <Poker roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} name={userName}/>
       {/* <Poker></Poker> */}
       {/* <Pk /> */}
       {/* <Garage /> */}
