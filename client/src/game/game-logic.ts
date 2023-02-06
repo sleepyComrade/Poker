@@ -89,6 +89,7 @@ export class GameLogic {
     })
 
     setTimeout(() => {
+      this.sendState('start');
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     }, 0);
   }
@@ -128,6 +129,19 @@ export class GameLogic {
     this.lastInRoundIndex = getNewLastInRoundIndex(currentIndex);
   }
 
+  private setInitialIndex() {
+    const initialIndex = this.players.length === 2 ?
+                         this.dealerIndex :
+                         (this.dealerIndex + 1) % this.players.length;
+    const getNextIndex = (cur: number) => (cur +  1) % this.players.length;
+    const getNewInitialIndex = (last: number): number => this.players[getNextIndex(last)].isFold ||
+                                                         this.players[getNextIndex(last)].isAllIn ?
+                                                         getNewInitialIndex(getNextIndex(last)) :
+                                                         getNextIndex(last);
+    return this.players[initialIndex].isFold || this.players[initialIndex].isAllIn ?
+           getNewInitialIndex(initialIndex) : initialIndex;
+  }
+
   private getRaiseRange() {
     return {min: this.getCallChips() + this.minimalBet, max: this.players[this.currentPlayerIndex].chips}
   }
@@ -137,8 +151,8 @@ export class GameLogic {
   }
 
   private defineBet = (bet: string) => {
+    this.protectFoldedAction();
     const chipsToBet = this.getRaiseRange().min;
-
     if (chipsToBet < this.players[this.currentPlayerIndex].chips) {
       this.players[this.currentPlayerIndex].bet += chipsToBet;
       this.players[this.currentPlayerIndex].chips -= chipsToBet;
@@ -162,7 +176,7 @@ export class GameLogic {
       this.players[this.currentPlayerIndex].isAllIn = true;
       this.sendState('all-in');
       console.log('all-in');
-      if (this.players.every(player => player.isFold || player.chips === 0)) {
+      if (this.players.every(player => player.isFold || player.chips === 0 || player.isAllIn)) {
         this.setNextRound();
         console.log(this.players);
       } else {
@@ -205,8 +219,13 @@ export class GameLogic {
       return;
     }
     if (this.currentPlayerIndex === this.lastInRoundIndex) {
-      const currentIndex = this.currentPlayerIndex;
-      this.setLastPlayer(currentIndex);
+      const maxBet = Math.max(...this.players.map(player => player.bet));
+      if (this.players.every(player => player.isFold || player.bet === maxBet || player.isAllIn)) {
+        this.sendState('fold');
+        this.setNextRound();
+        return;
+      }
+      this.setLastPlayer(this.currentPlayerIndex);
     }
     this.sendState('fold');
     this.setNextPlayer();
@@ -220,29 +239,28 @@ export class GameLogic {
       this.banks = mergeBanks(this.banks, banks);
       console.log(banks);
       console.log(this.banks);
-      // const sum = banks[0].bank;
       this.pot = this.pot + sum;
     }
-    // this.players = this.players.map(player => {
-    //   player.bet = 0;
-    //   return player;
-    // });
     const round = this.currentRound;
     if (round === Round.Preflop) this.currentRound = Round.Flop;
     if (round === Round.Flop) this.currentRound = Round.Turn;
     if (round === Round.Turn) this.currentRound = Round.River;
     if (round !== Round.River) {
-      const initialIndex = this.players.length === 2 ? this.dealerIndex : (this.dealerIndex + 1) % this.players.length;
-      this.currentPlayerIndex = initialIndex;
-      this.lastInRoundIndex = (initialIndex - 1) % this.players.length >= 0 ?
-                              (initialIndex - 1) % this.players.length :
-                              this.players.length - 1;
       if (round === Round.Preflop) {
         this.tableCards = [...this.tableCards, this.deck.pop(), this.deck.pop(), this.deck.pop()];
       } else {
         this.tableCards = [...this.tableCards, this.deck.pop()];
       }
       this.sendState('round');
+      if (this.players.every(player => player.isFold || player.isAllIn)) {
+        setTimeout(() => {
+          this.setNextRound();
+        }, 1000);
+        return;
+      }
+      const initialIndex = this.setInitialIndex();
+      this.currentPlayerIndex = initialIndex;
+      this.setLastPlayer(initialIndex);
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     } else {
       console.log('Get Winner');
@@ -292,6 +310,23 @@ export class GameLogic {
           this.setNextRound();
         }
       }
+    } else if(this.getCallChips() > 0 &&
+              this.getCallChips() >= this.players[this.currentPlayerIndex].chips) {
+      return {
+        fold: this.fold,
+        call: () => {
+          this.call();
+          const maxBet = Math.max(...this.players.map(player => player.bet));
+          if (this.players.every(player => player.isFold || player.bet === maxBet || player.isAllIn)) {
+            if (this.currentRound === Round.Preflop) console.log('Flop');
+            if (this.currentRound === Round.Flop) console.log('Turn');
+            if (this.currentRound === Round.Turn) console.log('River');
+            this.setNextRound();
+          } else {
+            this.setNextPlayer();
+          }
+        }
+      }
     } else if (this.currentPlayerIndex === this.lastInRoundIndex && this.getCallChips() > 0) {
       return {
         fold: this.fold,
@@ -327,12 +362,11 @@ export class GameLogic {
         raise: this.raise
       }
     } else {
-      
       console.log('Undefined Error ', this);
     }
   }
 
-  sendState(move: string) {
+  private sendState(move: string) {
     this.onMessage({type: 'state', data: {
       move,
       players: this.players,
@@ -349,13 +383,19 @@ export class GameLogic {
     }})
   }
 
-  setNextPlayer() {
+  private setNextPlayer() {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     if (this.players.every(player => player.isFold || player.chips === 0 || player.isAllIn)) {
       this.setNextRound();
     } else if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
       this.setNextPlayer();
     } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+  }
+
+  private protectFoldedAction(){
+    if (this.players[this.currentPlayerIndex].isFold){
+      throw new Error(`folded action, player ${this.currentPlayerIndex}`);
+    }
   }
 
   destroy() {
