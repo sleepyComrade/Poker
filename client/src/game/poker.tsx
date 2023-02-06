@@ -9,8 +9,16 @@ import { testPlayers, originDeck } from './players-and-deck';
 import { RoomLogic } from './room-logic';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
+import {SocketLogic} from "./socket-logic"
+import Socket from "../components/socket";
 
-export function Poker() {
+interface IProps {
+  name: string
+  socket: Socket
+  currentRoom: string
+}
+
+export function Poker(props: IProps) {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
   const [pot, setPot] = useState(0);
   // const [deck, setDeck] = useState<ICard[]>([]);
@@ -20,10 +28,11 @@ export function Poker() {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(initialIndex);
   const [winInfo, setWinInfo] = useState(null);
   const [round, setRound] = useState(0);
+  const [myPlayerIndex, setMyPlayerIndex] = useState(0)
   // const [minimalBet, setMinimalBet] = useState(100);
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
   // const [currentRound, setCurrentRound] = useState(Round.Preflop);
-  const myPlayerIndex = 0;
+  // const myPlayerIndex = 0;
 
   const [actions, setActions] = useState<IActions>({});
 
@@ -32,7 +41,15 @@ export function Poker() {
     // roomLogic.onMessage = () => {
 
     // }
-    const game = new RoomLogic();
+    // const game = new RoomLogic();
+    if (!props.socket){
+      return () => {}
+    }
+
+    const isMultiPlayer = true;
+    let playerIndex = 0
+    
+    const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers(), originDeck);
     game.onMessage = (message: IGameMessage) => {
       console.log(message);
       switch (message.type) {
@@ -41,6 +58,8 @@ export function Poker() {
           setPlayers(message.data.players);
           setPot(message.data.pot);
           setTableCards(message.data.tableCards);
+             playerIndex = message.data.players.findIndex((player: IPlayer) => player.name === props.name)
+            setMyPlayerIndex(playerIndex)
           // setCurrentPlayerIndex(message.data.currentPlayerIndex);
           break;}
         case 'ask':
@@ -48,6 +67,7 @@ export function Poker() {
           const currentPlayerIndex = message.data.playerId;
           setCurrentPlayerIndex(message.data.playerId);
           console.log(currentPlayerIndex);
+
           // const myPlayerIndex = 0;
           const withBots = false;
           if (withBots && currentPlayerIndex !== myPlayerIndex) {
@@ -56,6 +76,14 @@ export function Poker() {
             // setTimeout(() => {
             //   setBotChoise(message);
             // }, 1000);
+              if (!isMultiPlayer){
+                setTimeout(() => {
+                  setBotChoise(message);
+                }, 1000);
+              }
+            // } else {
+              // setCurrentPlayerIndex(last => (last + 1) % players.length);
+            // }
           } 
            else {
             setActions(message.data.actions);
@@ -81,7 +109,8 @@ export function Poker() {
     return () => {
       game.destroy();
     }
-  }, [])
+    // setGame(game);
+  }, [props.socket, props.currentRoom])
 
   return (
     <div>
@@ -97,6 +126,12 @@ export function Poker() {
           setDealerIndex(last => (last + 1) % testPlayers.length);
         }
           }>Restart</button>
+      {/* {players.length && <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot}/>} */}
+      <button onClick={() => {
+        setMyPlayerIndex(last => (last + 1) % players.length)
+      }}>
+hello
+      </button> 
       <div>
         Current Player {currentPlayerIndex}
       </div>
