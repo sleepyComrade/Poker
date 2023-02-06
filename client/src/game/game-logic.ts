@@ -176,7 +176,7 @@ export class GameLogic {
       this.players[this.currentPlayerIndex].isAllIn = true;
       this.sendState('all-in');
       console.log('all-in');
-      if (this.players.every(player => player.isFold || player.chips === 0)) {
+      if (this.players.every(player => player.isFold || player.chips === 0 || player.isAllIn)) {
         this.setNextRound();
         console.log(this.players);
       } else {
@@ -246,9 +246,6 @@ export class GameLogic {
     if (round === Round.Flop) this.currentRound = Round.Turn;
     if (round === Round.Turn) this.currentRound = Round.River;
     if (round !== Round.River) {
-      const initialIndex = this.setInitialIndex();
-      this.currentPlayerIndex = initialIndex;
-      this.setLastPlayer(initialIndex);
       if (round === Round.Preflop) {
         this.tableCards = [...this.tableCards, this.deck.pop(), this.deck.pop(), this.deck.pop()];
       } else {
@@ -256,9 +253,14 @@ export class GameLogic {
       }
       this.sendState('round');
       if (this.players.every(player => player.isFold || player.isAllIn)) {
-        this.setNextRound();
+        setTimeout(() => {
+          this.setNextRound();
+        }, 1000);
         return;
       }
+      const initialIndex = this.setInitialIndex();
+      this.currentPlayerIndex = initialIndex;
+      this.setLastPlayer(initialIndex);
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     } else {
       console.log('Get Winner');
@@ -308,6 +310,23 @@ export class GameLogic {
           this.setNextRound();
         }
       }
+    } else if(this.getCallChips() > 0 &&
+              this.getCallChips() >= this.players[this.currentPlayerIndex].chips) {
+      return {
+        fold: this.fold,
+        call: () => {
+          this.call();
+          const maxBet = Math.max(...this.players.map(player => player.bet));
+          if (this.players.every(player => player.isFold || player.bet === maxBet || player.isAllIn)) {
+            if (this.currentRound === Round.Preflop) console.log('Flop');
+            if (this.currentRound === Round.Flop) console.log('Turn');
+            if (this.currentRound === Round.Turn) console.log('River');
+            this.setNextRound();
+          } else {
+            this.setNextPlayer();
+          }
+        }
+      }
     } else if (this.currentPlayerIndex === this.lastInRoundIndex && this.getCallChips() > 0) {
       return {
         fold: this.fold,
@@ -343,7 +362,6 @@ export class GameLogic {
         raise: this.raise
       }
     } else {
-      
       console.log('Undefined Error ', this);
     }
   }
