@@ -12,7 +12,13 @@ import '../style.css';
 import {SocketLogic} from "./socket-logic"
 import Socket from "../components/socket";
 
-export function Poker() {
+interface IProps {
+  name: string
+  socket: Socket
+  currentRoom: string
+}
+
+export function Poker(props: IProps) {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers);
   const [pot, setPot] = useState(0);
   // const [deck, setDeck] = useState<ICard[]>([]);
@@ -43,7 +49,7 @@ export function Poker() {
     const isMultiPlayer = true;
     let playerIndex = 0
     
-    const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers, originDeck);
+    const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers(), originDeck);
     game.onMessage = (message: IGameMessage) => {
       console.log(message);
       switch (message.type) {
@@ -72,7 +78,7 @@ export function Poker() {
             // }, 1000);
               if (!isMultiPlayer){
                 setTimeout(() => {
-                  setBotChoise();
+                  setBotChoise(message);
                 }, 1000);
               }
             // } else {
