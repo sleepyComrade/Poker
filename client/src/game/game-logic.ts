@@ -219,8 +219,13 @@ export class GameLogic {
       return;
     }
     if (this.currentPlayerIndex === this.lastInRoundIndex) {
-      const currentIndex = this.currentPlayerIndex;
-      this.setLastPlayer(currentIndex);
+      const maxBet = Math.max(...this.players.map(player => player.bet));
+      if (this.players.every(player => player.isFold || player.bet === maxBet || player.isAllIn)) {
+        this.sendState('fold');
+        this.setNextRound();
+        return;
+      }
+      this.setLastPlayer(this.currentPlayerIndex);
     }
     this.sendState('fold');
     this.setNextPlayer();
@@ -243,9 +248,7 @@ export class GameLogic {
     if (round !== Round.River) {
       const initialIndex = this.setInitialIndex();
       this.currentPlayerIndex = initialIndex;
-      this.lastInRoundIndex = (initialIndex - 1) % this.players.length >= 0 ?
-                              (initialIndex - 1) % this.players.length :
-                              this.players.length - 1;
+      this.setLastPlayer(initialIndex);
       if (round === Round.Preflop) {
         this.tableCards = [...this.tableCards, this.deck.pop(), this.deck.pop(), this.deck.pop()];
       } else {

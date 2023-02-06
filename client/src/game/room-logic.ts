@@ -26,7 +26,7 @@ export class RoomLogic {
           const currentPlayerIndex = message.data.playerId;
           console.log(currentPlayerIndex);
           const myPlayerIndex = 0;
-          const withBots = true;
+          const withBots = false;
           if (withBots && currentPlayerIndex !== myPlayerIndex) {
             // if (!players[currentPlayerIndex].isFold) {
             setTimeout(() => {

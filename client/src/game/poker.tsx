@@ -49,7 +49,7 @@ export function Poker() {
           setCurrentPlayerIndex(message.data.playerId);
           console.log(currentPlayerIndex);
           // const myPlayerIndex = 0;
-          const withBots = true;
+          const withBots = false;
           if (withBots && currentPlayerIndex !== myPlayerIndex) {
             setActions({});
             // if (!players[currentPlayerIndex].isFold) {
