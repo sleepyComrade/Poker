@@ -129,6 +129,19 @@ export class GameLogic {
     this.lastInRoundIndex = getNewLastInRoundIndex(currentIndex);
   }
 
+  private setInitialIndex() {
+    const initialIndex = this.players.length === 2 ?
+                         this.dealerIndex :
+                         (this.dealerIndex + 1) % this.players.length;
+    const getNextIndex = (cur: number) => (cur +  1) % this.players.length;
+    const getNewInitialIndex = (last: number): number => this.players[getNextIndex(last)].isFold ||
+                                                         this.players[getNextIndex(last)].isAllIn ?
+                                                         getNewInitialIndex(getNextIndex(last)) :
+                                                         getNextIndex(last);
+    return this.players[initialIndex].isFold || this.players[initialIndex].isAllIn ?
+           getNewInitialIndex(initialIndex) : initialIndex;
+  }
+
   private getRaiseRange() {
     return {min: this.getCallChips() + this.minimalBet, max: this.players[this.currentPlayerIndex].chips}
   }
@@ -138,8 +151,8 @@ export class GameLogic {
   }
 
   private defineBet = (bet: string) => {
+    this.protectFoldedAction();
     const chipsToBet = this.getRaiseRange().min;
-
     if (chipsToBet < this.players[this.currentPlayerIndex].chips) {
       this.players[this.currentPlayerIndex].bet += chipsToBet;
       this.players[this.currentPlayerIndex].chips -= chipsToBet;
@@ -228,7 +241,7 @@ export class GameLogic {
     if (round === Round.Flop) this.currentRound = Round.Turn;
     if (round === Round.Turn) this.currentRound = Round.River;
     if (round !== Round.River) {
-      const initialIndex = this.players.length === 2 ? this.dealerIndex : (this.dealerIndex + 1) % this.players.length;
+      const initialIndex = this.setInitialIndex();
       this.currentPlayerIndex = initialIndex;
       this.lastInRoundIndex = (initialIndex - 1) % this.players.length >= 0 ?
                               (initialIndex - 1) % this.players.length :
@@ -239,6 +252,10 @@ export class GameLogic {
         this.tableCards = [...this.tableCards, this.deck.pop()];
       }
       this.sendState('round');
+      if (this.players.every(player => player.isFold || player.isAllIn)) {
+        this.setNextRound();
+        return;
+      }
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
     } else {
       console.log('Get Winner');
@@ -328,7 +345,7 @@ export class GameLogic {
     }
   }
 
-  sendState(move: string) {
+  private sendState(move: string) {
     this.onMessage({type: 'state', data: {
       move,
       players: this.players,
@@ -345,13 +362,19 @@ export class GameLogic {
     }})
   }
 
-  setNextPlayer() {
+  private setNextPlayer() {
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     if (this.players.every(player => player.isFold || player.chips === 0 || player.isAllIn)) {
       this.setNextRound();
     } else if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
       this.setNextPlayer();
     } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+  }
+
+  private protectFoldedAction(){
+    if (this.players[this.currentPlayerIndex].isFold){
+      throw new Error(`folded action, player ${this.currentPlayerIndex}`);
+    }
   }
 
   destroy() {

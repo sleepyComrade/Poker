@@ -106,7 +106,7 @@ export function Poker() {
       <div>
         {tableCards.map(card => {
           return (
-            <div>
+            <div key={+`${card.type}${card.value}`}>
              {`${card.type}/${card.value}`}
             </div>
           )
