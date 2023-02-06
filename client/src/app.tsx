@@ -10,6 +10,7 @@ export function App() {
   const [rooms, setRooms] = useState<string[]>([])
   const [text, setText] = useState('')
   const [userName, setUserName] = useState(Math.random().toString())
+  const [players, setPlayers] = useState<string[]>([])
   const [socket, setSocket] = useState<Socket | null>(null)
   const [currentRoom, setCurrentRoom] = useState<null | string>(null)
   const [playerTurn, setPlayerTurn] = useState(false)
@@ -27,6 +28,9 @@ export function App() {
     }
     socket.onTurn = (playerTurn) => {
       setPlayerTurn(playerTurn)
+    }
+    socket.onRoomConnectionsUpdate = (connections) => {
+      setPlayers(connections)
     }
     setSocket(socket)
     return () => socket.destroy()
@@ -46,6 +50,16 @@ export function App() {
     <div>
       {currentRoom && <h1>You Are in Room: {currentRoom}</h1>}
       {playerTurn && <h1>Your Turn</h1>}
+      {currentRoom && (
+        <div>
+          <h1>Players in room</h1>
+          {players.map((player, i) => {
+            return (
+              <p key={i}>{player}</p> 
+            )
+          })}
+        </div>
+      )}
       <button
         onClick={() => {
           socket.sendState({ type: 'gameStart', roomName: currentRoom })

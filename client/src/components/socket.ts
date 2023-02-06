@@ -8,6 +8,7 @@ export default class Socket {
   onMessage: (message: IMessage) => void
   onRoomCreate: (rooms: string[]) => void
   onTurn: (isPlayerTurn: boolean) => void
+  onRoomConnectionsUpdate: (connections: string[]) => void
 
   onPokerResponse: (res:any) =>void;
   //socketLogic: SocketLogic
@@ -40,6 +41,9 @@ export default class Socket {
       if (parsedData.type === "pocker") {
         //this.onPokerResponse(msg);
         this.onPokerResponse(parsedData.data)
+      }
+      if (parsedData.type === "roomStateConnections") {
+        this.onJoin(parsedData.connections)
       }
     }
     this.webSocket.onopen = () => {

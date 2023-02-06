@@ -20,7 +20,7 @@ export class Room implements IRoomServer {
     
   }
 
-  startPoker(){
+  startPoker() {
     const myPlayerIndex = 0
     const originDeck: ICard[] = []
     for (let i = 1; i <= 4; i++) {
@@ -198,6 +198,12 @@ export class Room implements IRoomServer {
       if (this.players[playerKey].socketConnection === connection) {
         delete this.players[playerKey]
       }
+    })
+    Object.values(this.players).forEach(player => {
+      player.socketConnection.sendUTF(JSON.stringify({
+        type: "roomStateConnections",
+        connections: Object.keys(this.players)
+      }))
     })
     console.log(this.players)
   }

@@ -97,7 +97,11 @@ socket.on('request', (request) => {
             connection,
             parsed.userName
           )
+          Object.values(rooms[parsed.roomName].players).forEach(player => {
+            player.socketConnection.sendUTF(JSON.stringify({type: "roomStateConnections", connections: Object.keys(rooms[parsed.roomName].players)}))
+          })
           console.log(rooms)
+          
         }
       }
 
