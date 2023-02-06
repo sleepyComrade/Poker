@@ -36,7 +36,6 @@ export class RoomLogic {
         break;}
         case 'winner':
           {
-            alert('Game over');
             game.destroy();
             this.startGame();
             // setWinInfo(message.data);
