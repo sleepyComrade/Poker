@@ -48,6 +48,6 @@ export const testPlayers = () => {
       name: 'Player9',
       cards: []
     }
-  ].map(player => ({...player, isFold: false, isAllIn: false, chips: 5000, bet: 0}));
+  ].map(player => ({...player, isFold: false, isAllIn: false, chips: 5000, bet: 0, isAbsent: false}));
   return testPlayers;
 }

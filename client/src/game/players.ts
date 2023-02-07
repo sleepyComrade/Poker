@@ -4,27 +4,36 @@ import { ICard, IGameMessage } from '../interfaces';
 export class Player {
   onMessage: (message: IGameMessage) => void;
   name: string;
+  chips: number;
   constructor(name: string) {
     this.name = name;
-    
+    this.chips = 5000;
   }
 
   handleMessage(message: IGameMessage) {
+    console.log('Player message: ', message);
     this.onMessage(message);
   }
 }
 
 export class BotPlayer {
   name: string;
+  onMessage: (message: IGameMessage) => void;
+  chips: number;
   constructor(name: string) {
     this.name = name;
-    
+    this.chips = 5000;
   }
 
   handleMessage(message: IGameMessage) {
-    setTimeout(() => {
-      setBotChoise(message);
-    }, 1000);
+    console.log('Bot message: ', message);
+    
+    this.onMessage(message);
+    if (message.type === 'ask') {
+      setTimeout(() => {
+        setBotChoise(message);
+      }, 1000);
+    }
   }
 }
 
@@ -35,12 +44,14 @@ export class PlayerState {
   chips: number;
   bet: number;
   cards: ICard[];
-  constructor(name: string) {
+  isAbsent: boolean;
+  constructor(isFold: boolean, isAbsent: boolean, name: string, chips: number) {
     this.name = name;
-    this.isFold = false;
+    this.isFold = isFold;
     this.isAllIn = false;
-    this.chips = 5000;
+    this.chips = chips;
     this.bet = 0;
     this.cards = [];
+    this.isAbsent = isAbsent;
   }
 }

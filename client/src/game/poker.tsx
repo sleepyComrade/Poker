@@ -48,13 +48,33 @@ export function Poker(props: IProps) {
     }
     // const game = new RoomLogic();
     const player = new Player('name');
+    const addBot = (name: string) => {
+      const bot = new BotPlayer(name);
+      bot.onMessage = (message: IGameMessage) => {
+        switch (message.type) {
+          case 'ask':
+            setActions({});
+            break;
+          default:
+            break;
+        }
+      };
+      game.join(bot);
+    }
     const game = props.roomLogic;
     const isMultiPlayer = false;
-    let playerIndex = 0;
-    game.join(player);
-    game.join(new BotPlayer('bot'));
+    // let playerIndex = 0;
+   
+    addBot('bot1');
+    addBot('bot2');
+    const playerIndex = game.join(player);
+    setMyPlayerIndex(playerIndex);
+    addBot('bot3');
+    addBot('bot4');
+    addBot('bot5');
+    addBot('bot6');
     setTimeout(() => {
-      game.join(new BotPlayer('bot1'));
+      addBot('bot7');
     }, 5000);
     // const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers(), originDeck);
     player.onMessage = (message: IGameMessage) => {
@@ -65,8 +85,7 @@ export function Poker(props: IProps) {
           setPlayers(message.data.players);
           setPot(message.data.pot);
           setTableCards(message.data.tableCards);
-             playerIndex = message.data.players.findIndex((player: IPlayer) => player.name === props.name)
-            setMyPlayerIndex(playerIndex)
+          // playerIndex = message.data.players.findIndex((player: IPlayer) => player.name === props.name);
           // setCurrentPlayerIndex(message.data.currentPlayerIndex);
           break;}
         case 'ask':
@@ -84,9 +103,9 @@ export function Poker(props: IProps) {
             //   setBotChoise(message);
             // }, 1000);
               if (!isMultiPlayer){
-                setTimeout(() => {
-                  setBotChoise(message);
-                }, 1000);
+                // setTimeout(() => {
+                //   setBotChoise(message);
+                // }, 1000);
               }
             // } else {
               // setCurrentPlayerIndex(last => (last + 1) % players.length);
@@ -96,6 +115,11 @@ export function Poker(props: IProps) {
             setActions(message.data.actions);
           }
         break;}
+        case 'askOther':
+          {
+            setCurrentPlayerIndex(message.data.playerId);
+            break;
+          }
         case 'winner':
           {
             setWinInfo(message.data);
@@ -121,7 +145,7 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[0]} currentPlayerIndex={currentPlayerIndex} bank={pot} 
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot} 
         winInfo={winInfo} />
         <button onClick={() => setWinInfo({})}>Test</button>
         <button onClick={() => {
