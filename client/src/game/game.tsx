@@ -15,16 +15,21 @@ type GameProps = {
     currentPlayerIndex: number;
     bank: number;
     winInfo: {winIndex: number} | null;
+    onGameExit: () => void;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit }: GameProps) {
     const _players = [...players];
     const playerIndex = _players.indexOf(player) + 3;
     shift(_players, playerIndex);
 
     return (
         <div className="game">
-            <div className="game__wrapper">
+            <button className="button-exit" onClick={() => {
+                onGameExit();
+                console.log(5);
+            }}>Exit</button>
+            <div className="game__wrapper">            
                 <div className="game__center-container">
                     <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]} 
                         isOpened={winInfo != null} winner={players[winInfo?.winIndex]}/>

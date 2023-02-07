@@ -18,6 +18,7 @@ interface IProps {
   socket: Socket;
   currentRoom: string;
   roomLogic: RoomLogic;
+  onGameExit: () => void;
 }
 
 export function Poker(props: IProps) {
@@ -145,8 +146,9 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} currentPlayerIndex={currentPlayerIndex} bank={pot} 
-        winInfo={winInfo} />
+      <Game players={players} actions={actions} cards={tableCards} player={players[0]} 
+        currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => props.onGameExit()} />
+
         <button onClick={() => setWinInfo({})}>Test</button>
         <button onClick={() => {
           setRound(last => last + 1);
