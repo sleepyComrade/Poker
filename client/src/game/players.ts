@@ -28,7 +28,7 @@ export class BotPlayer {
   handleMessage(message: IGameMessage) {
     console.log('Bot message: ', message);
     
-    this.onMessage(message);
+    this.onMessage?.(message);
     if (message.type === 'ask') {
       setTimeout(() => {
         setBotChoise(message);

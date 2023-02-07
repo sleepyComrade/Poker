@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CreateRoom } from './../CreateRoom/CreateRoom'
 import Socket from './../components/socket'
-import { IMessage } from './../interfaces/IMessage'
+import { IMessage } from '../interfaces/IMessage'
 import '../style.css';
 import './lobby.css';
 
@@ -60,9 +60,20 @@ export default function Lobby({socket, rooms, players, messages, userName, onUse
               }
               onRoomEnter(room);
             //   setCurrentRoom(room)
-              socket.sendState({
-                type: 'connect',
+            //   socket.sendState({
+            //     type: 'connect',
+            //     roomName: rooms,
+            //     userName: userName,
+            //   })
+            socket.sendState({
+                type: 'poker',
                 roomName: rooms,
+                data: {
+                    type: 'join',
+                    data: {
+                        name: userName,
+                    }
+                },
                 userName: userName,
               })
             }} > room {room}</p>

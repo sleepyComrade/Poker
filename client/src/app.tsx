@@ -41,6 +41,9 @@ export function App() {
     socket.onRoomConnectionsUpdate = (connections) => {
       // setPlayers(connections)
     }
+    socket.onRoomJoin = (data: any) => {
+      console.log(data);      
+    }
     setSocket(socket);
     const room = new RoomLogic();
     room.onMessage = () => {

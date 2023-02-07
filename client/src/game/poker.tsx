@@ -49,36 +49,41 @@ export function Poker(props: IProps) {
     }
     // const game = new RoomLogic();
     const player = new Player('name');
-    const addBot = (name: string) => {
-      const bot = new BotPlayer(name);
-      bot.onMessage = (message: IGameMessage) => {
-        switch (message.type) {
-          case 'ask':
-            setActions({});
-            break;
-          default:
-            break;
-        }
-      };
-      game.join(bot);
+    props.socket.onPokerResponse = (msg) => {
+      player.handleMessage(msg);
+      console.log(msg);
     }
-    const game = props.roomLogic;
+    // const addBot = (name: string) => {
+    //   const bot = new BotPlayer(name);
+    //   bot.onMessage = (message: IGameMessage) => {
+    //     switch (message.type) {
+    //       case 'ask':
+    //         setActions({});
+    //         break;
+    //       default:
+    //         break;
+    //     }
+    //   };
+    //   game.join(bot);
+    // }
+    // const game = props.roomLogic;
     const isMultiPlayer = false;
     // let playerIndex = 0;
    
-    addBot('bot1');
-    addBot('bot2');
-    const playerIndex = game.join(player);
-    setMyPlayerIndex(playerIndex);
-    addBot('bot3');
-    addBot('bot4');
-    addBot('bot5');
-    addBot('bot6');
-    setTimeout(() => {
-      addBot('bot7');
-    }, 5000);
+    // addBot('bot1');
+    // addBot('bot2');
+    // const playerIndex = game.join(player);
+    // setMyPlayerIndex(playerIndex);
+    // addBot('bot3');
+    // addBot('bot4');
+    // addBot('bot5');
+    // addBot('bot6');
+    // setTimeout(() => {
+    //   addBot('bot7');
+    // }, 5000);
     // const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers(), originDeck);
     player.onMessage = (message: IGameMessage) => {
+      // const message = _message.data;
       console.log(message);
       switch (message.type) {
         case 'state':
@@ -112,8 +117,36 @@ export function Poker(props: IProps) {
               // setCurrentPlayerIndex(last => (last + 1) % players.length);
             // }
           } 
-           else {
-            setActions(message.data.actions);
+           else {   
+            const getActions = (names: string[]) => {
+              const actions: IActions = {};
+              names.forEach(name => {
+                actions[name as keyof IActions] = ()=> action(name)
+              })
+              return actions;
+            }        
+            
+          
+            const action = (name: string) => {
+              props.socket.sendState({
+                type: 'poker',
+                roomName: props.currentRoom,
+                data:{
+                  type: 'move',
+                  data:{
+                    action: name
+                  }
+                }                
+              })
+            }
+                   
+            const m = {
+              ...message,
+                data: {...message.data,
+                actions: getActions(message.data.actions)
+              }              
+            }
+            setActions(m.data.actions);
           }
         break;}
         case 'askOther':
@@ -139,7 +172,7 @@ export function Poker(props: IProps) {
       }
     }
     return () => {
-      game.destroy();
+      // game.destroy();
     }
     // setGame(game);
   }, [props.socket, props.currentRoom, props.roomLogic]);

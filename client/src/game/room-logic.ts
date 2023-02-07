@@ -53,7 +53,7 @@ export class RoomLogic {
         {
           this.players.forEach(player => player?.handleMessage(message));
           // this.currentPlayerIndex = message.data.currentPlayerIndex;
-          this.onMessage(message);
+          this.onMessage?.(message);
           break;}
         case 'ask':
         {
@@ -64,7 +64,7 @@ export class RoomLogic {
               player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
             }
           });
-          this.onMessage(message);
+          this.onMessage?.(message);
           // console.log(currentPlayerIndex);
           // const myPlayerIndex = 0;
           // const withBots = false;
@@ -78,7 +78,7 @@ export class RoomLogic {
         case 'winner':
           {
             this.players.forEach(player => player?.handleMessage(message));
-            alert('Finish');
+            // alert('Finish');
             game.destroy();
             this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
@@ -90,7 +90,7 @@ export class RoomLogic {
           }
         case 'start': {
           this.players.forEach(player => player?.handleMessage(message));
-          this.onMessage(message);
+          this.onMessage?.(message);
         }
         default:
           break;
