@@ -74,9 +74,10 @@ export class Room implements IRoomServer {
         chips: 10000,
         isFold: false,
         isAllIn: false,  
-        cards: []
+        cards: [],
+        isAbsent: false
       }
-    }), originDeck)
+    }), originDeck, 0)
 
     this.gameLogic.onMessage = (message) => {
       console.log(message)

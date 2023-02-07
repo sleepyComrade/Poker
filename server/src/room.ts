@@ -59,8 +59,8 @@ export class Room {
         name: 'Player8',
         cards: [],
       },
-    ].map((player) => ({ ...player, isFold: false, chips: 10000, bet: 0, isAllIn: false }))
-    this.gameLogic = new GameLogic(testPlayers, originDeck)
+    ].map((player) => ({ ...player, isFold: false, chips: 10000, bet: 0, isAllIn: false, isAbsent: false}))
+    this.gameLogic = new GameLogic(testPlayers, originDeck, 0)
     this.gameLogic.onMessage = (message) => {
       console.log(message)
       switch (message.type) {

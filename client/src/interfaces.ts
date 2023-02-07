@@ -5,6 +5,7 @@ export interface IPlayer {
   isAllIn: boolean;
   chips: number;
   bet: number;
+  isAbsent: boolean;
 }
   
 export interface ICard {

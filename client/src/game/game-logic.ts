@@ -20,8 +20,8 @@ export class GameLogic {
   onMessage: (message: IGameMessage) => void;
   banks: IBank[];
 
-  constructor(playerss: IPlayer[], originDeck: ICard[]) {
-    this.players = playerss;
+  constructor(players: IPlayer[], originDeck: ICard[], dealerIndex: number) {
+    this.players = players;
     this.pot = 0;
     // this.deck = [...originDeck];
     this.deck = [
@@ -60,33 +60,39 @@ export class GameLogic {
       ...originDeck
     ].reverse();
     this.tableCards = [];
-    this.dealerIndex = 0;
-    this.initialIndex = this.players.length === 2 ?
-                        this.dealerIndex :
-                        (this.dealerIndex + 3) % this.players.length;
+    this.dealerIndex = dealerIndex;
+    this.initialIndex = this.setInitialIndex(3);
     this.currentPlayerIndex = this.initialIndex;
     this.minimalBet = 100;
     this.banks = [];
-    this.lastInRoundIndex = (this.initialIndex - 1) % this.players.length >= 0 ?
-                            (this.initialIndex - 1) % this.players.length :
-                            this.players.length - 1;
+    this.lastInRoundIndex = this.currentPlayerIndex;
+    this.setLastPlayer(this.lastInRoundIndex);
     this.currentRound = Round.Preflop;
     this.myPlayerIndex = 0;
 
     // this.shuffleCards(this.deck);
     this.players.forEach(player => {
-      player.cards.push(this.deck.pop());
-      player.cards.push(this.deck.pop());
+      if (!player.isAbsent) {
+        player.cards.push(this.deck.pop());
+        player.cards.push(this.deck.pop());
+      }
     })
 
-    this.players.forEach((player, i) => {
-      if (this.players.length > 2) {
-        this.setBlinds(player, i, 1, 2);
-      }
-      if (this.players.length === 2) {
-        this.setBlinds(player, i, 0, 1);
-      }
-    })
+    const smallBlindIndex = this.players.filter(player => !player.isAbsent).length > 2 ?
+                            this.setNextIndex(this.dealerIndex) : this.dealerIndex;
+    const bigBlindIndex = this.players.filter(player => !player.isAbsent).length > 2 ? 
+                          this.setNextIndex(smallBlindIndex) : this.setNextIndex(this.dealerIndex);
+
+    this.setBlinds(smallBlindIndex, bigBlindIndex);
+
+    // this.players.forEach((player, i) => {
+    //   if (this.players.length > 2) {
+    //     this.setBlinds(player, i, 1, 2);
+    //   }
+    //   if (this.players.length === 2) {
+    //     this.setBlinds(player, i, 0, 1);
+    //   }
+    // })
 
     setTimeout(() => {
       this.sendState("start")
@@ -103,16 +109,23 @@ export class GameLogic {
     }
   }
 
-  private setBlinds(player: IPlayer, index: number, small: number, big: number) {
-    if (index === (this.dealerIndex + small) % this.players.length) {
-      player.bet = this.minimalBet / 2;
-      player.chips -= this.minimalBet / 2;
-    }
-    if (index === (this.dealerIndex + big) % this.players.length) {
-      player.bet = this.minimalBet;
-      player.chips -= this.minimalBet;
-    }
+  private setBlinds(small: number, big: number) {
+    this.players[small].bet = this.minimalBet / 2;
+    this.players[small].chips -= this.minimalBet / 2;
+    this.players[big].bet = this.minimalBet;
+    this.players[big].chips -= this.minimalBet;
   }
+
+  // private setBlinds(player: IPlayer, index: number, small: number, big: number) {
+  //   if (index === (this.dealerIndex + small) % this.players.length) {
+  //     player.bet = this.minimalBet / 2;
+  //     player.chips -= this.minimalBet / 2;
+  //   }
+  //   if (index === (this.dealerIndex + big) % this.players.length) {
+  //     player.bet = this.minimalBet;
+  //     player.chips -= this.minimalBet;
+  //   }
+  // }
 
   private setLastPlayer(currentIndex: number) {
     if (this.players.every(player => player.isFold || player.isAllIn)) {
@@ -129,10 +142,10 @@ export class GameLogic {
     this.lastInRoundIndex = getNewLastInRoundIndex(currentIndex);
   }
 
-  private setInitialIndex() {
+  private setInitialIndex(startNum: number) {
     const initialIndex = this.players.length === 2 ?
                          this.dealerIndex :
-                         (this.dealerIndex + 1) % this.players.length;
+                         (this.dealerIndex + startNum) % this.players.length;
     const getNextIndex = (cur: number) => (cur +  1) % this.players.length;
     const getNewInitialIndex = (last: number): number => this.players[getNextIndex(last)].isFold ||
                                                          this.players[getNextIndex(last)].isAllIn ?
@@ -140,6 +153,15 @@ export class GameLogic {
                                                          getNextIndex(last);
     return this.players[initialIndex].isFold || this.players[initialIndex].isAllIn ?
            getNewInitialIndex(initialIndex) : initialIndex;
+  }
+
+  private setNextIndex(index: number) {
+    const getNextIndex = (cur: number) => (cur +  1) % this.players.length;
+    const getNewInitialIndex = (last: number): number => this.players[getNextIndex(last)].isFold ||
+                                                         this.players[getNextIndex(last)].isAllIn ?
+                                                         getNewInitialIndex(getNextIndex(last)) :
+                                                         getNextIndex(last);
+    return getNewInitialIndex(index);
   }
 
   private getRaiseRange() {
@@ -258,7 +280,7 @@ export class GameLogic {
         }, 1000);
         return;
       }
-      const initialIndex = this.setInitialIndex();
+      const initialIndex = this.setInitialIndex(1);
       this.currentPlayerIndex = initialIndex;
       this.setLastPlayer(initialIndex);
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
