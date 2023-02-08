@@ -18,7 +18,9 @@ export class Room {
         setInterval(() => {
             if(Math.random() < 0.2) {
                 const bot = new BotPlayer('bot' + Math.random() * 100000);
-                this.roomLogic.join(bot);
+                if (!this.roomLogic.checkTable()) {
+                  this.roomLogic.join(bot);  
+                }
             }
             if(Math.random() < 0.02) {
                 const bot = [...this.players.values()].filter(it => it instanceof(BotPlayer))[0];

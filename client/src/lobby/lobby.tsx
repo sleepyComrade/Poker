@@ -27,6 +27,7 @@ export default function Lobby({socket, rooms, players, messages, userName, onUse
 
   return (
     <div>
+      <button onClick={()=> onRoomEnter('')}>local</button>
       {currentRoom && <h1>You Are in Room: {currentRoom}</h1>}
       {/* {playerTurn && <h1>Your Turn</h1>} */}
       {currentRoom && (
@@ -67,7 +68,7 @@ export default function Lobby({socket, rooms, players, messages, userName, onUse
             //   })
             socket.sendState({
                 type: 'poker',
-                roomName: rooms,
+                roomName: room,
                 data: {
                     type: 'join',
                     data: {

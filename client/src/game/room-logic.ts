@@ -33,7 +33,6 @@ export class RoomLogic {
     // this.players[this.players.indexOf(player)].
     this.players.splice(this.players.indexOf(player), 1, null);
     console.log('Update: ', this.players);
-    
   }
 
   startGame() {
@@ -107,6 +106,10 @@ export class RoomLogic {
                                                          getNewInitialIndex(getNextIndex(last)) :
                                                          getNextIndex(last);
     return !this.players[curIndex] ? getNewInitialIndex(curIndex) : curIndex;
+  }
+
+  checkTable() {
+    return this.players.every(player => player);
   }
 
   destroy() {
