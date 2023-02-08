@@ -13,7 +13,7 @@ export class Player {
   }
 
   handleMessage(message: IGameMessage) {
-    console.log('Player message: ', message);
+    // console.log('Player message: ', message);
     this.onMessage(message);
   }
 }
@@ -30,7 +30,7 @@ export class BotPlayer {
   }
 
   handleMessage(message: IGameMessage) {
-    console.log('Bot message: ', message);
+    // console.log('Bot message: ', message);
     
     this.onMessage?.(message);
     if (message.type === 'ask') {

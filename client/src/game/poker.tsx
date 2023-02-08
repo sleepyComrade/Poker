@@ -35,7 +35,8 @@ export class PlayerClient extends Player{
   }
 
   handleMessage(message: IGameMessage) {
-    console.log('Player message: ', message);
+    if (message.type === "ask") {
+      console.log('Player message: ', message);
     const getActions = (names: string[]) => {
       const actions: IActions = {};
       names.forEach(name => {
@@ -54,7 +55,7 @@ export class PlayerClient extends Player{
           data:{
             action: name
           }
-        }                
+        }
       })
     }
            
@@ -65,7 +66,10 @@ export class PlayerClient extends Player{
       }              
     }
     
-    this.onMessage(m);
+      this.onMessage(m);
+    } else {
+      this.onMessage(message)
+    }
   }
 }
 
@@ -86,7 +90,10 @@ export function Poker(props: IProps) {
   // const myPlayerIndex = 0;
 
   const [actions, setActions] = useState<IActions>({});
-  const isMultiPlayer = false;
+  const isMultiPlayer = props.currentRoom !== "";
+
+  console.log("room name", props.currentRoom)
+
   useEffect(() => {
     // const roomLogic = new RoomLogic();
     // roomLogic.onMessage = () => {

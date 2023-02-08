@@ -74,6 +74,9 @@ export class RoomLogic {
         case 'ask':
         {
           const currentPlayerIndex = message.data.playerId;
+          if (!this.players[currentPlayerIndex]) {
+            return
+          }
           const a = setTimeout(() => {
             if (message.data.actions.check) {
               message.data.actions.check();
@@ -86,8 +89,11 @@ export class RoomLogic {
           Object.keys(message.data.actions).forEach((actionKey) => {
             q[actionKey as keyof IActions] = () => {
               clearTimeout(a);
-              this.players[currentPlayerIndex].isOut = false;
-              message.data.actions[actionKey]();
+            console.log("ChtoNibud", currentPlayerIndex)
+              if (this.players[currentPlayerIndex]) {
+                this.players[currentPlayerIndex].isOut = false;
+                message.data.actions[actionKey]();
+              }
             }
           })
 
@@ -99,8 +105,8 @@ export class RoomLogic {
             }
           }
 
-          console.log("!!!!!",message)
-          console.log("!!!!!",m)
+          // console.log("!!!!!",message)
+          // console.log("!!!!!",m)
 
           this.players[currentPlayerIndex].handleMessage(m);
           this.players.forEach(player => {

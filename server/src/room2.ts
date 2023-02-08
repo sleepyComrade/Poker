@@ -16,7 +16,7 @@ export class Room {
     constructor(public name: string) {
         this.roomLogic = new RoomLogic();
         setInterval(() => {
-            if(Math.random() < 0.2) {
+            if(Math.random() < 0.02) {
                 const bot = new BotPlayer('bot' + Math.random() * 100000);
                 if (!this.roomLogic.checkTable()) {
                   this.roomLogic.join(bot);  
@@ -70,6 +70,7 @@ export class Room {
                         roomName: this.name,
                     }
                 }))
+                console.log("!!!!!!!!!!!!!!!!!!", this.name)
                 break;
             }
             case "leave": {
