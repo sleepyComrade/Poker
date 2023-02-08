@@ -5,9 +5,11 @@ export class Player {
   onMessage: (message: IGameMessage) => void;
   name: string;
   chips: number;
+  isOut: boolean;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
+    this.isOut = false;
   }
 
   handleMessage(message: IGameMessage) {
@@ -20,9 +22,11 @@ export class BotPlayer {
   name: string;
   onMessage: (message: IGameMessage) => void;
   chips: number;
+  isOut: boolean;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
+    this.isOut = false;
   }
 
   handleMessage(message: IGameMessage) {

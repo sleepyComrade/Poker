@@ -11,9 +11,12 @@ export class RoomLogic {
   isStarted: boolean;
   currentPlayerIndex: number;
   dealerIndex: number;
+  inactivePlayers: Player[];
+  lastState: IGameMessage;
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
+    this.inactivePlayers = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
@@ -21,7 +24,15 @@ export class RoomLogic {
   }
 
   join(player: Player | BotPlayer) {
+    if (this.lastState) {
+      player.handleMessage(this.lastState);
+    }
     const emptyIndex = this.players.indexOf(null);
+    if (emptyIndex < 0) {
+      console.log('Room is full');
+      this.inactivePlayers.push(player);
+      return 0;
+    }
     this.players[emptyIndex] = player;
     if (!this.isStarted) {
       this.startGame();
@@ -30,7 +41,9 @@ export class RoomLogic {
   }
 
   leave(player: Player | BotPlayer) {
-    
+    // if (player) {
+    //   this.inactivePlayers.splice(this.players.indexOf(player), 1, null);
+    // }
     // this.players[this.players.indexOf(player)].
     this.players.splice(this.players.indexOf(player), 1, null);
     console.log('Update: ', this.players);
@@ -38,6 +51,7 @@ export class RoomLogic {
 
   startGame() {
     const activePlayers = this.players.filter(player => player);
+    activePlayers.forEach(player => player.isOut = true)
     if (activePlayers.length < 2) {
       this.isStarted = false;
       return;
@@ -51,26 +65,29 @@ export class RoomLogic {
       switch (message.type) {
         case 'state':
         {
+          this.lastState = message;
           this.players.forEach(player => player?.handleMessage(message));
+          this.inactivePlayers.forEach(player => player?.handleMessage(message));
           // this.currentPlayerIndex = message.data.currentPlayerIndex;
           this.onMessage?.(message);
           break;}
         case 'ask':
         {
+          const currentPlayerIndex = message.data.playerId;
           const a = setTimeout(() => {
             if (message.data.actions.check) {
-              message.data.actions.check()
+              message.data.actions.check();
             } else if (message.data.actions.fold) {
-              message.data.actions.fold()
+              message.data.actions.fold();
             }
           }, 5000)
 
           const q: IActions = {}
-
           Object.keys(message.data.actions).forEach((actionKey) => {
             q[actionKey as keyof IActions] = () => {
-              message.data.actions[actionKey]()
-              clearTimeout(a)
+              clearTimeout(a);
+              this.players[currentPlayerIndex].isOut = false;
+              message.data.actions[actionKey]();
             }
           })
 
@@ -85,13 +102,15 @@ export class RoomLogic {
           console.log("!!!!!",message)
           console.log("!!!!!",m)
 
-          const currentPlayerIndex = message.data.playerId;
           this.players[currentPlayerIndex].handleMessage(m);
           this.players.forEach(player => {
             if (player !== this.players[currentPlayerIndex]) {
               player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
             }
           });
+          this.inactivePlayers.forEach(player => {
+            player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
+          })
           this.onMessage?.(message);
           // console.log(currentPlayerIndex);
           // const myPlayerIndex = 0;
@@ -106,18 +125,28 @@ export class RoomLogic {
         case 'winner':
           {
             this.players.forEach(player => player?.handleMessage(message));
+            this.inactivePlayers.forEach(player => player?.handleMessage(message));
             // alert('Finish');
             game.destroy();
             // this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
             this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
             this.isStarted = false;
+
+            this.players.forEach((player, i) => {
+              if (player && player.isOut) {
+                // this.leave(this.players[i]);
+                this.inactivePlayers.push(this.players.splice(this.players.indexOf(player), 1, null)[0]);
+              }
+            })
+
             this.startGame();
             // setWinInfo(message.data);
             break;
           }
         case 'start': {
           this.players.forEach(player => player?.handleMessage(message));
+          this.inactivePlayers.forEach(player => player?.handleMessage(message));
           this.onMessage?.(message);
         }
         default:

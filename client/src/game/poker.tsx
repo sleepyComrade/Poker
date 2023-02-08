@@ -97,13 +97,7 @@ export function Poker(props: IProps) {
     }
 
     const player = isMultiPlayer? new PlayerClient('name', props.socket, props.currentRoom) : new Player('name');
-    if (isMultiPlayer){
-      
-    } else {
-        //props.socket.onPokerResponse = (msg) => {}
-        props.roomLogic.join(player);
-        props.roomLogic.join(new BotPlayer('bot1'));
-    }
+    
     // const game = new RoomLogic();
     // const player = new Player('name');
     // props.socket.onPokerResponse = (msg) => {
@@ -226,6 +220,15 @@ export function Poker(props: IProps) {
         default:
           break;
       }
+    }
+    if (isMultiPlayer){
+      
+    } else {
+        //props.socket.onPokerResponse = (msg) => {}
+        props.roomLogic.join(player);
+        props.roomLogic.join(new BotPlayer('bot1'));
+        props.roomLogic.join(new BotPlayer('bot2'));
+        props.roomLogic.join(new BotPlayer('bot3'));
     }
     return () => {
       // game.destroy();
