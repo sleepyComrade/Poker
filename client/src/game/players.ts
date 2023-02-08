@@ -5,13 +5,15 @@ export class Player {
   onMessage: (message: IGameMessage) => void;
   name: string;
   chips: number;
+  isOut: boolean;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
+    this.isOut = false;
   }
 
   handleMessage(message: IGameMessage) {
-    console.log('Player message: ', message);
+    // console.log('Player message: ', message);
     this.onMessage(message);
   }
 }
@@ -20,15 +22,17 @@ export class BotPlayer {
   name: string;
   onMessage: (message: IGameMessage) => void;
   chips: number;
+  isOut: boolean;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
+    this.isOut = false;
   }
 
   handleMessage(message: IGameMessage) {
-    console.log('Bot message: ', message);
+    // console.log('Bot message: ', message);
     
-    this.onMessage(message);
+    this.onMessage?.(message);
     if (message.type === 'ask') {
       setTimeout(() => {
         setBotChoise(message);

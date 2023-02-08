@@ -1,6 +1,6 @@
 import * as webSocket from 'websocket'
 import { connection } from 'websocket'
-import { Room } from './room1'
+import { Room } from './room2'
 import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
@@ -8,7 +8,7 @@ import { Player } from './player'
 const WebSocketServer = webSocket.server
 const port = 4002
 
-const rooms: Record<string, IRoomServer> = {}
+const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
   res.writeHead(200, {
@@ -73,37 +73,37 @@ socket.on('request', (request) => {
 
         console.log('on message', rooms[parsed.room])
         Object.keys(rooms[parsed.room].players).forEach((key) => {
-          rooms[parsed.room].players[key].socketConnection.sendUTF(
-            JSON.stringify({
-              type: 'chatMessage',
-              message: parsed.data,
-              author: parsed.author,
-            })
-          )
+          // rooms[parsed.room].players[key].socketConnection.sendUTF(
+          //   JSON.stringify({
+          //     type: 'chatMessage',
+          //     message: parsed.data,
+          //     author: parsed.author,
+          //   })
+          // )
         })
       }
 
-      if (parsed.type === 'connect') {
-        console.log('connect request')
-        console.log(
-          `User Name: ${parsed.userName} room Name: ${parsed.roomName}`
-        )
-        if (rooms[parsed.roomName]) {
-          console.log(rooms[parsed.roomName])
-          if (rooms[parsed.roomName].players[parsed.userName]) {
-            return
-          }
-          rooms[parsed.roomName].players[parsed.userName] = new Player(
-            connection,
-            parsed.userName
-          )
-          Object.values(rooms[parsed.roomName].players).forEach(player => {
-            player.socketConnection.sendUTF(JSON.stringify({type: "roomStateConnections", connections: Object.keys(rooms[parsed.roomName].players)}))
-          })
-          console.log(rooms)
+      // if (parsed.type === 'connect') {
+      //   console.log('connect request')
+      //   console.log(
+      //     `User Name: ${parsed.userName} room Name: ${parsed.roomName}`
+      //   )
+      //   if (rooms[parsed.roomName]) {
+      //     console.log(rooms[parsed.roomName])
+      //     if (rooms[parsed.roomName].players[parsed.userName]) {
+      //       return
+      //     }
+      //     rooms[parsed.roomName].players[parsed.userName] = new Player(
+      //       connection,
+      //       parsed.userName
+      //     )
+      //     Object.values(rooms[parsed.roomName].players).forEach(player => {
+      //       player.socketConnection.sendUTF(JSON.stringify({type: "roomStateConnections", connections: Object.keys(rooms[parsed.roomName].players)}))
+      //     })
+      //     console.log(rooms)
           
-        }
-      }
+      //   }
+      // }
 
       if (parsed.type === 'gameStart') {
         console.log(`game start in room ${parsed.roomName}`)
@@ -121,7 +121,8 @@ socket.on('request', (request) => {
       }
 
       if (parsed.type === "poker") {
-        rooms[parsed.roomName].handleMessage(parsed.data)
+        console.log(parsed.roomName, parsed);
+        rooms[parsed.roomName ].handleMessage(connection, parsed.data)
       }
     }
   })

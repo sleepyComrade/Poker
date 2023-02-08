@@ -11,6 +11,7 @@ export default class Socket {
   onRoomConnectionsUpdate: (connections: string[]) => void
 
   onPokerResponse: (res:any) =>void;
+  onRoomJoin: (res: { playerIndex: number, roomName: string }) => void
   //socketLogic: SocketLogic
 
   constructor() {
@@ -40,10 +41,16 @@ export default class Socket {
       }
       if (parsedData.type === "pocker") {
         //this.onPokerResponse(msg);
+        if (parsedData?.data?.type === "join") {
+          this.onRoomJoin(parsedData.data)
+        }
         this.onPokerResponse(parsedData.data)
       }
       if (parsedData.type === "roomStateConnections") {
         this.onRoomConnectionsUpdate(parsedData.connections)
+      }
+      if(parsedData.type === "join") {
+        this.onRoomJoin(parsedData.data)
       }
     }
     this.webSocket.onopen = () => {

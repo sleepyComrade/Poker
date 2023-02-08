@@ -21,6 +21,58 @@ interface IProps {
   onGameExit: () => void;
 }
 
+export class PlayerClient extends Player{
+  socket: Socket;
+  currentRoom: string;
+  constructor(name: string, socket:Socket, currentRoom: string){
+    super(name);
+    this.socket = socket;
+    this.currentRoom = currentRoom;
+    socket.onPokerResponse = (msg) => {
+      this.handleMessage(msg);
+      console.log(msg);
+    }
+  }
+
+  handleMessage(message: IGameMessage) {
+    if (message.type === "ask") {
+      console.log('Player message: ', message);
+    const getActions = (names: string[]) => {
+      const actions: IActions = {};
+      names.forEach(name => {
+        actions[name as keyof IActions] = ()=> action(name)
+      })
+      return actions;
+    }        
+    
+  
+    const action = (name: string) => {
+      this.socket.sendState({
+        type: 'poker',
+        roomName: this.currentRoom,
+        data:{
+          type: 'move',
+          data:{
+            action: name
+          }
+        }
+      })
+    }
+           
+    const m = {
+      ...message,
+        data: {...message.data,
+        actions: getActions(message.data.actions)
+      }              
+    }
+    
+      this.onMessage(m);
+    } else {
+      this.onMessage(message)
+    }
+  }
+}
+
 export function Poker(props: IProps) {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers());
   const [pot, setPot] = useState(0);
@@ -38,6 +90,9 @@ export function Poker(props: IProps) {
   // const myPlayerIndex = 0;
 
   const [actions, setActions] = useState<IActions>({});
+  const isMultiPlayer = props.currentRoom !== "";
+
+  console.log("room name", props.currentRoom)
 
   useEffect(() => {
     // const roomLogic = new RoomLogic();
@@ -47,38 +102,46 @@ export function Poker(props: IProps) {
     if (!props.socket || !props.roomLogic){
       return () => {}
     }
+
+    const player = isMultiPlayer? new PlayerClient('name', props.socket, props.currentRoom) : new Player('name');
+    
     // const game = new RoomLogic();
-    const player = new Player('name');
-    const addBot = (name: string) => {
-      const bot = new BotPlayer(name);
-      bot.onMessage = (message: IGameMessage) => {
-        switch (message.type) {
-          case 'ask':
-            setActions({});
-            break;
-          default:
-            break;
-        }
-      };
-      game.join(bot);
-    }
-    const game = props.roomLogic;
-    const isMultiPlayer = false;
+    // const player = new Player('name');
+    // props.socket.onPokerResponse = (msg) => {
+    //   player.handleMessage(msg);
+    //   console.log(msg);
+    // }
+    // const addBot = (name: string) => {
+    //   const bot = new BotPlayer(name);
+    //   bot.onMessage = (message: IGameMessage) => {
+    //     switch (message.type) {
+    //       case 'ask':
+    //         setActions({});
+    //         break;
+    //       default:
+    //         break;
+    //     }
+    //   };
+    //   game.join(bot);
+    // }
+    // const game = props.roomLogic;
+    // const isMultiPlayer = false;
     // let playerIndex = 0;
    
-    addBot('bot1');
-    addBot('bot2');
-    const playerIndex = game.join(player);
-    setMyPlayerIndex(playerIndex);
-    addBot('bot3');
-    addBot('bot4');
-    addBot('bot5');
-    addBot('bot6');
-    setTimeout(() => {
-      addBot('bot7');
-    }, 5000);
+    // addBot('bot1');
+    // addBot('bot2');
+    // const playerIndex = game.join(player);
+    // setMyPlayerIndex(playerIndex);
+    // addBot('bot3');
+    // addBot('bot4');
+    // addBot('bot5');
+    // addBot('bot6');
+    // setTimeout(() => {
+    //   addBot('bot7');
+    // }, 5000);
     // const game = isMultiPlayer ? new SocketLogic(props.socket, props.currentRoom) : new GameLogic(testPlayers(), originDeck);
     player.onMessage = (message: IGameMessage) => {
+      // const message = _message.data;
       console.log(message);
       switch (message.type) {
         case 'state':
@@ -111,8 +174,35 @@ export function Poker(props: IProps) {
             // } else {
               // setCurrentPlayerIndex(last => (last + 1) % players.length);
             // }
-          } 
-           else {
+          } else {   
+            // const getActions = (names: string[]) => {
+            //   const actions: IActions = {};
+            //   names.forEach(name => {
+            //     actions[name as keyof IActions] = ()=> action(name)
+            //   })
+            //   return actions;
+            // }        
+            
+          
+            // const action = (name: string) => {
+            //   props.socket.sendState({
+            //     type: 'poker',
+            //     roomName: props.currentRoom,
+            //     data:{
+            //       type: 'move',
+            //       data:{
+            //         action: name
+            //       }
+            //     }                
+            //   })
+            // }
+                   
+            // const m = {
+            //   ...message,
+            //     data: {...message.data,
+            //     actions: getActions(message.data.actions)
+            //   }              
+            // }
             setActions(message.data.actions);
           }
         break;}
@@ -138,8 +228,17 @@ export function Poker(props: IProps) {
           break;
       }
     }
+    if (isMultiPlayer){
+      
+    } else {
+        //props.socket.onPokerResponse = (msg) => {}
+        props.roomLogic.join(player);
+        props.roomLogic.join(new BotPlayer('bot1'));
+        props.roomLogic.join(new BotPlayer('bot2'));
+        props.roomLogic.join(new BotPlayer('bot3'));
+    }
     return () => {
-      game.destroy();
+      // game.destroy();
     }
     // setGame(game);
   }, [props.socket, props.currentRoom, props.roomLogic]);
@@ -163,8 +262,8 @@ export function Poker(props: IProps) {
       <button onClick={() => {
         setMyPlayerIndex(last => (last + 1) % players.length)
       }}>
-hello
-      </button> 
+        hello
+      </button>
       <div>
         Current Player {currentPlayerIndex}
       </div>
