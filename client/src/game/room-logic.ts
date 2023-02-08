@@ -1,5 +1,5 @@
 import { GameLogic } from './game-logic';
-import { IGameMessage, IPlayer } from '../interfaces';
+import { IActions, IGameMessage, IPlayer } from '../interfaces';
 import { testPlayers, originDeck } from './players-and-deck';
 import { setBotChoise } from './bot-logic';
 import { Player, BotPlayer, PlayerState } from './players';
@@ -30,6 +30,7 @@ export class RoomLogic {
   }
 
   leave(player: Player | BotPlayer) {
+    
     // this.players[this.players.indexOf(player)].
     this.players.splice(this.players.indexOf(player), 1, null);
     console.log('Update: ', this.players);
@@ -56,8 +57,36 @@ export class RoomLogic {
           break;}
         case 'ask':
         {
+          const a = setTimeout(() => {
+            if (message.data.actions.check) {
+              message.data.actions.check()
+            } else if (message.data.actions.fold) {
+              message.data.actions.fold()
+            }
+          }, 5000)
+
+          const q: IActions = {}
+
+          Object.keys(message.data.actions).forEach((actionKey) => {
+            q[actionKey as keyof IActions] = () => {
+              message.data.actions[actionKey]()
+              clearTimeout(a)
+            }
+          })
+
+          const m = {
+            ...message,
+            data: {
+              ...message.data,
+              actions: q
+            }
+          }
+
+          console.log("!!!!!",message)
+          console.log("!!!!!",m)
+
           const currentPlayerIndex = message.data.playerId;
-          this.players[currentPlayerIndex].handleMessage(message);
+          this.players[currentPlayerIndex].handleMessage(m);
           this.players.forEach(player => {
             if (player !== this.players[currentPlayerIndex]) {
               player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
@@ -79,7 +108,7 @@ export class RoomLogic {
             this.players.forEach(player => player?.handleMessage(message));
             // alert('Finish');
             game.destroy();
-            this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
+            // this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
             this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
             this.isStarted = false;
