@@ -68,6 +68,7 @@ export class Room {
                     data: {
                         playerIndex: playerIndex,
                         roomName: this.name,
+                        succes: true
                     }
                 }))
                 console.log("!!!!!!!!!!!!!!!!!!", this.name)

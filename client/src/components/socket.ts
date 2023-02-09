@@ -11,7 +11,7 @@ export default class Socket {
   onRoomConnectionsUpdate: (connections: string[]) => void
 
   onPokerResponse: (res:any) =>void;
-  onRoomJoin: (res: { playerIndex: number, roomName: string }) => void
+  onRoomJoin: (res: { playerIndex: number, roomName: string, succes: boolean }) => void
   //socketLogic: SocketLogic
 
   constructor() {

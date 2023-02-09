@@ -20,6 +20,7 @@ interface IProps {
   currentRoom: string;
   roomLogic: RoomLogic;
   onGameExit: () => void;
+  playerIndex: number
 }
 
 export function Poker(props: IProps) {
@@ -32,7 +33,7 @@ export function Poker(props: IProps) {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [winInfo, setWinInfo] = useState(null);
   const [round, setRound] = useState(0);
-  const [myPlayerIndex, setMyPlayerIndex] = useState(0)
+  const [myPlayerIndex, setMyPlayerIndex] = useState(props.playerIndex)
   // const [minimalBet, setMinimalBet] = useState(100);
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
   // const [currentRound, setCurrentRound] = useState(Round.Preflop);

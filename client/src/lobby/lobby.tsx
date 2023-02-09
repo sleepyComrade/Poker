@@ -12,7 +12,7 @@ type LobbyProps = {
   messages: Array<IMessage>;
   userName: string;
   onUserName: (a: string) => void;
-  onRoomEnter: (room: string) => void;
+  onRoomEnter: (room: string, playerIndex: number) => void;
 }
 
 export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter }: LobbyProps) {
@@ -69,26 +69,22 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                 {!currentRoom &&
                   rooms.map((room, i) => (
                     <p className="lobby__rooms-item" key={i} onClick={() => {
-                      if (!userName) {
-                        return
-                      }
-                      onRoomEnter(room);
-                      //   setCurrentRoom(room)
-                      //   socket.sendState({
-                      //     type: 'connect',
-                      //     roomName: rooms,
-                      //     userName: userName,
-                      //   })
-                      socket.sendState({
+                      const res = socket.sendState({
                         type: 'poker',
                         roomName: room,
                         data: {
-                          type: 'join',
-                          data: {
-                            name: userName,
-                          }
+                            type: 'join',
+                            data: {
+                                name: userName,
+                            }
                         },
                         userName: userName,
+                      })
+        
+                      res.then(data => {
+                        console.log("Wewewewewe", res)
+                        onRoomEnter(room, data.playerIndex)
+                        console.log("Resoponse; reqID", data.requestId)
                       })
                     }} > room {room}</p>
                   ))}
