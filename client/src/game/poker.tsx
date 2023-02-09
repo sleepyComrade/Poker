@@ -12,6 +12,7 @@ import '../style.css';
 import { SocketLogic } from "./socket-logic"
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
+import { PlayerClient } from "./player-client";
 
 interface IProps {
   name: string;
@@ -21,67 +22,14 @@ interface IProps {
   onGameExit: () => void;
 }
 
-export class PlayerClient extends Player {
-  socket: Socket;
-  currentRoom: string;
-  constructor(name: string, socket: Socket, currentRoom: string) {
-    super(name);
-    this.socket = socket;
-    this.currentRoom = currentRoom;
-    socket.onPokerResponse = (msg) => {
-      this.handleMessage(msg);
-      console.log(msg);
-    }
-  }
-
-  handleMessage(message: IGameMessage<any>) {
-    if (message.type === "ask") {
-      console.log('Player message: ', message);
-      const data: IDataAsk = message.data;
-      const getActions = (names: string[]) => {
-        const actions: IActions = {};
-        names.forEach(name => {
-          actions[name as keyof IActions] = () => action(name)
-        })
-        return actions;
-      }
-
-      const action = (name: string) => {
-        this.socket.sendState({
-          type: 'poker',
-          roomName: this.currentRoom,
-          data: {
-            type: 'move',
-            data: {
-              action: name
-            }
-          }
-        })
-      }
-
-      const m = {
-        ...message,
-        data: {
-          ...message.data,         
-          actions: getActions(message.data.actions)
-        }
-      }
-
-      this.onMessage(m);
-    } else {
-      this.onMessage(message)
-    }
-  }
-}
-
 export function Poker(props: IProps) {
   const [players, setPlayers] = useState<IPlayer[]>(testPlayers());
   const [pot, setPot] = useState(0);
   // const [deck, setDeck] = useState<ICard[]>([]);
   const [tableCards, setTableCards] = useState<ICard[]>([]);
   const [dealerIndex, setDealerIndex] = useState(0);
-  const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 3) % players.length;
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(initialIndex);
+  // const initialIndex = players.length === 2 ? dealerIndex : (dealerIndex + 3) % players.length;
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [winInfo, setWinInfo] = useState(null);
   const [round, setRound] = useState(0);
   const [myPlayerIndex, setMyPlayerIndex] = useState(0)
@@ -91,7 +39,10 @@ export function Poker(props: IProps) {
   // const myPlayerIndex = 0;
 
   const [actions, setActions] = useState<IActions>({});
+  const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
   const isMultiPlayer = props.currentRoom !== "";
+
+  // props.roomLogic.onPlayerLeave = () => setActions({});
 
   console.log("room name", props.currentRoom)
 
@@ -105,7 +56,7 @@ export function Poker(props: IProps) {
     }
 
     const player = isMultiPlayer ? new PlayerClient('name', props.socket, props.currentRoom) : new Player('name');
-
+    setClientPlayer(player);
     // const game = new RoomLogic();
     // const player = new Player('name');
     // props.socket.onPokerResponse = (msg) => {
@@ -215,6 +166,7 @@ export function Poker(props: IProps) {
           {
             const data: IDataAskOther = message.data;
             setCurrentPlayerIndex(data.playerId);
+            setActions({});
             break;
           }
         case 'winner':
@@ -230,6 +182,16 @@ export function Poker(props: IProps) {
           setWinInfo(null);
           setPlayers(testPlayers());
           setDealerIndex(last => (last + 1) % testPlayers().length);
+          break;
+        }
+        case 'leave': {
+          setActions({});
+          break;
+        }
+        case 'join': {
+          setActions({});
+          setPlayers(message.data.players);
+          break;
         }
         default:
           break;
@@ -238,11 +200,17 @@ export function Poker(props: IProps) {
     if (isMultiPlayer) {
 
     } else {
-      //props.socket.onPokerResponse = (msg) => {}
-      props.roomLogic.join(player);
-      props.roomLogic.join(new BotPlayer('bot1'));
-      props.roomLogic.join(new BotPlayer('bot2'));
-      props.roomLogic.join(new BotPlayer('bot3'));
+        //props.socket.onPokerResponse = (msg) => {}
+        props.roomLogic.join(player);
+        setTimeout(() => {
+          props.roomLogic.join(new BotPlayer('bot1'));
+        }, 1000);
+        setTimeout(() => {
+          props.roomLogic.join(new BotPlayer('bot2'));
+        }, 1000);
+        // props.roomLogic.join(new BotPlayer('bot1'));
+        // props.roomLogic.join(new BotPlayer('bot2'));
+        // props.roomLogic.join(new BotPlayer('bot3'));
     }
     return () => {
       // game.destroy();
@@ -252,8 +220,11 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[0]}
-        currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => props.onGameExit()} />
+      <Game players={players} actions={actions} cards={tableCards} player={players[0]} 
+        currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => {
+          props.onGameExit();
+          props.roomLogic.leave(clientPlayer);
+        }} />
 
       <button onClick={() => setWinInfo({})}>Test</button>
       <button onClick={() => {

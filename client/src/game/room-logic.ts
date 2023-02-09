@@ -13,6 +13,7 @@ export class RoomLogic {
   dealerIndex: number;
   inactivePlayers: Player[];
   lastState: IGameMessage<any>;
+  onPlayerLeave: () => void;
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
@@ -21,19 +22,39 @@ export class RoomLogic {
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
     this.startGame();
+
+    // setInterval(() => {
+    //   if(Math.random() < 0.02) {
+    //       const bot = new BotPlayer('bot' + Math.random() * 100000);
+    //       if (!this.checkTable()) {
+    //         this.join(bot);  
+    //       }
+    //   }
+    //   if(Math.random() < 0.02) {
+    //     const bots = this.players.filter(it => it instanceof(BotPlayer));
+    //     const bot = bots[Math.floor(Math.random() * bots.length)];
+    //     if(bot) {
+    //         this.leave(bot);
+    //     }
+    //   }
+    // }, 5000);
   }
 
   join(player: Player | BotPlayer) {
-    if (this.lastState) {
-      player.handleMessage(this.lastState);
-    }
-    const emptyIndex = this.players.indexOf(null);
+    const emptyIndex = this.players.indexOf(null);  
     if (emptyIndex < 0) {
       console.log('Room is full');
       this.inactivePlayers.push(player);
       return 0;
     }
     this.players[emptyIndex] = player;
+    if (this.lastState) {
+      player.handleMessage(this.lastState);
+    } else if (!this.isStarted) {
+      this.players.filter(player => player).forEach(player => {
+        player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
+      })
+    }
     if (!this.isStarted) {
       this.startGame();
     }
@@ -45,15 +66,21 @@ export class RoomLogic {
     //   this.inactivePlayers.splice(this.players.indexOf(player), 1, null);
     // }
     // this.players[this.players.indexOf(player)].
-    this.players.splice(this.players.indexOf(player), 1, null);
+    if (this.inactivePlayers.includes(player)) {
+      this.inactivePlayers.splice(this.players.indexOf(player), 1);
+    }
+    if (this.players.includes(player)) {
+      this.players.splice(this.players.indexOf(player), 1, null);
+    }
     console.log('Update: ', this.players);
   }
 
   startGame() {
     const activePlayers = this.players.filter(player => player);
-    activePlayers.forEach(player => player.isOut = true)
+    activePlayers.forEach(player => player.isOut = true);
     if (activePlayers.length < 2) {
       this.isStarted = false;
+      activePlayers.forEach(player => player.isOut = false);
       return;
     }
     this.isStarted = true;
@@ -66,8 +93,7 @@ export class RoomLogic {
         case 'state':
         {
           this.lastState = message;
-          this.players.forEach(player => player?.handleMessage(message));
-          this.inactivePlayers.forEach(player => player?.handleMessage(message));
+          this.handleMessage(message);
           // this.currentPlayerIndex = message.data.currentPlayerIndex;
           this.onMessage?.(message);
           break;}
@@ -78,19 +104,22 @@ export class RoomLogic {
           if (!this.players[currentPlayerIndex]) {
             return
           }
-          const a = setTimeout(() => {
+          let a = setTimeout(() => {
             if (data.actions.check) {
               data.actions.check();
             } else if (data.actions.fold) {
               data.actions.fold();
             }
+            a = null;
           }, 5000)
 
           const q: IActions = {}
           Object.keys(data.actions).forEach((actionKey) => {
             q[actionKey as keyof IActions] = () => {
+              if (a === null) return;
               clearTimeout(a);
-            console.log("ChtoNibud", currentPlayerIndex)
+              a = null;
+            console.log("ChtoNibud", currentPlayerIndex);
               if (this.players[currentPlayerIndex]) {
                 this.players[currentPlayerIndex].isOut = false;
                 message.data.actions[actionKey]();
@@ -105,9 +134,6 @@ export class RoomLogic {
               actions: q
             }
           }
-
-          // console.log("!!!!!",message)
-          // console.log("!!!!!",m)
 
           this.players[currentPlayerIndex].handleMessage(m);
           this.players.forEach(player => {
@@ -131,29 +157,29 @@ export class RoomLogic {
         break;}
         case 'winner':
           {
-            this.players.forEach(player => player?.handleMessage(message));
-            this.inactivePlayers.forEach(player => player?.handleMessage(message));
+            this.handleMessage(message);
             // alert('Finish');
             game.destroy();
             // this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
-            this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
-            this.isStarted = false;
-
             this.players.forEach((player, i) => {
-              if (player && player.isOut) {
+              if (player instanceof Player && player.isOut) {
                 // this.leave(this.players[i]);
-                this.inactivePlayers.push(this.players.splice(this.players.indexOf(player), 1, null)[0]);
+                const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
+                leftPlayer.handleMessage({ type: 'leave', data: {}});
+                this.inactivePlayers.push(leftPlayer);
               }
             })
+
+            this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
+            this.isStarted = false;
 
             this.startGame();
             // setWinInfo(message.data);
             break;
           }
         case 'start': {
-          this.players.forEach(player => player?.handleMessage(message));
-          this.inactivePlayers.forEach(player => player?.handleMessage(message));
+          this.handleMessage(message);
           this.onMessage?.(message);
         }
         default:
@@ -163,6 +189,11 @@ export class RoomLogic {
       // this.players[this.currentPlayerIndex].handleMessage(message);
       // this.players.forEach(player => player.handleMessage(message));
     }
+  }
+
+  handleMessage(message: IGameMessage) {
+    this.players.forEach(player => player?.handleMessage(message));
+    this.inactivePlayers.forEach(player => player?.handleMessage(message));
   }
 
   setDealerIndex(curIndex: number) {
