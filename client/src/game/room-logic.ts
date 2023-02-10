@@ -64,6 +64,7 @@ export class RoomLogic {
       console.log('Room is full');
       if (player instanceof Player) {
         // this.inactivePlayers.push(player);
+        this.expectant = player;
       }
       return 0;
     }
@@ -207,6 +208,7 @@ export class RoomLogic {
 
             if (this.expectant) {
               this.players[0] = this.expectant;
+              this.players[0].handleMessage({type: 'get back', data: {}});
               this.expectant = null;
             }
 

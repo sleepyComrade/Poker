@@ -42,6 +42,7 @@ export function Poker(props: IProps) {
   const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
   const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
   const [isClientOut, setIsClientOut] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
   // const isMultiPlayer = props.currentRoom !== "";
 
   // props.roomLogic.onPlayerLeave = () => setActions({});
@@ -196,6 +197,10 @@ export function Poker(props: IProps) {
           setPlayers(message.data.players);
           break;
         }
+        case 'get back': {
+          setIsWaiting(false);
+          break;
+        }
         default:
           break;
       }
@@ -229,8 +234,9 @@ export function Poker(props: IProps) {
           props.roomLogic.leave(clientPlayer);
         }} onBackToGame={() => {
           setIsClientOut(false);
+          setIsWaiting(true);
           props.roomLogic.backToGame(clientPlayer);
-        }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} />
+        }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} isWaiting={isWaiting} />
 
       <button onClick={() => setWinInfo({})}>Test</button>
       <button onClick={() => {

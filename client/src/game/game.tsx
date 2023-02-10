@@ -19,9 +19,10 @@ type GameProps = {
     onBackToGame: () => void;
     isMultiPlayer: boolean;
     isClientOut: boolean;
+    isWaiting: boolean;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting }: GameProps) {
     const _players = [...players];
     const playerIndex = _players.indexOf(player) + 3;
     shift(_players, playerIndex);
@@ -36,6 +37,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
                 onBackToGame();
                 console.log(6);
             }}>Back to Game</button>}
+            { isWaiting && <span style={{color: 'white'}}>You will join on the next game</span>}
             <div className="game__wrapper">            
                 <div className="game__center-container">
                     <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]} 
