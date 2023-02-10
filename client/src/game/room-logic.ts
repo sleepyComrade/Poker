@@ -16,23 +16,36 @@ export class RoomLogic {
   lastState: IGameMessage<any>;
   onPlayerLeave: () => void;
   expectant: Player;
+  playersToLeave: BotPlayer[];
+  botNames: string[];
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
+    this.playersToLeave = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
+    this.botNames = ['James Bot', 'Botman', 'Bad Bot', 'roBot', 'BroBot', 'Bothead', 'Botzilla', 'Bottenstein', 'Bot3000', 'Botty McBot', 'Botzy', 'Botlet', 'Botburst', 'Botzap', 'Botilliant', 'Botivator', 'Botronaut', 'Botomize'];
     this.startGame();
 
     setInterval(() => {
       if(Math.random() < 0.2) {
-          const bot = new BotPlayer('bot' + Math.random() * 100000);
-          if (!this.checkTable()) {
-            this.join(bot);  
-          }
+        const getBotName = () => {
+          let name = this.botNames[Math.floor(Math.random() * this.botNames.length)];
+          if (this.players.map(player => player ? player.name : null).includes(name)) {
+            name = getBotName();
+          } 
+          return name;
+        };
+        // const bot = new BotPlayer('bot' + Math.random() * 100000);
+        const botName = getBotName();
+        const bot = new BotPlayer(botName ? botName : 'Bot');
+        if (!this.checkTable()) {
+          this.join(bot);  
+        }
       }
-      if(Math.random() < 0.02) {
+      if(Math.random() < 0.1) {
         const bots = this.players.filter(it => it instanceof(BotPlayer));
         const bot = bots[Math.floor(Math.random() * bots.length)];
         if(bot) {
@@ -43,17 +56,21 @@ export class RoomLogic {
   }
 
   join(player: Player | BotPlayer | PlayerClient) {
+    if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
+      return 0;
+    }
     const emptyIndex = this.players.indexOf(null);  
     if (emptyIndex < 0) {
       console.log('Room is full');
       if (player instanceof Player) {
-        this.inactivePlayers.push(player);
+        // this.inactivePlayers.push(player);
       }
       return 0;
     }
     if (player instanceof Player && this.players[0] && this.players.length > 2) {
       this.expectant = player;
-    } else if (player instanceof Player && this.players[0] && this.players.length === 1) {
+    } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
+               !this.players[0]) {
       this.players[0] = player;
     } else {
       this.players[emptyIndex] = player;
@@ -76,19 +93,14 @@ export class RoomLogic {
       this.inactivePlayers.splice(this.players.indexOf(player), 1);
     }
     if (this.players.includes(player)) {
-      this.players.splice(this.players.indexOf(player), 1, null);
+      this.playersToLeave.push(player);
     }
     console.log('Update: ', this.players);
   }
 
   backToGame(player: Player) {
     if (this.inactivePlayers.includes(player)) {      
-      this.inactivePlayers.splice(this.players.indexOf(player), 1);
-      if (this.players[0]) {
-        this.expectant = player;
-      } else {
-        this.players[0] = player;
-      }
+      this.expectant = this.inactivePlayers.splice(this.players.indexOf(player), 1)[0];
     }
   }
 
@@ -179,6 +191,11 @@ export class RoomLogic {
             game.destroy();
             // this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
+            this.playersToLeave.forEach(player => {
+              this.players.splice(this.players.indexOf(player), 1, null);
+              this.playersToLeave = [];
+            })
+
             this.players.forEach((player, i) => {
               if (player instanceof Player && player.isOut) {
                 // this.leave(this.players[i]);
@@ -216,6 +233,9 @@ export class RoomLogic {
   handleMessage(message: IGameMessage) {
     this.players.forEach(player => player?.handleMessage(message));
     this.inactivePlayers.forEach(player => player?.handleMessage(message));
+    if (this.expectant) {
+      this.expectant.handleMessage(message);
+    }
   }
 
   setDealerIndex(curIndex: number) {
