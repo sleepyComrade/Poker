@@ -1,18 +1,18 @@
 import { GameLogic } from './game-logic';
-import { IActions, IGameMessage, IPlayer } from '../interfaces';
+import { IActions, IGameMessage, IPlayer, IDataState, IDataAsk } from '../interfaces';
 import { testPlayers, originDeck } from './players-and-deck';
 import { setBotChoise } from './bot-logic';
 import { Player, BotPlayer, PlayerState } from './players';
 
 export class RoomLogic {
   condition: boolean;
-  onMessage: (message: IGameMessage) => void;
+  onMessage: (message: IGameMessage<any>) => void;
   players: (Player | BotPlayer | null)[];
   isStarted: boolean;
   currentPlayerIndex: number;
   dealerIndex: number;
   inactivePlayers: Player[];
-  lastState: IGameMessage;
+  lastState: IGameMessage<any>;
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
@@ -60,7 +60,7 @@ export class RoomLogic {
     const game = new GameLogic(this.players.map(player => player ?
                                new PlayerState(false, false, player.name, player.chips) :
                                new PlayerState(true, true, 'Empty', 0)), originDeck, this.dealerIndex);
-    game.onMessage = (message: IGameMessage) => {
+    game.onMessage = (message: IGameMessage<any>) => {
       console.log('Message: ', message);
       switch (message.type) {
         case 'state':
@@ -73,20 +73,21 @@ export class RoomLogic {
           break;}
         case 'ask':
         {
-          const currentPlayerIndex = message.data.playerId;
+          const data: IDataAsk = message.data;
+          const currentPlayerIndex = data.playerId;
           if (!this.players[currentPlayerIndex]) {
             return
           }
           const a = setTimeout(() => {
-            if (message.data.actions.check) {
-              message.data.actions.check();
-            } else if (message.data.actions.fold) {
-              message.data.actions.fold();
+            if (data.actions.check) {
+              data.actions.check();
+            } else if (data.actions.fold) {
+              data.actions.fold();
             }
           }, 5000)
 
           const q: IActions = {}
-          Object.keys(message.data.actions).forEach((actionKey) => {
+          Object.keys(data.actions).forEach((actionKey) => {
             q[actionKey as keyof IActions] = () => {
               clearTimeout(a);
             console.log("ChtoNibud", currentPlayerIndex)

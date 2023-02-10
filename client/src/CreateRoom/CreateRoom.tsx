@@ -11,22 +11,26 @@ export const CreateRoom = (props: IProps) => {
 
   return (
     <div className='create-room__wrapper'>
-      <input className='create-room__input-name'
-        type='text'
-        placeholder='Room Name'
-        onChange={(e) => {
-          setRoomName(e.target.value)
-        }}
-      />
-      <button className='btn create-room__button-create'
-        onClick={() => {
-          if (roomName.length > 0) {
-            props.onSubmit(roomName)
-          }
-        }}
-      >
-        Create
-      </button>
+      <label className="create-room__label create-room__label--room-name" htmlFor="rom-name">Create room: </label>
+      <div className="create-room__inner-wrapper">
+        <input className='create-room__input create-room__input--name' type='text' id='room-name'
+          placeholder='Room Name'
+          onChange={(e) => {
+            setRoomName(e.target.value)
+          }}
+        />
+        <button className='btn create-room__button create-room__button--create'
+          onClick={() => {
+            if (roomName.length > 0) {
+              props.onSubmit(roomName)
+            }
+          }}
+        >
+          Create
+        </button>
+
+      </div>
+
     </div>
   )
 }

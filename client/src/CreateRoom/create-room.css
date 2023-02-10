@@ -1,27 +1,32 @@
 .create-room__wrapper{
-    width: 950px;
     margin: 0 auto;
-    background-color: aquamarine;
-    padding: 20px 0;
-    border: 1px solid green;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    border-radius: 5px;
 }
 
-.create-room__input-name {
+.create-room__label--room-name {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.create-room__input--name {
     width: 200px;
     padding: 10px;
     outline: none;
     border: 1px solid green;
     margin-right: 20px;
+    border-radius: 5px;
 }
 
-.create-room__button-create {
-    width: 70px;
-    background-color: green;
-    color: #fff;
-    padding: 5px;
+.create-room__button--create {
+  width: 150px;
+  padding: 10px 5px;
+  font-size: 20px;
+  color: #fff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  background-color: green;
+  background: linear-gradient(to bottom, #0dce07 0%, #085303 100%);
+  border-bottom: 1px solid #085303;
 }

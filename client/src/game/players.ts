@@ -1,8 +1,8 @@
 import { setBotChoise } from './bot-logic';
-import { ICard, IGameMessage } from '../interfaces';
+import { ICard, IGameMessage, IDataState, IDataAsk } from '../interfaces';
 
 export class Player {
-  onMessage: (message: IGameMessage) => void;
+  onMessage: (message: IGameMessage<any>) => void;
   name: string;
   chips: number;
   isOut: boolean;
@@ -12,15 +12,15 @@ export class Player {
     this.isOut = false;
   }
 
-  handleMessage(message: IGameMessage) {
-    // console.log('Player message: ', message);
+  handleMessage(message: IGameMessage<any>) {
+    console.log('Player message: ', message);
     this.onMessage(message);
   }
 }
 
 export class BotPlayer {
   name: string;
-  onMessage: (message: IGameMessage) => void;
+  onMessage: (message: IGameMessage<any>) => void;
   chips: number;
   isOut: boolean;
   constructor(name: string) {
@@ -29,8 +29,8 @@ export class BotPlayer {
     this.isOut = false;
   }
 
-  handleMessage(message: IGameMessage) {
-    // console.log('Bot message: ', message);
+  handleMessage(message: IGameMessage<any>) {
+    console.log('Bot message: ', message);
     
     this.onMessage?.(message);
     if (message.type === 'ask') {

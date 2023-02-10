@@ -12,12 +12,12 @@ export class GameLogic {
   tableCards: ICard[];
   dealerIndex: number;
   initialIndex: number;
-  currentPlayerIndex: any;
+  currentPlayerIndex: number;
   minimalBet: number;
   lastInRoundIndex: number;
   currentRound: Round;
   myPlayerIndex: number;
-  onMessage: (message: IGameMessage) => void;
+  onMessage: (message: IGameMessage<any>) => void;
   banks: IBank[];
 
   constructor(players: IPlayer[], originDeck: ICard[], dealerIndex: number) {
