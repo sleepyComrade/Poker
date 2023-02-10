@@ -1,6 +1,6 @@
 import { Player } from './players';
 import Socket from "../components/socket";
-import { IGameMessage, IActions } from '../interfaces';
+import { IGameMessage, IActions, IDataAsk } from '../interfaces';
 
 export class PlayerClient extends Player{
   socket: Socket;
@@ -15,37 +15,37 @@ export class PlayerClient extends Player{
     }
   }
 
-  handleMessage(message: IGameMessage) {
+  handleMessage(message: IGameMessage<any>) {
     if (message.type === "ask") {
       console.log('Player message: ', message);
-    const getActions = (names: string[]) => {
-      const actions: IActions = {};
-      names.forEach(name => {
-        actions[name as keyof IActions] = ()=> action(name)
-      })
-      return actions;
-    }        
+      const data: { actions: string[], playerId: number } = message.data;
+      const getActions = (names: string[]) => {
+        const actions: IActions = {};
+        names.forEach(name => {
+          actions[name as keyof IActions] = ()=> action(name)
+        })
+        return actions;
+      }        
     
-  
-    const action = (name: string) => {
-      this.socket.sendState({
-        type: 'poker',
-        roomName: this.currentRoom,
-        data:{
-          type: 'move',
+      const action = (name: string) => {
+        this.socket.sendState({
+          type: 'poker',
+          roomName: this.currentRoom,
           data:{
-            action: name
+            type: 'move',
+            data:{
+              action: name
+            }
           }
-        }
-      })
-    }
-           
-    const m = {
-      ...message,
-        data: {...message.data,
-        actions: getActions(message.data.actions)
-      }              
-    }
+        })
+      }
+             
+      const m = {
+        ...message,
+          data: {...data,
+          actions: getActions(data.actions)
+        }              
+      }
     
       this.onMessage(m);
     } else {

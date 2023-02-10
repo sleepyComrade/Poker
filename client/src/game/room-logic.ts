@@ -237,7 +237,7 @@ export class RoomLogic {
     }
   }
 
-  handleMessage(message: IGameMessage) {
+  handleMessage(message: IGameMessage<any>) {
     this.players.forEach(player => player?.handleMessage(message));
     this.inactivePlayers.forEach(player => player?.handleMessage(message));
     if (this.expectant) {
