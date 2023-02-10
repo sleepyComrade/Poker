@@ -1,7 +1,7 @@
-import { IGameMessage } from '../interfaces';
+import { IGameMessage, IDataAsk, IActions } from '../interfaces';
 
-export const setBotChoise = (message: IGameMessage) => {
-  const actions1 = message.data.actions;
+export const setBotChoise = (message: IGameMessage<IDataAsk>) => {
+  const actions1: IActions = message.data.actions;
   console.log('Bot inside message: ', message);
   console.log('Bot actions: ', actions1);
   const num = Math.floor(Math.random() * Object.keys(actions1).length);
@@ -13,7 +13,7 @@ const testList = [];
 
 export const createStaticChoise = (moveList: string[]) => {
   let move = 0;
-  return (message: IGameMessage) => {
+  return (message: IGameMessage<any>) => {
 
   }
 }

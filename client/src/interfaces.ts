@@ -13,9 +13,42 @@ export interface ICard {
   value: number;
 }
 
-export interface IGameMessage {
+export interface IDataState {
+  currentPlayerIndex: number;
+  currentRound: number;
+  dealerIndex: number;
+  deck: Array<ICard>;
+  initialIndex: number;
+  lastInRoundIndex: number;
+  minimalBet: number;
+  move: string;
+  myPlayerIndex: number;
+  players: Array<IPlayer>;
+  pot: number;
+  tableCards: Array<ICard>;
+}
+
+export interface IDataAsk {
+  actions: IActions;
+  playerId: number;
+}
+
+export interface IDataAskOther {
+  playerId: number;
+}
+
+export interface IDataWinner {
+  winIndex: number;
+}
+
+export interface IDataServer {
+  actions?: Array<string>;
+  playerId: number;
+}
+
+export interface IGameMessage<T> { 
   type: string;
-  data: any;
+  data: T;
 }
 
 export enum Round {
@@ -25,15 +58,15 @@ export enum Round {
   River,
 }  
 
-  export interface IActions {
-    raise?: () => void;
-    check?: () => void;
-    fold?: () => void;
-    call?: () => void;
-    bet?: () => void; 
-  }
+export interface IActions {
+  raise?: () => void;
+  check?: () => void;
+  fold?: () => void;
+  call?: () => void;
+  bet?: () => void; 
+}
 
-  export interface IBank {
-    bank: number;
-    players: IPlayer[];
-  }
+export interface IBank {
+  bank: number;
+  players: IPlayer[];
+}

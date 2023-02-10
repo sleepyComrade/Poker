@@ -1,8 +1,8 @@
 import Socket from '../components/socket';
-import { IActions, IGameMessage } from '../interfaces'
+import { IActions, IGameMessage, IDataState, IDataAsk } from '../interfaces'
 
 export class SocketLogic {
-  onMessage: (msg: IGameMessage) => void
+  onMessage: (msg: IGameMessage<any>) => void
   socket: Socket;
   currentRoom: string;
   //onResponse: (msg: any) => void
@@ -15,11 +15,10 @@ export class SocketLogic {
     this.currentRoom = currentRoom;
   }
 
-  handleMessage(message: any) {
+  handleMessage(message: IGameMessage<any>) {
     switch (message.type) {
-      case 'state': {  
-        this.onMessage(message) 
-        
+      case 'state': {          
+        this.onMessage(message)         
         break;
       }
       case 'ask': {
