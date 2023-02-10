@@ -34,7 +34,7 @@ export class Room {
     startGame(): void {
         throw new Error('Method not implemented.')
     }
-    handleMessage(connection: connection, msg: any) {
+    handleMessage(connection: connection, msg: any, reqId?: string) {
         switch(msg.type) {
             case "join": {
                 const player = new Player(msg.data.name);
@@ -63,9 +63,13 @@ export class Room {
                 }
                 const playerIndex = this.roomLogic.join(player);
                 this.players.set(connection, player);
+                console.log("MSG JOIN",msg, "reqID", reqId)
                 connection.sendUTF(JSON.stringify({
-                    type: 'join',
+                    type: 'privateMessage',
+                    // requestId: "HelloWorld",
                     data: {
+                        requestId: reqId,
+                        type: "join",
                         playerIndex: playerIndex,
                         roomName: this.name,
                         succes: true

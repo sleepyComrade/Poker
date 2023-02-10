@@ -180,10 +180,4 @@ export function App() {
         <Poker roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
     </>
   )
-  {/* <Poker></Poker> */ }
-  {/* <Pk /> */ }
-  {/* <Garage /> */ }
-  {/* <Game /> */ }
-  // </div>
-
 }
