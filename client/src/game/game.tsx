@@ -25,7 +25,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
 
     return (
         <div className="game">
-            <button className="button-exit" onClick={() => {
+            <button className="btn game__button game__button--exit" onClick={() => {
                 onGameExit();
                 console.log(5);
             }}>Exit</button>
