@@ -214,12 +214,12 @@ export function Poker(props: IProps) {
     } else {
         //props.socket.onPokerResponse = (msg) => {}
         props.roomLogic.join(player);
-        setTimeout(() => {
-          props.roomLogic.join(new BotPlayer('bot1'));
-        }, 1000);
-        setTimeout(() => {
-          props.roomLogic.join(new BotPlayer('bot2'));
-        }, 1000);
+        // setTimeout(() => {
+        //   props.roomLogic.join(new BotPlayer('bot1'));
+        // }, 1000);
+        // setTimeout(() => {
+        //   props.roomLogic.join(new BotPlayer('bot2'));
+        // }, 1000);
     }
     return () => {
       // game.destroy();

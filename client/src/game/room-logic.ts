@@ -35,7 +35,7 @@ export class RoomLogic {
           let name = this.botNames[Math.floor(Math.random() * this.botNames.length)];
           if (this.players.map(player => player ? player.name : null).includes(name)) {
             name = getBotName();
-          } 
+          }
           return name;
         };
         // const bot = new BotPlayer('bot' + Math.random() * 100000);
@@ -176,6 +176,9 @@ export class RoomLogic {
           this.inactivePlayers.forEach(player => {
             player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
           })
+          if (this.expectant) {
+            this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
+          }
           this.onMessage?.(message);
           // console.log(currentPlayerIndex);
           // const myPlayerIndex = 0;
