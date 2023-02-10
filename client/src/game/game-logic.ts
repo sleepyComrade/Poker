@@ -85,15 +85,6 @@ export class GameLogic {
 
     this.setBlinds(smallBlindIndex, bigBlindIndex);
 
-    // this.players.forEach((player, i) => {
-    //   if (this.players.length > 2) {
-    //     this.setBlinds(player, i, 1, 2);
-    //   }
-    //   if (this.players.length === 2) {
-    //     this.setBlinds(player, i, 0, 1);
-    //   }
-    // })
-
     setTimeout(() => {
       this.sendState("start")
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
@@ -115,17 +106,6 @@ export class GameLogic {
     this.players[big].bet = this.minimalBet;
     this.players[big].chips -= this.minimalBet;
   }
-
-  // private setBlinds(player: IPlayer, index: number, small: number, big: number) {
-  //   if (index === (this.dealerIndex + small) % this.players.length) {
-  //     player.bet = this.minimalBet / 2;
-  //     player.chips -= this.minimalBet / 2;
-  //   }
-  //   if (index === (this.dealerIndex + big) % this.players.length) {
-  //     player.bet = this.minimalBet;
-  //     player.chips -= this.minimalBet;
-  //   }
-  // }
 
   private setLastPlayer(currentIndex: number) {
     if (this.players.every(player => player.isFold || player.isAllIn)) {

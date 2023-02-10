@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { CreateRoom } from './../CreateRoom/CreateRoom'
-import Socket from './../components/socket'
-import { IMessage } from '../interfaces/IMessage'
+import { CreateRoom } from './../CreateRoom/CreateRoom';
+import Socket from './../components/socket';
+import { IMessage } from '../interfaces/IMessage';
 import '../style.css';
 import './lobby.css';
 
@@ -16,20 +16,14 @@ type LobbyProps = {
 }
 
 export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter }: LobbyProps) {
-  //   const [messages, setMessages] = useState<IMessage[]>([])
-  //   const [rooms, setRooms] = useState<string[]>([])
-  const [text, setText] = useState('')
-  //   const [userName, setUserName] = useState(Math.random().toString())
-  //   const [players, setPlayers] = useState<string[]>([])
-  //   const [socket, setSocket] = useState<Socket | null>(null)
-  const [currentRoom, setCurrentRoom] = useState<null | string>(null)
-  //   const [playerTurn, setPlayerTurn] = useState(false)
+  const [text, setText] = useState('');
+  const [currentRoom, setCurrentRoom] = useState<null | string>(null);
 
   return (
     <div className="lobby">
       <div className="lobby__wrapper">
         <div className="lobby__center-container">
-          <button className="btn lobby__button lobby__button--local" onClick={() => onRoomEnter('')}>Local</button>
+          <button className="btn lobby__button lobby__button--local" onClick={() => onRoomEnter('', 0)}>Local</button>
 
           <div className="lobby__nav">
 

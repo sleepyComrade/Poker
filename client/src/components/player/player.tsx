@@ -64,7 +64,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner }:
       }
     }
   }, [timerAnimation]);
-  // console.log(name, place);
+  
   return (
     <div className={`abs player tp${place} ${isWinner ? 'player--winner' : ''}`}>
       <div className="player__wrapper">
@@ -72,9 +72,6 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner }:
         <div className="player__info">
 
           <div className="player__timer">
-            {/* <button style={{ width: 70, height: 20 }} onClick={() => {
-           setTimerAnimation(last => !last);
-          }}>Start timer</button> */}
             <div ref={timer} className='player__time' style={{ '--progress': progress }}>
               <div className='player__ava'>AA</div>
             </div>

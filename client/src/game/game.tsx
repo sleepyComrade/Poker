@@ -44,9 +44,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
                         isOpened={winInfo != null} winner={players[winInfo?.winIndex]}/>
                     <Table cards={cards} bets={_players.map(it => it.bet)} bank={bank} />
                 </div>
-                {/* {(!players[myPlayerIndex].isFold && currentPlayerIndex === myPlayerIndex) &&  */}
                 <ButtonsPanel actions={actions} />
-                {/* } */}
             </div>
         </div>
     )

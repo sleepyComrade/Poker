@@ -1,7 +1,6 @@
 import { GameLogic } from './game-logic';
-import { IActions, IGameMessage, IPlayer, IDataState, IDataAsk } from '../interfaces';
-import { testPlayers, originDeck } from './players-and-deck';
-import { setBotChoise } from './bot-logic';
+import { IActions, IGameMessage, IDataAsk } from '../interfaces';
+import { originDeck } from './players-and-deck';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
 
@@ -38,7 +37,6 @@ export class RoomLogic {
           }
           return name;
         };
-        // const bot = new BotPlayer('bot' + Math.random() * 100000);
         const botName = getBotName();
         const bot = new BotPlayer(botName ? botName : 'Bot');
         if (!this.checkTable()) {
@@ -63,7 +61,6 @@ export class RoomLogic {
     if (emptyIndex < 0) {
       console.log('Room is full');
       if (player instanceof Player) {
-        // this.inactivePlayers.push(player);
         this.expectant = player;
         this.expectant.handleMessage({type: 'wait', data: {}});
       }
@@ -180,22 +177,11 @@ export class RoomLogic {
             this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
           }
           this.onMessage?.(message);
-          // console.log(currentPlayerIndex);
-          // const myPlayerIndex = 0;
-          // const withBots = false;
-          // if (withBots && currentPlayerIndex !== myPlayerIndex) {
-            // if (!players[currentPlayerIndex].isFold) {
-            // setTimeout(() => {
-            //   setBotChoise(message);
-            // }, 1000);
-          // } 
         break;}
         case 'winner':
           {
             this.handleMessage(message);
-            // alert('Finish');
             game.destroy();
-            // this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
             this.playersToLeave.forEach(player => {
               this.players.splice(this.players.indexOf(player), 1, null);
@@ -204,7 +190,6 @@ export class RoomLogic {
 
             this.players.forEach((player, i) => {
               if (player instanceof Player && player.isOut) {
-                // this.leave(this.players[i]);
                 const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
                 leftPlayer.handleMessage({ type: 'leave', data: {}});
                 this.inactivePlayers.push(leftPlayer);
@@ -221,7 +206,6 @@ export class RoomLogic {
             this.isStarted = false;
 
             this.startGame();
-            // setWinInfo(message.data);
             break;
           }
         case 'start': {
@@ -232,8 +216,6 @@ export class RoomLogic {
           break;
       }
       console.log('Id: ', message.data.playerId);
-      // this.players[this.currentPlayerIndex].handleMessage(message);
-      // this.players.forEach(player => player.handleMessage(message));
     }
   }
 
