@@ -201,6 +201,10 @@ export function Poker(props: IProps) {
           setIsWaiting(false);
           break;
         }
+        case 'wait': {
+          setIsWaiting(true);
+          break;
+        }
         default:
           break;
       }
@@ -216,9 +220,6 @@ export function Poker(props: IProps) {
         setTimeout(() => {
           props.roomLogic.join(new BotPlayer('bot2'));
         }, 1000);
-        // props.roomLogic.join(new BotPlayer('bot1'));
-        // props.roomLogic.join(new BotPlayer('bot2'));
-        // props.roomLogic.join(new BotPlayer('bot3'));
     }
     return () => {
       // game.destroy();

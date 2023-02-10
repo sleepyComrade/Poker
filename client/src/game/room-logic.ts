@@ -65,11 +65,13 @@ export class RoomLogic {
       if (player instanceof Player) {
         // this.inactivePlayers.push(player);
         this.expectant = player;
+        this.expectant.handleMessage({type: 'wait', data: {}});
       }
       return 0;
     }
     if (player instanceof Player && this.players[0] && this.players.length > 2) {
       this.expectant = player;
+      this.expectant.handleMessage({type: 'wait', data: {}});
     } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
                !this.players[0]) {
       this.players[0] = player;
