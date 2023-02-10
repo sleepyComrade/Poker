@@ -122,7 +122,7 @@ socket.on('request', (request) => {
 
       if (parsed.type === "poker") {
         console.log(parsed.roomName, parsed);
-        rooms[parsed.roomName ].handleMessage(connection, parsed.data)
+        rooms[parsed.roomName ].handleMessage(connection, parsed.data, parsed.requestId)
       }
     }
   })

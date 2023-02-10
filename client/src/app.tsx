@@ -23,6 +23,7 @@ export function App() {
   // const [playerTurn, setPlayerTurn] = useState(false)
   const [activePage, setActivePage] = useState<keyof typeof routes>('lobby');
   const [roomLogic, setRoomLogic] = useState<RoomLogic | null>(null);
+  const [playerIndex, setPlayerIndex] = useState(0)
 
   useEffect(() => {
     const socket = new Socket();
@@ -41,8 +42,12 @@ export function App() {
     socket.onRoomConnectionsUpdate = (connections) => {
       // setPlayers(connections)
     }
-    socket.onRoomJoin = (data: any) => {
-      console.log(data);      
+    socket.onRoomJoin = (data) => {
+      if (!data.succes) {
+        return
+      }
+      console.log("join succes")
+      
     }
     setSocket(socket);
     socket.onPokerResponse = () => {
@@ -165,19 +170,14 @@ export function App() {
       {activePage == 'lobby' ?  
 
         <Lobby socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
-          onRoomEnter={(room) => {
+          onRoomEnter={(room, playerId) => {
             setCurrentRoom(room);
             setActivePage('poker');
+            setPlayerIndex(playerId)
           }} 
           onUserName={(value) => setUserName(value)}/> : 
 
-        <Poker roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
+        <Poker roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
     </>
   )
-  {/* <Poker></Poker> */ }
-  {/* <Pk /> */ }
-  {/* <Garage /> */ }
-  {/* <Game /> */ }
-  // </div>
-
 }
