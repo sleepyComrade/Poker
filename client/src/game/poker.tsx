@@ -40,7 +40,9 @@ export function Poker(props: IProps) {
 
   const [actions, setActions] = useState<IActions>({});
   const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
-  const isMultiPlayer = props.currentRoom !== "";
+  const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
+  const [isClientOut, setIsClientOut] = useState(false);
+  // const isMultiPlayer = props.currentRoom !== "";
 
   // props.roomLogic.onPlayerLeave = () => setActions({});
 
@@ -186,6 +188,7 @@ export function Poker(props: IProps) {
         }
         case 'leave': {
           setActions({});
+          setIsClientOut(true);
           break;
         }
         case 'join': {
@@ -224,7 +227,10 @@ export function Poker(props: IProps) {
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => {
           props.onGameExit();
           props.roomLogic.leave(clientPlayer);
-        }} />
+        }} onBackToGame={() => {
+          setIsClientOut(false);
+          props.roomLogic.backToGame(clientPlayer);
+        }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} />
 
       <button onClick={() => setWinInfo({})}>Test</button>
       <button onClick={() => {

@@ -3,6 +3,7 @@ import { IActions, IGameMessage, IPlayer, IDataState, IDataAsk } from '../interf
 import { testPlayers, originDeck } from './players-and-deck';
 import { setBotChoise } from './bot-logic';
 import { Player, BotPlayer, PlayerState } from './players';
+import { PlayerClient } from './player-client';
 
 export class RoomLogic {
   condition: boolean;
@@ -14,6 +15,7 @@ export class RoomLogic {
   inactivePlayers: Player[];
   lastState: IGameMessage<any>;
   onPlayerLeave: () => void;
+  expectant: Player;
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
@@ -23,31 +25,39 @@ export class RoomLogic {
     this.dealerIndex = 0;
     this.startGame();
 
-    // setInterval(() => {
-    //   if(Math.random() < 0.02) {
-    //       const bot = new BotPlayer('bot' + Math.random() * 100000);
-    //       if (!this.checkTable()) {
-    //         this.join(bot);  
-    //       }
-    //   }
-    //   if(Math.random() < 0.02) {
-    //     const bots = this.players.filter(it => it instanceof(BotPlayer));
-    //     const bot = bots[Math.floor(Math.random() * bots.length)];
-    //     if(bot) {
-    //         this.leave(bot);
-    //     }
-    //   }
-    // }, 5000);
+    setInterval(() => {
+      if(Math.random() < 0.2) {
+          const bot = new BotPlayer('bot' + Math.random() * 100000);
+          if (!this.checkTable()) {
+            this.join(bot);  
+          }
+      }
+      if(Math.random() < 0.02) {
+        const bots = this.players.filter(it => it instanceof(BotPlayer));
+        const bot = bots[Math.floor(Math.random() * bots.length)];
+        if(bot) {
+            this.leave(bot);
+        }
+      }
+    }, 2000);
   }
 
-  join(player: Player | BotPlayer) {
+  join(player: Player | BotPlayer | PlayerClient) {
     const emptyIndex = this.players.indexOf(null);  
     if (emptyIndex < 0) {
       console.log('Room is full');
-      this.inactivePlayers.push(player);
+      if (player instanceof Player) {
+        this.inactivePlayers.push(player);
+      }
       return 0;
     }
-    this.players[emptyIndex] = player;
+    if (player instanceof Player && this.players[0] && this.players.length > 2) {
+      this.expectant = player;
+    } else if (player instanceof Player && this.players[0] && this.players.length === 1) {
+      this.players[0] = player;
+    } else {
+      this.players[emptyIndex] = player;
+    }
     if (this.lastState) {
       player.handleMessage(this.lastState);
     } else if (!this.isStarted) {
@@ -62,10 +72,6 @@ export class RoomLogic {
   }
 
   leave(player: Player | BotPlayer) {
-    // if (player) {
-    //   this.inactivePlayers.splice(this.players.indexOf(player), 1, null);
-    // }
-    // this.players[this.players.indexOf(player)].
     if (this.inactivePlayers.includes(player)) {
       this.inactivePlayers.splice(this.players.indexOf(player), 1);
     }
@@ -73,6 +79,17 @@ export class RoomLogic {
       this.players.splice(this.players.indexOf(player), 1, null);
     }
     console.log('Update: ', this.players);
+  }
+
+  backToGame(player: Player) {
+    if (this.inactivePlayers.includes(player)) {      
+      this.inactivePlayers.splice(this.players.indexOf(player), 1);
+      if (this.players[0]) {
+        this.expectant = player;
+      } else {
+        this.players[0] = player;
+      }
+    }
   }
 
   startGame() {
@@ -170,6 +187,11 @@ export class RoomLogic {
                 this.inactivePlayers.push(leftPlayer);
               }
             })
+
+            if (this.expectant) {
+              this.players[0] = this.expectant;
+              this.expectant = null;
+            }
 
             this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
             this.isStarted = false;

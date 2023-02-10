@@ -82,7 +82,7 @@ export default function MainPlayer({ player, isCurrent, isWinner }: PlayerProps)
 
             <div className='main-player__bank'>
               <TwoCardsMainPlayer cards={cards} isFold={isFold} />
-              {isFold ? 'Player is out' : ''}
+              {isFold ? 'Fold' : ''}
               <div className="main-player__chips">{chips}</div>
               <div className="main-player__bet">{bet > 0 && bet}</div>
             </div>
