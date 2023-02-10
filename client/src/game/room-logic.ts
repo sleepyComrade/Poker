@@ -3,6 +3,7 @@ import { IActions, IGameMessage, IPlayer, IDataState, IDataAsk } from '../interf
 import { testPlayers, originDeck } from './players-and-deck';
 import { setBotChoise } from './bot-logic';
 import { Player, BotPlayer, PlayerState } from './players';
+import { PlayerClient } from './player-client';
 
 export class RoomLogic {
   condition: boolean;
@@ -13,27 +14,77 @@ export class RoomLogic {
   dealerIndex: number;
   inactivePlayers: Player[];
   lastState: IGameMessage<any>;
+  onPlayerLeave: () => void;
+  expectant: Player;
+  playersToLeave: BotPlayer[];
+  botNames: string[];
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
+    this.playersToLeave = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
+    this.botNames = ['James Bot', 'Botman', 'Bad Bot', 'roBot', 'BroBot', 'Bothead', 'Botzilla', 'Bottenstein', 'Bot3000', 'Botty McBot', 'Botzy', 'Botlet', 'Botburst', 'Botzap', 'Botilliant', 'Botivator', 'Botronaut', 'Botomize'];
     this.startGame();
+
+    setInterval(() => {
+      if(Math.random() < 0.2) {
+        const getBotName = () => {
+          let name = this.botNames[Math.floor(Math.random() * this.botNames.length)];
+          if (this.players.map(player => player ? player.name : null).includes(name)) {
+            name = getBotName();
+          }
+          return name;
+        };
+        // const bot = new BotPlayer('bot' + Math.random() * 100000);
+        const botName = getBotName();
+        const bot = new BotPlayer(botName ? botName : 'Bot');
+        if (!this.checkTable()) {
+          this.join(bot);  
+        }
+      }
+      if(Math.random() < 0.1) {
+        const bots = this.players.filter(it => it instanceof(BotPlayer));
+        const bot = bots[Math.floor(Math.random() * bots.length)];
+        if(bot) {
+            this.leave(bot);
+        }
+      }
+    }, 2000);
   }
 
-  join(player: Player | BotPlayer) {
-    if (this.lastState) {
-      player.handleMessage(this.lastState);
-    }
-    const emptyIndex = this.players.indexOf(null);
-    if (emptyIndex < 0) {
-      console.log('Room is full');
-      this.inactivePlayers.push(player);
+  join(player: Player | BotPlayer | PlayerClient) {
+    if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
       return 0;
     }
-    this.players[emptyIndex] = player;
+    const emptyIndex = this.players.indexOf(null);  
+    if (emptyIndex < 0) {
+      console.log('Room is full');
+      if (player instanceof Player) {
+        // this.inactivePlayers.push(player);
+        this.expectant = player;
+        this.expectant.handleMessage({type: 'wait', data: {}});
+      }
+      return 0;
+    }
+    if (player instanceof Player && this.players[0] && this.players.length > 2) {
+      this.expectant = player;
+      this.expectant.handleMessage({type: 'wait', data: {}});
+    } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
+               !this.players[0]) {
+      this.players[0] = player;
+    } else {
+      this.players[emptyIndex] = player;
+    }
+    if (this.lastState) {
+      player.handleMessage(this.lastState);
+    } else if (!this.isStarted) {
+      this.players.filter(player => player).forEach(player => {
+        player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
+      })
+    }
     if (!this.isStarted) {
       this.startGame();
     }
@@ -41,19 +92,27 @@ export class RoomLogic {
   }
 
   leave(player: Player | BotPlayer) {
-    // if (player) {
-    //   this.inactivePlayers.splice(this.players.indexOf(player), 1, null);
-    // }
-    // this.players[this.players.indexOf(player)].
-    this.players.splice(this.players.indexOf(player), 1, null);
+    if (this.inactivePlayers.includes(player)) {
+      this.inactivePlayers.splice(this.players.indexOf(player), 1);
+    }
+    if (this.players.includes(player)) {
+      this.playersToLeave.push(player);
+    }
     console.log('Update: ', this.players);
+  }
+
+  backToGame(player: Player) {
+    if (this.inactivePlayers.includes(player)) {      
+      this.expectant = this.inactivePlayers.splice(this.players.indexOf(player), 1)[0];
+    }
   }
 
   startGame() {
     const activePlayers = this.players.filter(player => player);
-    activePlayers.forEach(player => player.isOut = true)
+    activePlayers.forEach(player => player.isOut = true);
     if (activePlayers.length < 2) {
       this.isStarted = false;
+      activePlayers.forEach(player => player.isOut = false);
       return;
     }
     this.isStarted = true;
@@ -66,8 +125,7 @@ export class RoomLogic {
         case 'state':
         {
           this.lastState = message;
-          this.players.forEach(player => player?.handleMessage(message));
-          this.inactivePlayers.forEach(player => player?.handleMessage(message));
+          this.handleMessage(message);
           // this.currentPlayerIndex = message.data.currentPlayerIndex;
           this.onMessage?.(message);
           break;}
@@ -78,19 +136,22 @@ export class RoomLogic {
           if (!this.players[currentPlayerIndex]) {
             return
           }
-          const a = setTimeout(() => {
+          let a = setTimeout(() => {
             if (data.actions.check) {
               data.actions.check();
             } else if (data.actions.fold) {
               data.actions.fold();
             }
+            a = null;
           }, 5000)
 
           const q: IActions = {}
           Object.keys(data.actions).forEach((actionKey) => {
             q[actionKey as keyof IActions] = () => {
+              if (a === null) return;
               clearTimeout(a);
-            console.log("ChtoNibud", currentPlayerIndex)
+              a = null;
+            console.log("ChtoNibud", currentPlayerIndex);
               if (this.players[currentPlayerIndex]) {
                 this.players[currentPlayerIndex].isOut = false;
                 message.data.actions[actionKey]();
@@ -106,9 +167,6 @@ export class RoomLogic {
             }
           }
 
-          // console.log("!!!!!",message)
-          // console.log("!!!!!",m)
-
           this.players[currentPlayerIndex].handleMessage(m);
           this.players.forEach(player => {
             if (player !== this.players[currentPlayerIndex]) {
@@ -118,6 +176,9 @@ export class RoomLogic {
           this.inactivePlayers.forEach(player => {
             player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
           })
+          if (this.expectant) {
+            this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
+          }
           this.onMessage?.(message);
           // console.log(currentPlayerIndex);
           // const myPlayerIndex = 0;
@@ -131,29 +192,40 @@ export class RoomLogic {
         break;}
         case 'winner':
           {
-            this.players.forEach(player => player?.handleMessage(message));
-            this.inactivePlayers.forEach(player => player?.handleMessage(message));
+            this.handleMessage(message);
             // alert('Finish');
             game.destroy();
             // this.leave(this.players[Math.floor(Math.random() * this.players.length)]);
 
-            this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
-            this.isStarted = false;
+            this.playersToLeave.forEach(player => {
+              this.players.splice(this.players.indexOf(player), 1, null);
+              this.playersToLeave = [];
+            })
 
             this.players.forEach((player, i) => {
-              if (player && player.isOut) {
+              if (player instanceof Player && player.isOut) {
                 // this.leave(this.players[i]);
-                this.inactivePlayers.push(this.players.splice(this.players.indexOf(player), 1, null)[0]);
+                const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
+                leftPlayer.handleMessage({ type: 'leave', data: {}});
+                this.inactivePlayers.push(leftPlayer);
               }
             })
+
+            if (this.expectant) {
+              this.players[0] = this.expectant;
+              this.players[0].handleMessage({type: 'get back', data: {}});
+              this.expectant = null;
+            }
+
+            this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
+            this.isStarted = false;
 
             this.startGame();
             // setWinInfo(message.data);
             break;
           }
         case 'start': {
-          this.players.forEach(player => player?.handleMessage(message));
-          this.inactivePlayers.forEach(player => player?.handleMessage(message));
+          this.handleMessage(message);
           this.onMessage?.(message);
         }
         default:
@@ -162,6 +234,14 @@ export class RoomLogic {
       console.log('Id: ', message.data.playerId);
       // this.players[this.currentPlayerIndex].handleMessage(message);
       // this.players.forEach(player => player.handleMessage(message));
+    }
+  }
+
+  handleMessage(message: IGameMessage<any>) {
+    this.players.forEach(player => player?.handleMessage(message));
+    this.inactivePlayers.forEach(player => player?.handleMessage(message));
+    if (this.expectant) {
+      this.expectant.handleMessage(message);
     }
   }
 
