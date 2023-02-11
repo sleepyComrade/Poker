@@ -4,6 +4,7 @@ import { Poker } from './game/poker';
 import { IMessage } from './interfaces/IMessage';
 import { RoomLogic } from './game/room-logic' ;
 import Lobby from './lobby/lobby';
+import { Player } from './game/players';
 
 const routes = {
   lobby: Lobby,
@@ -20,6 +21,7 @@ export function App() {
   const [activePage, setActivePage] = useState<keyof typeof routes>('lobby');
   const [roomLogic, setRoomLogic] = useState<RoomLogic | null>(null);
   const [playerIndex, setPlayerIndex] = useState(0);
+  const [player, setPlayer] = useState<Player>(null);
 
   useEffect(() => {
     const socket = new Socket();
@@ -69,15 +71,16 @@ export function App() {
     <>
       {activePage == 'lobby' ?  
 
-        <Lobby socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
-          onRoomEnter={(room, playerId) => {
+        <Lobby roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
+          onRoomEnter={(room, playerId, player) => {
             setCurrentRoom(room);
             setActivePage('poker');
-            setPlayerIndex(playerId)
+            setPlayerIndex(playerId);
+            setPlayer(player);
           }} 
           onUserName={(value) => setUserName(value)}/> : 
 
-        <Poker roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
+        <Poker player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
     </>
   )
 }

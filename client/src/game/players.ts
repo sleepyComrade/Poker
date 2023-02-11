@@ -1,5 +1,6 @@
 import { setBotChoise } from './bot-logic';
 import { ICard, IGameMessage, IDataState, IDataAsk } from '../interfaces';
+import { RoomLogic } from './room-logic';
 
 export class Player {
   onMessage: (message: IGameMessage<any>) => void;

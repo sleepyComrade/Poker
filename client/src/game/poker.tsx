@@ -14,7 +14,8 @@ interface IProps {
   currentRoom: string;
   roomLogic: RoomLogic;
   onGameExit: () => void;
-  playerIndex: number
+  playerIndex: number;
+  player: Player;
 }
 
 export function Poker(props: IProps) {
@@ -26,26 +27,27 @@ export function Poker(props: IProps) {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [winInfo, setWinInfo] = useState(null);
   const [round, setRound] = useState(0);
-  const [myPlayerIndex, setMyPlayerIndex] = useState(props.playerIndex)
+  const myPlayerIndex = props.playerIndex;
+  // const [myPlayerIndex, setMyPlayerIndex] = useState(props.playerIndex)
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
   // const [currentRound, setCurrentRound] = useState(Round.Preflop);
   // const myPlayerIndex = 0;
 
   const [actions, setActions] = useState<IActions>({});
-  const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
+  // const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
   // const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
   const [isClientOut, setIsClientOut] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const isMultiPlayer = props.currentRoom !== "";
 
   useEffect(() => {
-    if (!props.socket) {
+    if (!props.player) {
       return () => { }
     }
 
-    const player = isMultiPlayer ? new PlayerClient('name', props.socket, props.currentRoom) : new Player('name');
-    setClientPlayer(player);
-    player.onMessage = (message: IGameMessage<any>) => {
+    // const player = isMultiPlayer ? new PlayerClient('name', props.socket, props.currentRoom) : new Player('name');
+    // setClientPlayer(player);
+    props.player.onMessage = (message: IGameMessage<any>) => {
       console.log(message);
       switch (message.type) {
         case 'state':
@@ -115,24 +117,24 @@ export function Poker(props: IProps) {
           break;
       }
     }
-    if (!isMultiPlayer) {
-      props.roomLogic.join(player);
-    } 
+    // if (!isMultiPlayer) {
+    //   // props.roomLogic.join(player);
+    // } 
     return () => {
 
     }
-  }, [props.socket, props.currentRoom, props.roomLogic]);
+  }, [props.player]);
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[0]} 
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} 
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => {
           props.onGameExit();
-          props.roomLogic.leave(clientPlayer);
+          // props.roomLogic.leave(clientPlayer);
         }} onBackToGame={() => {
           setIsClientOut(false);
           setIsWaiting(true);
-          props.roomLogic.backToGame(clientPlayer);
+          // props.roomLogic.backToGame(clientPlayer);
         }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} isWaiting={isWaiting} />
 
         <div style={{'display': 'none'}}>
@@ -148,7 +150,7 @@ export function Poker(props: IProps) {
       }
       }>Restart</button>
       <button onClick={() => {
-        setMyPlayerIndex(last => (last + 1) % players.length)
+        // setMyPlayerIndex(last => (last + 1) % players.length)
       }}>
         hello
       </button>

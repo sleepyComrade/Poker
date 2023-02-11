@@ -4,6 +4,9 @@ import Socket from './../components/socket';
 import { IMessage } from '../interfaces/IMessage';
 import '../style.css';
 import './lobby.css';
+import { RoomLogic } from "../game/room-logic";
+import {Player} from '../game/players';
+import { PlayerClient } from "../game/player-client";
 
 type LobbyProps = {
   socket: Socket;
@@ -12,10 +15,11 @@ type LobbyProps = {
   messages: Array<IMessage>;
   userName: string;
   onUserName: (a: string) => void;
-  onRoomEnter: (room: string, playerIndex: number) => void;
+  onRoomEnter: (room: string, playerIndex: number, player: Player) => void;
+  roomLogic: RoomLogic;
 }
 
-export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter }: LobbyProps) {
+export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic }: LobbyProps) {
   const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
 
@@ -23,7 +27,11 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
     <div className="lobby">
       <div className="lobby__wrapper">
         <div className="lobby__center-container">
-          <button className="btn lobby__button lobby__button--local" onClick={() => onRoomEnter('', 0)}>Local</button>
+          <button className="btn lobby__button lobby__button--local" onClick={() => {
+            const player = new Player(userName);
+            const joinResult = roomLogic.join(player);
+            onRoomEnter('', joinResult, player);
+          }}>Local</button>
 
           <div className="lobby__nav">
 
@@ -76,9 +84,10 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                       })
         
                       res.then(data => {
-                        console.log("Wewewewewe", res)
-                        onRoomEnter(room, data.playerIndex)
-                        console.log("Resoponse; reqID", data.requestId)
+                        const player = new PlayerClient(userName, socket, room);
+                        console.log("Wewewewewe", res);
+                        onRoomEnter(room, data.playerIndex, player);
+                        console.log("Resoponse; reqID", data.requestId);
                       })
                     }} > room {room}</p>
                   ))}
