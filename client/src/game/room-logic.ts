@@ -1,5 +1,5 @@
 import { GameLogic } from './game-logic';
-import { IActions, IGameMessage, IDataAsk } from '../interfaces';
+import { IActions, IGameMessage, IDataAsk, IDataWinner } from '../interfaces';
 import { originDeck } from './players-and-deck';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
@@ -214,6 +214,21 @@ export class RoomLogic {
         case 'winner':
           {
             this.handleMessage(message);
+            const winData: IDataWinner = message.data;
+            this.game.players.forEach((player, i) => {
+              if (!player.isAbsent) {
+                if (this.players[i]) {
+                  this.players[i].chips = player.chips;
+                } else {
+                  console.log('Player left');
+                }
+              }
+            })
+            if (this.players[winData.winIndex]) {
+              this.players[winData.winIndex].chips += winData.count;
+            } else {
+              console.log('Winner left');
+            }
             setTimeout(()=>{
               game.destroy();
 

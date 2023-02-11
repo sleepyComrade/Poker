@@ -217,6 +217,9 @@ export class GameLogic {
     this.players[this.currentPlayerIndex].isFold = true;
     if (this.players.filter(el => !el.isFold).length === 1) {
       console.log('Start next game');
+      const sum = this.players.reduce((a, b) => a + b.bet, 0);
+      this.pot = this.pot + sum;
+      this.players.forEach(player => player.bet = 0);
       this.onMessage({type: 'winner', data: {winIndex: this.players.findIndex(player => !player.isFold), cards:[], count: this.pot}});
       return;
     }
