@@ -3,6 +3,10 @@
     bottom: -20%;
 }
 
+.buttons-panel__wrapper {
+    height: 50px;
+}
+
 .button-player {
     width: 174px;   
     padding: 10px 5px;
