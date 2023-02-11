@@ -128,7 +128,10 @@ export function Poker(props: IProps) {
           setIsWaiting(true);
           props.roomLogic.backToGame(clientPlayer);
         }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} isWaiting={isWaiting} />
-      <button onClick={() => setWinInfo({})}>Test</button>
+
+        <div style={{'display': 'none'}}>
+          
+        <button onClick={() => setWinInfo({})}>Test</button>
       <button onClick={() => {
         setRound(last => last + 1);
         setTableCards([]);
@@ -146,6 +149,9 @@ export function Poker(props: IProps) {
       <div>
         Pot: {pot}
       </div>
+
+        </div>
+   
     </div>
   )
 }
