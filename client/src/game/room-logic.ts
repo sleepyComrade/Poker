@@ -14,7 +14,7 @@ export class RoomLogic {
   inactivePlayers: Player[];
   lastState: IGameMessage<any>;
   onPlayerLeave: () => void;
-  expectant: Player;
+  // expectants: Player | BotPlayer[];
   playersToLeave: BotPlayer[];
   botNames: string[];
   constructor() {
@@ -22,6 +22,7 @@ export class RoomLogic {
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
     this.playersToLeave = [];
+    // this.expectants = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
@@ -53,35 +54,52 @@ export class RoomLogic {
     }, 2000);
   }
 
-  join(player: Player | BotPlayer | PlayerClient) {
-    if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
-      return 0;
-    }
-    const emptyIndex = this.players.indexOf(null);  
-    if (emptyIndex < 0) {
-      console.log('Room is full');
-      if (player instanceof Player) {
-        this.expectant = player;
-        this.expectant.handleMessage({type: 'wait', data: {}});
-      }
-      return 0;
-    }
-    if (player instanceof Player && this.players[0] && this.players.length > 2) {
-      this.expectant = player;
-      this.expectant.handleMessage({type: 'wait', data: {}});
-    } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
-               !this.players[0]) {
-      this.players[0] = player;
-    } else {
-      this.players[emptyIndex] = player;
-    }
+  // join(player: Player | BotPlayer | PlayerClient) {
+  //   // if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
+  //     // return 0;
+  //   // }
+  //   const emptyIndex = this.players.indexOf(null);  
+  //   if (emptyIndex < 0) {
+  //     console.log('Room is full');
+  //     if (player instanceof Player) {
+  //       // this.expectant = player;
+  //       // this.expectant.handleMessage({type: 'wait', data: {}});
+  //     }
+  //     return 0;
+  //   }
+  //   if (player instanceof Player && this.players[0] && this.players.length > 2) {
+  //     // this.expectant = player;
+  //     // this.expectant.handleMessage({type: 'wait', data: {}});
+  //   } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
+  //              !this.players[0]) {
+  //     this.players[0] = player;
+  //   } else {
+  //     this.players[emptyIndex] = player;
+  //   }
+  //   if (this.lastState) {
+  //     player.handleMessage(this.lastState);
+  //   } else if (!this.isStarted) {
+  //     this.players.filter(player => player).forEach(player => {
+  //       player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
+  //     })
+  //   }
+  //   if (!this.isStarted) {
+  //     this.startGame();
+  //   }
+  //   return emptyIndex;
+  // }
+
+  join(player: Player | BotPlayer) {
     if (this.lastState) {
       player.handleMessage(this.lastState);
-    } else if (!this.isStarted) {
-      this.players.filter(player => player).forEach(player => {
-        player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
-      })
     }
+    const emptyIndex = this.players.indexOf(null);
+    if (emptyIndex < 0) {
+      console.log('Room is full');
+      this.inactivePlayers.push(player);
+      return 0;
+    }
+    this.players[emptyIndex] = player;
     if (!this.isStarted) {
       this.startGame();
     }
@@ -99,9 +117,9 @@ export class RoomLogic {
   }
 
   backToGame(player: Player) {
-    if (this.inactivePlayers.includes(player)) {      
-      this.expectant = this.inactivePlayers.splice(this.players.indexOf(player), 1)[0];
-    }
+    // if (this.inactivePlayers.includes(player)) {      
+    //   this.expectant = this.inactivePlayers.splice(this.players.indexOf(player), 1)[0];
+    // }
   }
 
   startGame() {
@@ -173,9 +191,9 @@ export class RoomLogic {
           this.inactivePlayers.forEach(player => {
             player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
           })
-          if (this.expectant) {
-            this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
-          }
+          // if (this.expectant) {
+          //   this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
+          // }
           this.onMessage?.(message);
         break;}
         case 'winner':
@@ -197,13 +215,14 @@ export class RoomLogic {
                 }
               })
 
-              if (this.expectant) {
-                this.players[0] = this.expectant;
-                this.players[0].handleMessage({type: 'get back', data: {}});
-                this.expectant = null;
+              // if (this.expectant) {
+              //   this.players[0] = this.expectant;
+              //   this.players[0].handleMessage({type: 'get back', data: {}});
+              //   this.expectant = null;
+              // }
+              if (this.players.filter(player => player).length >= 1) {
+                this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
               }
-              
-              this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
               this.isStarted = false;
             
               this.startGame();
@@ -225,9 +244,9 @@ export class RoomLogic {
   handleMessage(message: IGameMessage<any>) {
     this.players.forEach(player => player?.handleMessage(message));
     this.inactivePlayers.forEach(player => player?.handleMessage(message));
-    if (this.expectant) {
-      this.expectant.handleMessage(message);
-    }
+    // if (this.expectant) {
+    //   this.expectant.handleMessage(message);
+    // }
   }
 
   setDealerIndex(curIndex: number) {

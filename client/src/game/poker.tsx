@@ -33,12 +33,13 @@ export function Poker(props: IProps) {
 
   const [actions, setActions] = useState<IActions>({});
   const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
-  const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
+  // const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
   const [isClientOut, setIsClientOut] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const isMultiPlayer = props.currentRoom !== "";
 
   useEffect(() => {
-    if (!props.socket || !props.roomLogic) {
+    if (!props.socket) {
       return () => { }
     }
 
