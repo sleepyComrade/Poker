@@ -52,4 +52,21 @@ export class PlayerClient extends Player{
       this.onMessage(message)
     }
   }
+
+  getCurrentState(){
+    const res = this.socket.sendState({
+      type: 'poker',
+      roomName: this.currentRoom,
+      data: {
+          type: 'roomState',
+          data: {
+          }
+      },
+      userName: this.name,
+    })
+
+    return res.then((rs: any) => {
+      return rs.data;
+    });
+  }
 }

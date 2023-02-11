@@ -94,6 +94,23 @@ export class Room {
                 }
                 break;
             }
+            case "roomState": {
+                connection.sendUTF(JSON.stringify({
+                    type: 'privateMessage',
+                    // requestId: "HelloWorld",
+                    data: {
+                        data: {
+                            type: "roomState",
+                            data: this.roomLogic.getCurrentState()
+                        },
+                        requestId: reqId,
+                        type: "roomState",
+                        roomName: this.name,
+                        succes: true
+                    }
+                }))
+                break;
+            }
         }
     }
     handleDisconnect(connection: connection) {        
