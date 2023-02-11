@@ -39,6 +39,9 @@ export interface IDataAskOther {
 
 export interface IDataWinner {
   winIndex: number;
+  cards: ICard[];
+  count: number;
+  comboName: string
 }
 
 export interface IDataServer {

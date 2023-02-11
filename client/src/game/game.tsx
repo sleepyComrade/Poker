@@ -4,8 +4,9 @@ import Table from '../components/table/table';
 import ButtonsPanel from '../components/buttons-panel/buttons-panel';
 import '../style.css';
 import './game.css';
-import { IActions, ICard, IPlayer } from "../interfaces";
 import { shift } from '../game/shift';
+import { IActions, ICard, IDataWinner, IPlayer } from "../interfaces";
+
 
 type GameProps = {
   players: Array<IPlayer>;
@@ -14,7 +15,7 @@ type GameProps = {
   player: IPlayer;
   currentPlayerIndex: number;
   bank: number;
-  winInfo: { winIndex: number } | null;
+  winInfo: IDataWinner| null;
   onGameExit: () => void;
   onBackToGame: () => void;
   isMultiPlayer: boolean;
@@ -30,6 +31,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
   return (
     <div className="game">
       <div className="game__buttons-wrapper">
+        {winInfo && <div style={{backgroundColor: '#f00'}}>index: {winInfo.winIndex} cards: {winInfo.cards.map(it=> it.value + ' / ' + it.type)} combo: {winInfo.comboName || 'fold'}</div>}
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>

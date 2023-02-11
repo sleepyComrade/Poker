@@ -1,11 +1,13 @@
 import { setBotChoise } from './bot-logic';
 import { ICard, IGameMessage, IDataState, IDataAsk } from '../interfaces';
+import { RoomLogic } from './room-logic';
 
 export class Player {
   onMessage: (message: IGameMessage<any>) => void;
   name: string;
   chips: number;
   isOut: boolean;
+  roomState: IGameMessage<any>;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
@@ -14,7 +16,12 @@ export class Player {
 
   handleMessage(message: IGameMessage<any>) {
     console.log('Player message: ', message);
-    this.onMessage(message);
+    this.roomState = message;
+    this.onMessage?.(message);
+  }
+
+  getCurrentState(){
+    return Promise.resolve(this.roomState);
   }
 }
 
@@ -23,6 +30,7 @@ export class BotPlayer {
   onMessage: (message: IGameMessage<any>) => void;
   chips: number;
   isOut: boolean;
+  roomState: IGameMessage<any>;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
@@ -31,13 +39,17 @@ export class BotPlayer {
 
   handleMessage(message: IGameMessage<any>) {
     console.log('Bot message: ', message);
-    
+    this.roomState = message;
     this.onMessage?.(message);
     if (message.type === 'ask') {
       setTimeout(() => {
         setBotChoise(message);
       }, 1000);
     }
+  }
+
+  getCurrentState(){
+    return Promise.resolve(this.roomState);
   }
 }
 

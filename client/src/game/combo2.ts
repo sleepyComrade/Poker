@@ -1,10 +1,10 @@
 import { ICard } from '../interfaces'
 
-export const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
+export const values: Array<ICardValue> = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'].reverse() as Array<ICardValue>;
 const comboNames = ['nothing',
     'pair', 'two pair', 'three-of-a-kind', 'straight', 'flush', 'full house', 'four-of-a-kind', 'straight-flush'
 ];
-function getRankValue(arr: Array<string>): number {
+function getRankValue(arr: Array<ICardValue>): number {
     // arr[i] * N ** i
     // ac * N + arr[i]
     const N = values.length;
@@ -14,7 +14,7 @@ function getRankValue(arr: Array<string>): number {
     }, 0)
 }
 
-function getComboValue(combo: string, arr: Array<string>) {
+function getComboValue(combo: string, arr: Array<ICardValue>) {
     const maxRank = getRankValue(['A', 'A', 'A', 'A', 'A']);
     const comboIndex = comboNames.indexOf(combo);
     return maxRank * comboIndex + getRankValue(arr)
@@ -59,9 +59,18 @@ function compareHands(a: { type: string, ranks: Array<string> }, b: { type: stri
     }
 }
 */
-export function hand(holeCards: Array<string>, communityCards: Array<string>): { type: string, ranks: Array<string> } {
-    const sorted = [...holeCards, ...communityCards].map(it => {
-        const value = values.indexOf(it.slice(0, it.length - 1));
+interface IInternalCard {
+    value: number,
+    type: string
+}
+
+type ICardValue = 'A' | 'K' | 'Q' | 'J' | '10' | '9' | '8' | '7' | '6' | '5' | '4' | '3' | '2';
+type ICardType = 'a' | 'b' | 'c' | 'd';
+
+export function hand(holeCards: Array<string>, communityCards: Array<string>): { type: string, ranks: Array<ICardValue>, cards:Array<IInternalCard>} {
+    const sorted:IInternalCard[] = [...holeCards, ...communityCards].map(it => {
+        const cValue: ICardValue = it.slice(0, it.length - 1) as ICardValue;
+        const value = values.indexOf(cValue);
         return {
             value,
             type: it[it.length - 1]
@@ -79,11 +88,12 @@ export function hand(holeCards: Array<string>, communityCards: Array<string>): {
     if (flushIndex) {
         const straight = getStraight(sorted.filter(it => it.type == flushIndex));
         if (straight) {
-            return { type: 'straight-flush', ranks: straight.map(it => values[+it.value]).slice(0, 5) }
+            return { type: 'straight-flush', ranks: straight.map(it => values[+it.value]).slice(0, 5), cards: straight }
         }
-        const flushRanks = sorted.filter(it => it.type == flushIndex).map(it => values[+it.value]).slice(0, 5);
+        const flushCards = sorted.filter(it => it.type == flushIndex)
+        const flushRanks = flushCards.map(it => values[+it.value]).slice(0, 5);
         console.log('flush', flushIndex);
-        return { type: 'flush', ranks: flushRanks }
+        return { type: 'flush', ranks: flushRanks, cards: flushCards }
     }
 
     const straight = getStraight(sorted);
@@ -91,7 +101,7 @@ export function hand(holeCards: Array<string>, communityCards: Array<string>): {
         //if (straight.every(it=> it.type == straight[0].type)){
         //  return {type:'straight-flush', ranks: straight.map(it=> values[+it.value])}
         //}
-        return { type: 'straight', ranks: straight.map(it => values[+it.value]) }
+        return { type: 'straight', ranks: straight.map(it => values[+it.value]), cards: straight}
     }
     console.log(straight)
 
@@ -112,36 +122,44 @@ export function hand(holeCards: Array<string>, communityCards: Array<string>): {
         }
         return values[+it]
     }).slice(0, ilen);
+    const cards:IInternalCard[] = [];
+    ranks.forEach(it=>{
+        const filtered = sorted.filter(card => values[+card.value] == it);
+        filtered.forEach(card=>{
+            cards.push(card);
+        })
+    })
+    cards.splice(5);
 
     console.log(ranks)
     if (valuesMap[sortedKeys[0]] == 4) {
         console.log('four-of-a-kind')
-        return { type: 'four-of-a-kind', ranks }
+        return { type: 'four-of-a-kind', ranks, cards}
     }
     if (valuesMap[sortedKeys[0]] == 3) {
         if (valuesMap[sortedKeys[1]] >= 2) {
             console.log('full house')
-            return { type: 'full house', ranks }
+            return { type: 'full house', ranks, cards}
         } else {
             console.log('three-of-a-kind')
-            return { type: 'three-of-a-kind', ranks }
+            return { type: 'three-of-a-kind', ranks, cards}
         }
     }
     if (valuesMap[sortedKeys[0]] == 2) {
         if (valuesMap[sortedKeys[1]] >= 2) {
             console.log('two pair')
-            return { type: 'two pair', ranks }
+            return { type: 'two pair', ranks, cards}
         } else {
             console.log('pair')
-            return { type: 'pair', ranks }
+            return { type: 'pair', ranks, cards }
         }
     }
     if (valuesMap[sortedKeys[0]] == 1) {
         console.log('nothing')
-        return { type: 'nothing', ranks }
+        return { type: 'nothing', ranks, cards }
     }
 
-    return { type: "TODO", ranks: [] };
+    return { type: "TODO", ranks: [], cards };
 }
 
 function getStraight(sorted:Array<{type:string, value: number}>) {

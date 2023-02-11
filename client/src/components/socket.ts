@@ -49,7 +49,7 @@ export default class Socket {
         this.onTurn(parsedData.isPlayerTurn)
       }
       if (parsedData.type === "pocker") {
-        //this.onPokerResponse(msg);
+        // this.onPokerResponse(msg);
         if (parsedData?.data?.type === "join") {
           this.onRoomJoin(parsedData.data)
         }

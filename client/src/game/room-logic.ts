@@ -14,14 +14,16 @@ export class RoomLogic {
   inactivePlayers: Player[];
   lastState: IGameMessage<any>;
   onPlayerLeave: () => void;
-  expectant: Player;
+  // expectants: Player | BotPlayer[];
   playersToLeave: BotPlayer[];
   botNames: string[];
+  game: GameLogic;
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
     this.playersToLeave = [];
+    // this.expectants = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
@@ -53,35 +55,62 @@ export class RoomLogic {
     }, 2000);
   }
 
-  join(player: Player | BotPlayer | PlayerClient) {
-    if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
-      return 0;
+  // join(player: Player | BotPlayer | PlayerClient) {
+  //   // if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
+  //     // return 0;
+  //   // }
+  //   const emptyIndex = this.players.indexOf(null);  
+  //   if (emptyIndex < 0) {
+  //     console.log('Room is full');
+  //     if (player instanceof Player) {
+  //       // this.expectant = player;
+  //       // this.expectant.handleMessage({type: 'wait', data: {}});
+  //     }
+  //     return 0;
+  //   }
+  //   if (player instanceof Player && this.players[0] && this.players.length > 2) {
+  //     // this.expectant = player;
+  //     // this.expectant.handleMessage({type: 'wait', data: {}});
+  //   } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
+  //              !this.players[0]) {
+  //     this.players[0] = player;
+  //   } else {
+  //     this.players[emptyIndex] = player;
+  //   }
+  //   if (this.lastState) {
+  //     player.handleMessage(this.lastState);
+  //   } else if (!this.isStarted) {
+  //     this.players.filter(player => player).forEach(player => {
+  //       player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
+  //     })
+  //   }
+  //   if (!this.isStarted) {
+  //     this.startGame();
+  //   }
+  //   return emptyIndex;
+  // }
+
+  getCurrentState(){
+    return {
+      roomPlayers: this.players.map(player=> player && new PlayerState(false, false, player.name, player.chips)),
+      gameState: this.game ? this.game.getState() : null,
+      isStarted: this.isStarted
     }
-    const emptyIndex = this.players.indexOf(null);  
+  }
+
+  join(player: Player | BotPlayer) {
+    //if (this.lastState) {
+      
+    //}
+    const emptyIndex = this.players.indexOf(null);
     if (emptyIndex < 0) {
       console.log('Room is full');
-      if (player instanceof Player) {
-        this.expectant = player;
-        this.expectant.handleMessage({type: 'wait', data: {}});
-      }
+      this.inactivePlayers.push(player);
       return 0;
     }
-    if (player instanceof Player && this.players[0] && this.players.length > 2) {
-      this.expectant = player;
-      this.expectant.handleMessage({type: 'wait', data: {}});
-    } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
-               !this.players[0]) {
-      this.players[0] = player;
-    } else {
-      this.players[emptyIndex] = player;
-    }
-    if (this.lastState) {
-      player.handleMessage(this.lastState);
-    } else if (!this.isStarted) {
-      this.players.filter(player => player).forEach(player => {
-        player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
-      })
-    }
+    this.players[emptyIndex] = player;
+
+    this.handleMessage({type: 'roomState', data: this.getCurrentState()});
     if (!this.isStarted) {
       this.startGame();
     }
@@ -96,12 +125,13 @@ export class RoomLogic {
       this.playersToLeave.push(player);
     }
     console.log('Update: ', this.players);
+    this.handleMessage({type: 'roomState', data: this.getCurrentState()});
   }
 
   backToGame(player: Player) {
-    if (this.inactivePlayers.includes(player)) {      
-      this.expectant = this.inactivePlayers.splice(this.players.indexOf(player), 1)[0];
-    }
+    // if (this.inactivePlayers.includes(player)) {      
+    //   this.expectant = this.inactivePlayers.splice(this.players.indexOf(player), 1)[0];
+    // }
   }
 
   startGame() {
@@ -109,13 +139,16 @@ export class RoomLogic {
     activePlayers.forEach(player => player.isOut = true);
     if (activePlayers.length < 2) {
       this.isStarted = false;
+      this.handleMessage({type: 'roomState', data: this.getCurrentState()})
       activePlayers.forEach(player => player.isOut = false);
       return;
     }
     this.isStarted = true;
+    this.handleMessage({type: 'roomState', data: this.getCurrentState()})
     const game = new GameLogic(this.players.map(player => player ?
                                new PlayerState(false, false, player.name, player.chips) :
                                new PlayerState(true, true, 'Empty', 0)), originDeck, this.dealerIndex);
+    this.game = game;
     game.onMessage = (message: IGameMessage<any>) => {
       console.log('Message: ', message);
       switch (message.type) {
@@ -173,39 +206,43 @@ export class RoomLogic {
           this.inactivePlayers.forEach(player => {
             player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
           })
-          if (this.expectant) {
-            this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
-          }
+          // if (this.expectant) {
+          //   this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
+          // }
           this.onMessage?.(message);
         break;}
         case 'winner':
           {
             this.handleMessage(message);
-            game.destroy();
+            setTimeout(()=>{
+              game.destroy();
 
-            this.playersToLeave.forEach(player => {
-              this.players.splice(this.players.indexOf(player), 1, null);
-              this.playersToLeave = [];
-            })
+              this.playersToLeave.forEach(player => {
+                this.players.splice(this.players.indexOf(player), 1, null);
+                this.playersToLeave = [];
+              })
 
-            this.players.forEach((player, i) => {
-              if (player instanceof Player && player.isOut) {
-                const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
-                leftPlayer.handleMessage({ type: 'leave', data: {}});
-                this.inactivePlayers.push(leftPlayer);
+              this.players.forEach((player, i) => {
+                if (player instanceof Player && player.isOut) {
+                  const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
+                  leftPlayer.handleMessage({ type: 'leave', data: {}});
+                  this.inactivePlayers.push(leftPlayer);
+                }
+              })
+
+              // if (this.expectant) {
+              //   this.players[0] = this.expectant;
+              //   this.players[0].handleMessage({type: 'get back', data: {}});
+              //   this.expectant = null;
+              // }
+              if (this.players.filter(player => player).length >= 1) {
+                this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
               }
-            })
-
-            if (this.expectant) {
-              this.players[0] = this.expectant;
-              this.players[0].handleMessage({type: 'get back', data: {}});
-              this.expectant = null;
-            }
-
-            this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
-            this.isStarted = false;
-
-            this.startGame();
+              this.isStarted = false;
+              this.game = null;
+              this.startGame();
+            }, 3000);
+            
             break;
           }
         case 'start': {
@@ -222,9 +259,9 @@ export class RoomLogic {
   handleMessage(message: IGameMessage<any>) {
     this.players.forEach(player => player?.handleMessage(message));
     this.inactivePlayers.forEach(player => player?.handleMessage(message));
-    if (this.expectant) {
-      this.expectant.handleMessage(message);
-    }
+    // if (this.expectant) {
+    //   this.expectant.handleMessage(message);
+    // }
   }
 
   setDealerIndex(curIndex: number) {
