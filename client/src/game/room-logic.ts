@@ -181,31 +181,34 @@ export class RoomLogic {
         case 'winner':
           {
             this.handleMessage(message);
-            game.destroy();
+            setTimeout(()=>{
+              game.destroy();
 
-            this.playersToLeave.forEach(player => {
-              this.players.splice(this.players.indexOf(player), 1, null);
-              this.playersToLeave = [];
-            })
+              this.playersToLeave.forEach(player => {
+                this.players.splice(this.players.indexOf(player), 1, null);
+                this.playersToLeave = [];
+              })
 
-            this.players.forEach((player, i) => {
-              if (player instanceof Player && player.isOut) {
-                const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
-                leftPlayer.handleMessage({ type: 'leave', data: {}});
-                this.inactivePlayers.push(leftPlayer);
+              this.players.forEach((player, i) => {
+                if (player instanceof Player && player.isOut) {
+                  const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
+                  leftPlayer.handleMessage({ type: 'leave', data: {}});
+                  this.inactivePlayers.push(leftPlayer);
+                }
+              })
+
+              if (this.expectant) {
+                this.players[0] = this.expectant;
+                this.players[0].handleMessage({type: 'get back', data: {}});
+                this.expectant = null;
               }
-            })
-
-            if (this.expectant) {
-              this.players[0] = this.expectant;
-              this.players[0].handleMessage({type: 'get back', data: {}});
-              this.expectant = null;
-            }
-
-            this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
-            this.isStarted = false;
-
-            this.startGame();
+              
+              this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
+              this.isStarted = false;
+            
+              this.startGame();
+            }, 3000);
+            
             break;
           }
         case 'start': {

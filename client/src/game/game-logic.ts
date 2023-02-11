@@ -217,7 +217,7 @@ export class GameLogic {
     this.players[this.currentPlayerIndex].isFold = true;
     if (this.players.filter(el => !el.isFold).length === 1) {
       console.log('Start next game');
-      this.onMessage({type: 'winner', data: {winIndex: this.players.findIndex(player => !player.isFold)}});
+      this.onMessage({type: 'winner', data: {winIndex: this.players.findIndex(player => !player.isFold), cards:[], count: this.pot}});
       return;
     }
     if (this.currentPlayerIndex === this.lastInRoundIndex) {
@@ -276,11 +276,17 @@ export class GameLogic {
       let winIndex = winsVals.indexOf(Math.max(...winsVals));
       console.log(getWinner(leftP, tableC));
       console.log(leftPlayers);
-      console.log(`${leftPlayers[winIndex].name} won this game with ${wins[winIndex].h.type}!`);
+      const realCards: ICard[] = wins[winIndex].h.cards.map(card=>{
+        return {
+          value: card.value + 1,
+          type: ['a', 'b', 'c', 'd'] .indexOf(card.type) + 1
+        }
+      })
+      console.log(`${leftPlayers[winIndex].name} won this game with ${wins[winIndex].h.type}!`, wins[winIndex].h.cards, realCards);
       console.log(leftP);
       console.log(tableC);
       const playerIndex = this.players.findIndex(player => player.name == leftPlayers[winIndex].name);
-      this.onMessage({type: 'winner', data: {winIndex: playerIndex}});
+      this.onMessage({type: 'winner', data: {winIndex: playerIndex, cards: realCards, comboName: wins[winIndex].h.type, count: this.pot}});
     }
   }
 

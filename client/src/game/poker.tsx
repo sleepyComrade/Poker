@@ -53,6 +53,10 @@ export function Poker(props: IProps) {
             setPlayers(data.players);
             setPot(data.pot);
             setTableCards(data.tableCards);
+            if (data.move == 'start'){
+              setWinInfo(null);
+            }
+            setDealerIndex(data.dealerIndex);
             // playerIndex = message.data.players.findIndex((player: IPlayer) => player.name === props.name);
             // setCurrentPlayerIndex(message.data.currentPlayerIndex);
             break;
@@ -76,6 +80,7 @@ export function Poker(props: IProps) {
           {
             const data: IDataWinner = message.data;
             setWinInfo(data);
+            setActions({});
             break;
           }
         case 'start': {
