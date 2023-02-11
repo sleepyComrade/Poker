@@ -5,7 +5,7 @@ import { testPlayers } from './players-and-deck';
 import { RoomLogic } from './room-logic';
 import '../style.css';
 import Socket from "../components/socket";
-import { Player, BotPlayer } from './players';
+import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from "./player-client";
 
 interface IProps {
@@ -19,7 +19,7 @@ interface IProps {
 }
 
 export function Poker(props: IProps) {
-  const [players, setPlayers] = useState<IPlayer[]>(testPlayers());
+  const [players1, setPlayers] = useState<IPlayer[]>(new Array(9).fill(null).map(it=> new PlayerState(true, true, 'NULL', 0)));
   const [pot, setPot] = useState(0);
   // const [deck, setDeck] = useState<ICard[]>([]);
   const [tableCards, setTableCards] = useState<ICard[]>([]);
@@ -27,6 +27,7 @@ export function Poker(props: IProps) {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [winInfo, setWinInfo] = useState(null);
   const [round, setRound] = useState(0);
+  const [roomState, setRoomState] = useState(null);
   const myPlayerIndex = props.playerIndex;
   // const [myPlayerIndex, setMyPlayerIndex] = useState(props.playerIndex)
   // const [lastInRoundIndex, setLastInRoundIndex] = useState((initialIndex - 1) % players.length >= 0 ? (initialIndex - 1) % players.length : players.length - 1);
@@ -40,6 +41,18 @@ export function Poker(props: IProps) {
   const [isWaiting, setIsWaiting] = useState(false);
   const isMultiPlayer = props.currentRoom !== "";
 
+  const players = useMemo(()=>{
+    console.log(roomState)
+    return players1.map((it, i)=>{
+      if (it.isAbsent == true){
+        return (roomState && (roomState.roomPlayers[i] && new PlayerState(true, true, roomState.roomPlayers[i].name, roomState.roomPlayers[i].chips))) || it;
+      } else {
+        return it
+      }
+      //return it || (roomState && (roomState.roomPlayers[i] && new PlayerState(false, true, roomState.roomPlayers[i].name, roomState.roomPlayers[i].chips)));
+    })
+  }, [players1, roomState])
+
   useEffect(() => {
     if (!props.player) {
       return () => { }
@@ -50,6 +63,16 @@ export function Poker(props: IProps) {
     props.player.onMessage = (message: IGameMessage<any>) => {
       console.log(message);
       switch (message.type) {
+        case 'roomState':{
+          setRoomState(message.data);
+          if (message.data.gameState){
+            if (message.data.gameState.tableCards){
+              console.log('!!!!!!!!!!!!!!', message.data.gameState.tableCards);
+            }
+            setTableCards(message.data.gameState.tableCards);
+          }
+          break;
+        }
         case 'state':
           {
             const data: IDataState = message.data;
@@ -58,6 +81,8 @@ export function Poker(props: IProps) {
             setTableCards(data.tableCards);
             if (data.move == 'start'){
               setWinInfo(null);
+              setTableCards([]);
+              setPot(0);
             }
             setDealerIndex(data.dealerIndex);
             // playerIndex = message.data.players.findIndex((player: IPlayer) => player.name === props.name);
@@ -88,8 +113,8 @@ export function Poker(props: IProps) {
           }
         case 'start': {
           // setRound(last => last + 1);
-          setTableCards([]);
-          setPot(0);
+          //setTableCards([]);
+          //setPot(0);
           setWinInfo(null);
           setPlayers(testPlayers());
           setDealerIndex(last => (last + 1) % testPlayers().length);
@@ -117,9 +142,17 @@ export function Poker(props: IProps) {
           break;
       }
     }
-    // if (!isMultiPlayer) {
-    //   // props.roomLogic.join(player);
-    // } 
+
+    props.player.getCurrentState?.().then(res=>{
+      setRoomState(res?.data);
+      if (res && res.data.gameState){
+        if (res.data.gameState.tableCards){
+        }
+        setTableCards(res.data.gameState.tableCards);
+        setPot(res.data.pot);
+      }
+    })
+
     return () => {
 
     }

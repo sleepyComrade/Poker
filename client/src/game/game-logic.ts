@@ -377,18 +377,24 @@ export class GameLogic {
   private sendState(move: string) {
     this.onMessage({type: 'state', data: {
       move,
-      players: this.players,
-      pot: this.pot,
-      deck: this.deck,
-      tableCards: this.tableCards,
-      dealerIndex: this.dealerIndex,
-      initialIndex: this.initialIndex,
-      currentPlayerIndex: this.currentPlayerIndex,
-      minimalBet: this.minimalBet,
-      lastInRoundIndex: this.lastInRoundIndex,
-      currentRound: this.currentRound,
-      myPlayerIndex: this.myPlayerIndex
+      ...this.getState()
     }})
+  }
+
+  getState(){
+      return {
+        players: this.players,
+        pot: this.pot,
+        deck: this.deck,
+        tableCards: this.tableCards,
+        dealerIndex: this.dealerIndex,
+        initialIndex: this.initialIndex,
+        currentPlayerIndex: this.currentPlayerIndex,
+        minimalBet: this.minimalBet,
+        lastInRoundIndex: this.lastInRoundIndex,
+        currentRound: this.currentRound,
+        myPlayerIndex: this.myPlayerIndex
+      }
   }
 
   private setNextPlayer() {

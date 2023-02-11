@@ -17,6 +17,7 @@ export class RoomLogic {
   // expectants: Player | BotPlayer[];
   playersToLeave: BotPlayer[];
   botNames: string[];
+  game: GameLogic;
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
@@ -89,10 +90,18 @@ export class RoomLogic {
   //   return emptyIndex;
   // }
 
-  join(player: Player | BotPlayer) {
-    if (this.lastState) {
-      player.handleMessage(this.lastState);
+  getCurrentState(){
+    return {
+      roomPlayers: this.players.map(player=> player && new PlayerState(false, false, player.name, player.chips)),
+      gameState: this.game ? this.game.getState() : null,
+      isStarted: this.isStarted
     }
+  }
+
+  join(player: Player | BotPlayer) {
+    //if (this.lastState) {
+      
+    //}
     const emptyIndex = this.players.indexOf(null);
     if (emptyIndex < 0) {
       console.log('Room is full');
@@ -100,6 +109,8 @@ export class RoomLogic {
       return 0;
     }
     this.players[emptyIndex] = player;
+
+    this.handleMessage({type: 'roomState', data: this.getCurrentState()});
     if (!this.isStarted) {
       this.startGame();
     }
@@ -114,6 +125,7 @@ export class RoomLogic {
       this.playersToLeave.push(player);
     }
     console.log('Update: ', this.players);
+    this.handleMessage({type: 'roomState', data: this.getCurrentState()});
   }
 
   backToGame(player: Player) {
@@ -127,13 +139,16 @@ export class RoomLogic {
     activePlayers.forEach(player => player.isOut = true);
     if (activePlayers.length < 2) {
       this.isStarted = false;
+      this.handleMessage({type: 'roomState', data: this.getCurrentState()})
       activePlayers.forEach(player => player.isOut = false);
       return;
     }
     this.isStarted = true;
+    this.handleMessage({type: 'roomState', data: this.getCurrentState()})
     const game = new GameLogic(this.players.map(player => player ?
                                new PlayerState(false, false, player.name, player.chips) :
                                new PlayerState(true, true, 'Empty', 0)), originDeck, this.dealerIndex);
+    this.game = game;
     game.onMessage = (message: IGameMessage<any>) => {
       console.log('Message: ', message);
       switch (message.type) {
@@ -224,7 +239,7 @@ export class RoomLogic {
                 this.dealerIndex = this.setDealerIndex((this.dealerIndex +  1) % this.players.length);
               }
               this.isStarted = false;
-            
+              this.game = null;
               this.startGame();
             }, 3000);
             
