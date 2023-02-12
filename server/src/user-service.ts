@@ -9,8 +9,19 @@ export class UserService {
   }
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: number) {
-    const user = new User(data.data.name, id, data.data.password);
-    // if ()
-    this.users.push(user);
+    const authorizeUser = (name: string, password: string) => {
+      const isName = this.users.filter(user => user.userName === name);
+      if (isName.length) {
+        
+      } else {
+        if (isName[0].password === password) {
+          
+        } else {
+          this.users.push(new User(name, id, password));
+
+        }
+      }
+    }
+    authorizeUser(data.data.name, data.data.password);
   }
 }
