@@ -160,7 +160,7 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} 
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex} 
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => {
           props.onGameExit();
           // props.roomLogic.leave(clientPlayer);

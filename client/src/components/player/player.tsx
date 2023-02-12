@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import TwoCards from '../two-cards/two-cards';
+import DealerLabel from '../dealer-label/dealer-label';
 import '../../style.css';
 import './player.css';
 import { ICard, IPlayer } from "../../interfaces";
+import {animate} from "../../game/animate";
 
 type PlayerProps = {
   player: IPlayer;
@@ -10,13 +12,39 @@ type PlayerProps = {
   isCurrent: boolean;
   isOpened: boolean;
   isWinner: boolean;
+  winCards: Array<ICard> | null;
+  isDealer: boolean;
 }
 
-export default function Player({ player, place, isCurrent, isOpened, isWinner }: PlayerProps) {
+export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards, isDealer }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
   const [progress, setProgress] = useState(0);
+  const [lastChips, setLastChips] = useState(0);
+
+  useEffect(()=>{
+    if (chips == lastChips){
+      return ()=>{}
+    }
+    const speed = Math.abs(chips - lastChips);
+    let currentChips = lastChips;
+    const cancel = animate((delta)=>{
+      const sign = Math.sign(chips - lastChips);
+      currentChips += sign * delta  * speed / 500;
+      if ((sign * currentChips) < (sign * chips)){
+        setLastChips(Math.floor(currentChips));
+      } else {
+        setLastChips(chips)
+        return false;
+      }
+      return true;
+    })
+    return ()=>{
+      setLastChips(chips);
+      cancel();
+    }
+  }, [chips]);
 
   useEffect(() => {
     // if(isCurrent) {
@@ -77,10 +105,12 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner }:
             </div>
           </div>
 
+          {isDealer &&  <DealerLabel />}
+
           <div className='player__bank'>
-            <TwoCards cards={cards} isFold={isFold} isOpened={isOpened}/>
-            {isFold ? 'Fold' : ''}
-            <div className="player__chips">{chips}</div>
+            <TwoCards cards={cards} isFold={isFold} isOpened={isOpened} winCards={winCards} />
+            {isFold ? <p className="player__fold">Fold</p> : ''}
+            <div className="player__chips">{lastChips}</div>
             <div className="player__bet">{bet > 0 && bet}</div>
           </div>
         </div>
