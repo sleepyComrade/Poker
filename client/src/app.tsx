@@ -26,6 +26,8 @@ export function App() {
   const [playerIndex, setPlayerIndex] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
   const [user, setUser] = useState<IUserData>(null);
+  const [isGuest, setIsGuest] = useState(false);
+  const [authError, setAuthError] = useState('');
 
   useEffect(() => {
     if (localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user') !== null) {
@@ -84,14 +86,14 @@ export function App() {
     if (!socket) {
       return
     } 
-
   }, [socket])
 
   return (
     <>
       {activePage === 'lobby' ?  
-
-        <Lobby user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
+        <Lobby onLogOut={() => {
+          setActivePage('authorization');
+        }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
           onRoomEnter={(room, playerId, player) => {
             setCurrentRoom(room);
             setActivePage('poker');
@@ -100,7 +102,16 @@ export function App() {
           }} 
           onUserName={(value) => setUserName(value)}/> : 
         activePage === 'authorization' ? 
-        <Authorization socket={socket} /> :
+        <Authorization setActivePage={() => {
+          setActivePage('lobby');
+        }} authError={authError} setAuthError={(error: string) => {
+          setAuthError(error);
+        }} setUser={(data: IUserData) => {
+          setUser(data);
+        }} setGuest={() => {
+          setIsGuest(true);
+          setActivePage('lobby');
+        }} socket={socket} /> :
         <Poker player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
     </>
   )

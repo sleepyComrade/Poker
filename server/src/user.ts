@@ -1,6 +1,6 @@
 import { IUserData } from '../../interfaces/IUser';
 
-export class User implements IUserData {
+export class User {
   id: number;
   userName: string;
   chips: number;

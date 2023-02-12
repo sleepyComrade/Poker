@@ -15,7 +15,7 @@ export class Player {
   }
 
   handleMessage(message: IGameMessage<any>) {
-    console.log('Player message: ', message);
+    // console.log('Player message: ', message);
     this.roomState = message;
     this.onMessage?.(message);
   }
@@ -38,7 +38,7 @@ export class BotPlayer {
   }
 
   handleMessage(message: IGameMessage<any>) {
-    console.log('Bot message: ', message);
+    // console.log('Bot message: ', message);
     this.roomState = message;
     this.onMessage?.(message);
     if (message.type === 'ask') {
