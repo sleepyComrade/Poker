@@ -59,16 +59,15 @@ export class Room {
                               ...msg
                             }
                           }));
-                    }                    
+                    }
                 }
                 const playerIndex = this.roomLogic.join(player);
                 this.players.set(connection, player);
                 console.log("MSG JOIN",msg, "reqID", reqId)
                 connection.sendUTF(JSON.stringify({
                     type: 'privateMessage',
-                    // requestId: "HelloWorld",
+                    requestId: reqId,
                     data: {
-                        requestId: reqId,
                         type: "join",
                         playerIndex: playerIndex,
                         roomName: this.name,

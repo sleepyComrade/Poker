@@ -85,9 +85,8 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
         
                       res.then(data => {
                         const player = new PlayerClient(userName, socket, room);
-                        console.log("Wewewewewe", res);
+                        console.log("RES",data)
                         onRoomEnter(room, data.playerIndex, player);
-                        console.log("Resoponse; reqID", data.requestId);
                       })
                     }} > room {room}</p>
                   ))}
