@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import TwoCards from '../two-cards/two-cards';
+import DealerLabel from '../dealer-label/dealer-label';
 import '../../style.css';
 import './player.css';
 import { ICard, IPlayer } from "../../interfaces";
@@ -11,9 +12,10 @@ type PlayerProps = {
   isOpened: boolean;
   isWinner: boolean;
   winCards: Array<ICard> | null;
+  isDealer: boolean;
 }
 
-export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards }: PlayerProps) {
+export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards, isDealer }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -77,6 +79,8 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
               <div className='player__ava'>AA</div>
             </div>
           </div>
+
+          {isDealer &&  <DealerLabel />}
 
           <div className='player__bank'>
             <TwoCards cards={cards} isFold={isFold} isOpened={isOpened} winCards={winCards} />
