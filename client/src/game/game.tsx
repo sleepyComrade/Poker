@@ -57,7 +57,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         <div className="game__center-container">       
           <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]}
             isOpened={winInfo != null} winner={players[winInfo?.winIndex]} winCards={winInfo?.cards} dealer={players[dealerIndex]} />
-          <Table cards={cards} bets={_players.map(it => it.bet)} bank={bank} winCards={winInfo?.cards}/>
+          <Table cards={cards} bets={_players.map(it => it.bet)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
         </div>
         <ButtonsPanel actions={actions} />
       </div>

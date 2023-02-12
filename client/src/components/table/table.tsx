@@ -10,6 +10,8 @@ type TableProps = {
     bets: Array<number>;
     bank: number;
     winCards: Array<ICard> | null;
+    winInfo: IDataWinner;
+    playerIndex: number;
 }
 const bankPosition = {
     top: -5,
@@ -90,7 +92,7 @@ const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
 const colors = ['#960dcc', '#42c008', '#dd0f98', '#220ddd', '#ff8800', '#f00', '#05b2c9', '#013a01', '#ddcf0f', '#f04d55'];
 
 
-export default function Table({ cards, bets, bank, winCards }: TableProps) {
+export default function Table({ cards, bets, bank, winCards, winInfo, playerIndex }: TableProps) {
     /*const betCoins:{count: number, coinValue: number}[][] = useMemo(()=>{
         return bets.map((it, i)=> sumToCoinsMerged(it, coinValues, betCoins?.[i]||[]));
     }, [bets.join(', ')]);*/
@@ -123,8 +125,13 @@ export default function Table({ cards, bets, bank, winCards }: TableProps) {
                   <div className="table__bank">{bank > 0 ? bank : ''}</div>
                     {bankCoin.filter(it => it.count).reverse().map((it, index) => {
                         const stk = new Array(it.count).fill(null).map((jt, jdex) => {
+                            const top = bankPosition.top- jdex*6;
+                            const left = bankPosition.left - index * 35;
+                            const winTop = winInfo && coinPositions[(9 + winInfo.winIndex - playerIndex) % 9].top- jdex*6;
+                            const winLeft = winInfo && coinPositions[(9 + winInfo.winIndex - playerIndex) % 9].left - index * 35;
+                            const time = (winTop !== null && winTop !==undefined) ? jdex * 50 + 400 : null;
                             return <BankCoin color={colors[coinValues.indexOf(it.coinValue)]}
-                                key={[index, jdex, it.coinValue].join(',')} topValue={bankPosition.top - jdex * 6} leftValue={bankPosition.left - index * 35} coinValue={it.coinValue} />
+                                key={[index, jdex, it.coinValue].join(',')} topValue={winTop || top} leftValue={winLeft || left} coinValue={it.coinValue} duration={time} />
                         })
                         return stk;
                     })}
