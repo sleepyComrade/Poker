@@ -126,8 +126,8 @@ export function Poker(props: IProps) {
           break;
         }
         case 'join': {
-          setActions({});
-          setPlayers(message.data.players);
+          // setActions({});
+          // setPlayers(message.data.players);
           break;
         }
         case 'get back': {

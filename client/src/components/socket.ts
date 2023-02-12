@@ -67,11 +67,11 @@ export default class Socket {
       if (parsedData.type === "roomStateConnections") {
         this.onRoomConnectionsUpdate(parsedData.connections)
       }
-      if (parsedData.type === "privateMessage") {
-        console.log("PrivateRes", parsedData)
-        // if (parsedData.)
-        this.onPrivateMessage && this.onPrivateMessage(parsedData.data)
-      }
+      // if (parsedData.type === "privateMessage") {
+      //   console.log("PrivateRes", parsedData)
+      //   // if (parsedData.)
+      //   this.onPrivateMessage && this.onPrivateMessage(parsedData.data)
+      // }
     }
     this.webSocket.onclose = () => {
       console.log('close')

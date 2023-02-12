@@ -1,4 +1,4 @@
-import { IPlayer, ICard, Round, IGameMessage, IBank } from '../interfaces';
+import { IPlayer, ICard, Round, IGameMessage, IBank, IDataWinner } from '../interfaces';
 import { getCombo} from './combinations';
 import { getWinner, values } from './combo2';
 
@@ -217,6 +217,9 @@ export class GameLogic {
     this.players[this.currentPlayerIndex].isFold = true;
     if (this.players.filter(el => !el.isFold).length === 1) {
       console.log('Start next game');
+      const sum = this.players.reduce((a, b) => a + b.bet, 0);
+      this.pot = this.pot + sum;
+      this.players.forEach(player => player.bet = 0);
       this.onMessage({type: 'winner', data: {winIndex: this.players.findIndex(player => !player.isFold), cards:[], count: this.pot}});
       return;
     }
@@ -286,7 +289,9 @@ export class GameLogic {
       console.log(leftP);
       console.log(tableC);
       const playerIndex = this.players.findIndex(player => player.name == leftPlayers[winIndex].name);
-      this.onMessage({type: 'winner', data: {winIndex: playerIndex, cards: realCards, comboName: wins[winIndex].h.type, count: this.pot}});
+      console.log('winners', getWinners(this.players, this.tableCards, this.banks))
+      this.onMessage({type: 'winner', data: {winIndex: playerIndex, cards: realCards, comboName: wins[winIndex].h.type, count: this.pot, banks: this.banks}});
+      this.banks = [];
     }
   }
 
@@ -417,24 +422,33 @@ export class GameLogic {
   }
 }
 
-function split(players: IPlayer[]){
-  const res: IBank[] = [];
+function split(players: Array<IPlayer>){
+  const res: Array<IBank> = [];
   const sorted = [...players].sort((a,b)=>a.bet-b.bet);
   console.log(sorted);
   sorted.forEach(it=>{
-      const pls: IPlayer[] = [];
+      const pls:Array<IPlayer> = [];
       const ib = it.bet;
       const bank = sorted.reduce((ac, jt)=> {
           // console.log(it.bet, jt.bet)
-          const next = ac + ib;
-          if (jt.bet > 0){
+          
+          if (jt.bet>0){
+              const next = ac + ib;
               jt.bet -= ib;
               pls.push(jt);
+            return next;
           }
-          return next;
-      }, 0);
-      if (bank > 0){
-          res.push({bank, players: pls});
+          if (jt.isFold){
+              pls.push(jt);
+          }
+          return ac
+      }, 0)
+      if (bank >0){
+          if(res.length && pls.length == res[res.length-1].players.length){
+              res[res.length -1].bank +=bank;
+          } else {
+              res.push({bank, players: pls});
+          }
       }
   })
   return res;
@@ -456,3 +470,64 @@ function mergeBanks(currentBanks: IBank[], newBanks: IBank[]){
 //сurrentBanks = mergeBanks(
 // mergeBanks([], [{bank:3, players:[{}, {}]}, {bank:10, players:[{}]}])
 // mergeBanks([], {bank:10, players:[{}, {}]}], [{bank:3, players:[{}, {}]}, {bank:10, players:[{}]}])
+function getBankWinners(allPlayers: IPlayer[], players: IPlayer[], tableCards: ICard[], pot:number){
+  const types = ['a', 'b', 'c', 'd'];
+  const convert = (card: ICard) => values[card.value - 1] + types[card.type - 1];//String.fromCharCode(96 + card.type);
+  const leftPlayers = players.filter(player => !player.isFold);
+  const leftP = players.filter(player => !player.isFold).map(player => [convert(player.cards[0]), convert(player.cards[1])]);
+  const tableC = tableCards.map(card => convert(card));
+  const wins = getWinner(leftP, tableC);
+  const winsVals = wins.map(win => win.val);
+  const winIndex = winsVals.indexOf(Math.max(...winsVals));
+  console.log(getWinner(leftP, tableC));
+  console.log(leftPlayers);
+
+  const getRealCards = (cards:Array<any>) => {
+    const realCards: ICard[] = cards.map(card=>{
+      return {
+        value: card.value + 1,
+        type: types.indexOf(card.type) + 1
+      }
+    })
+    return realCards;
+  }
+
+  const winnerOne = wins[winIndex];
+  const winnerDatas = wins.map((winner, index) => {
+    if (winner.val == winnerOne.val){
+      return {
+        winnerData: winner,
+        winnerPlayer: leftPlayers[index]
+      }
+    }
+  }).filter(_=>_);
+
+  const winners: Array<IDataWinner & {player: IPlayer}> = winnerDatas.map(wd=>{
+    return {
+      player: players.find(player => player && (player.name == wd.winnerPlayer.name)),
+      winIndex: allPlayers.findIndex(player => player && (player.name == wd.winnerPlayer.name)),
+      cards: getRealCards(wd.winnerData.h.cards), 
+      comboName: wd.winnerData.h.type, 
+      count: Math.floor(pot / winnerDatas.length)
+    }
+  })
+  console.log('all winners ', winners);
+  return winners;
+}
+
+function getWinners(players: IPlayer[], tableCards: ICard[], banks: IBank[]){
+  const winners: (IDataWinner& {player: IPlayer})[] = [];
+  banks.forEach(bank=>{
+    const bankWinners = getBankWinners(players, bank.players, tableCards, bank.bank);
+    bankWinners.forEach(it=>{
+      const exWinner = winners.find(jt=> jt.player == it.player)
+      if (exWinner){
+        exWinner.count += it.count;
+      } else {
+        winners.push(it);
+      }
+    })
+  })
+
+  return winners;
+}

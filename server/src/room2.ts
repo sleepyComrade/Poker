@@ -41,7 +41,7 @@ export class Room {
                 player.onMessage = (msg) => {
                     if(msg.type == 'ask') {
                         this.lastActions = msg.data.actions;
-                        this.lastPlayer = player;
+                        this.lastPlayer = player;                        
                         connection.sendUTF( JSON.stringify({
                             type: 'pocker',
                             data: {
@@ -74,24 +74,42 @@ export class Room {
                         succes: true
                     }
                 }))
-                console.log("!!!!!!!!!!!!!!!!!!", this.name)
                 break;
             }
             case "leave": {
                 const currentPlayer = this.players.get(connection);
                 this.roomLogic.leave(currentPlayer);
                 this.players.delete(connection);
-                this.lastActions = null;
-                this.lastPlayer = null;
+                // this.lastActions = null;
+                // this.lastPlayer = null;
                 break;
             }
             case "move": {
                 const currentPlayer = this.players.get(connection);
                 if(currentPlayer == this.lastPlayer) {
                     this.lastActions[msg.data.action as keyof IActions]();
-                    this.lastActions = null;
-                    this.lastPlayer = null;
+                    // this.lastActions = null;
+                    // this.lastPlayer = null;
+                } else {
+                    console.log('Wrong Player', currentPlayer, this.lastPlayer);
                 }
+                break;
+            }
+            case "roomState": {
+                connection.sendUTF(JSON.stringify({
+                    type: 'privateMessage',
+                    // requestId: "HelloWorld",
+                    data: {
+                        data: {
+                            type: "roomState",
+                            data: this.roomLogic.getCurrentState()
+                        },
+                        requestId: reqId,
+                        type: "roomState",
+                        roomName: this.name,
+                        succes: true
+                    }
+                }))
                 break;
             }
         }
@@ -100,7 +118,7 @@ export class Room {
         const currentPlayer = this.players.get(connection);
         this.roomLogic.leave(currentPlayer);
         this.players.delete(connection);
-        this.lastActions = null;
-        this.lastPlayer = null;
+        // this.lastActions = null;
+        // this.lastPlayer = null;
     }
 }

@@ -7,6 +7,7 @@ import './lobby.css';
 import { RoomLogic } from "../game/room-logic";
 import {Player} from '../game/players';
 import { PlayerClient } from "../game/player-client";
+import { IUserData } from "../../../interfaces/IUser";
 
 type LobbyProps = {
   socket: Socket;
@@ -17,9 +18,12 @@ type LobbyProps = {
   onUserName: (a: string) => void;
   onRoomEnter: (room: string, playerIndex: number, player: Player) => void;
   roomLogic: RoomLogic;
+  user: IUserData;
+  isGuest: boolean;
+  onLogOut: () => void;
 }
 
-export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic }: LobbyProps) {
+export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic, user, isGuest, onLogOut }: LobbyProps) {
   const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
 
@@ -33,7 +37,12 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
             onRoomEnter('', joinResult, player);
           }}>Local</button>
 
-          <div className="lobby__nav">
+          <button onClick={() => {
+            localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
+            onLogOut();
+          }}>Log Out</button>
+
+          {!isGuest && <div className="lobby__nav">
 
             <div className="lobby__start-game">
               <label className="lobby__label lobby__label--user-name" htmlFor="user-name">Enter your name: </label>
@@ -125,7 +134,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                 })
               }}> Send </button>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>

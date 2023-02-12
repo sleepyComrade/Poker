@@ -4,9 +4,11 @@ import { Room } from './room2'
 import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
+import { UserService } from './user-service';
 
 const WebSocketServer = webSocket.server
 const port = 4002
+const userService = new UserService();
 
 const rooms: Record<string, Room> = {}
 
@@ -134,6 +136,11 @@ socket.on('request', (request) => {
       if (parsed.type === "poker") {
         console.log(parsed.roomName, parsed);
         rooms[parsed.roomName ].handleMessage(connection, parsed.data, parsed.requestId)
+      }
+
+      if (parsed.type === "user") {
+        console.log(parsed);
+        userService.handleMessage(connection, parsed.data, parsed.requestId);
       }
     }
   })
