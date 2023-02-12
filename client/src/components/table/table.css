@@ -30,6 +30,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: -2px center;
+    box-shadow: 2px 3px 5px #222121;
 }
 
 
@@ -113,9 +114,8 @@
     position: absolute;
     top: 44px;
     left: 50%;
-    transform: translateX(-50px);
+    margin-left: -50px;
     color: #fff;
     font-size: 26px;    
     text-align: center;   
-    /* border: 1px solid red;      */
 }

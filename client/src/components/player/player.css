@@ -70,6 +70,7 @@
 }
 
 .player__bank{
+    position: relative;
     margin-top: 5px;
     padding: 5px;
     padding-right: 10px;
@@ -88,6 +89,13 @@
     font-size: 16px;
     font-weight: bold;
     color: #ff0;
+}
+
+.player__fold {
+    position: absolute;
+    top: 25px;
+    color: #fff;
+    font-size: 18px;    
 }
 
 .tp1{

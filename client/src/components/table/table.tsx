@@ -12,7 +12,7 @@ type TableProps = {
 }
 const bankPosition = {
     top: -5,
-    left: 304,
+    left: 330,
 }
 const coinPositions = [
     {
@@ -32,7 +32,7 @@ const coinPositions = [
         left: 550,
     },
     {
-        top: 183,
+        top: 185,
         left: 550,
     },
     {
@@ -41,15 +41,15 @@ const coinPositions = [
     },
     {
         top: 270,
-        left: 268,
+        left: 310,
     },
     {
-        top: 284,
-        left: 67,
+        top: 270,
+        left: 85,
     },
     {
-        top: 196,
-        left: 55,
+        top: 185,
+        left: 45,
     }
 ]
 

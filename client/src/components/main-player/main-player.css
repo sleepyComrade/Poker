@@ -114,3 +114,10 @@
     color: #ff0;
 }
 
+.main-player__fold {
+    position: absolute;
+    top: 50px;
+    color: #fff;
+    font-size: 18px;    
+}
+

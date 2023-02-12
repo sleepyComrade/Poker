@@ -9,5 +9,8 @@
 
 .hand_zero--main-player {
     width: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 

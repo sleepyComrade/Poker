@@ -28,22 +28,21 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
 
-  console.log(winInfo);
-
   return (
     <div className="game">
       <div className="game__buttons-wrapper">
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>
+
         {(!isMultiPlayer && isClientOut) && <button className="button-exit" onClick={() => {
           onBackToGame();
         }}>Back to Game</button>}
+
         {isWaiting && <span style={{ color: 'white' }}>You will join on the next game</span>}
       </div>
 
       <div className="game__wrapper">
-
         {winInfo && <div className="game__winner-message">
           <div className="game__winner-wrapper">
             <p className="game__winner-name">Winner is <span>index: {winInfo.winIndex}</span></p>
