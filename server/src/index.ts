@@ -83,6 +83,17 @@ socket.on('request', (request) => {
         })
       }
 
+      if (parsed.type === "getRooms") {
+        console.log("Get Rooms")
+        connection.sendUTF(JSON.stringify({
+          type: "privateMessage",
+          requestId: parsed.requestId,
+          data: {
+            rooms: Object.keys(rooms)
+          }
+        }))
+      }
+
       // if (parsed.type === 'connect') {
       //   console.log('connect request')
       //   console.log(

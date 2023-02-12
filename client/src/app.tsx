@@ -53,19 +53,27 @@ export function App() {
     room.onMessage = () => {
       
     }
+    socket.onConnect = async () => {
+      
+      console.log("HelloWorld")
+      socket.sendState({
+        type: "getRooms",
+      }).then((res) => {
+        console.log("rooms resolve", res.rooms)
+        setRooms(res.rooms)
+        console.log("!!!!!!!!!ROOMS", rooms)
+      })
+    }
     setRoomLogic(room);
     return () => socket.destroy();
   }, [])
 
   useEffect(() => {
-    console.log('try fetch');
-    fetch('http://localhost:4002/rooms')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('!!!!!!!!', data);
-        setRooms(data);
-      })
-  }, [])
+    if (!socket) {
+      return
+    } 
+
+  }, [socket])
 
   return (
     <>
