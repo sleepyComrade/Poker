@@ -103,7 +103,7 @@ export default function Table({ cards, bets, bank }: TableProps) {
     const [bankCoin, setBankCoin] = useState<{ count: number, coinValue: number }[]>([]);
     useEffect(() => {
         setBankCoin(last => {
-            return sumToCoinsMerged(bank, coinValues, last || []);
+            return sumToCoinsMerged(bank || 0, coinValues, last || []);
         })
     }, [bank]);
 

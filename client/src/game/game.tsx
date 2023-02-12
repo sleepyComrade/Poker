@@ -15,7 +15,7 @@ type GameProps = {
   player: IPlayer;
   currentPlayerIndex: number;
   bank: number;
-  winInfo: IDataWinner| null;
+  winInfo: IDataWinner | null;
   onGameExit: () => void;
   onBackToGame: () => void;
   isMultiPlayer: boolean;
@@ -28,10 +28,11 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
 
+  console.log(winInfo);
+
   return (
     <div className="game">
       <div className="game__buttons-wrapper">
-        {winInfo && <div style={{backgroundColor: '#f00'}}>index: {winInfo.winIndex} cards: {winInfo.cards.map(it=> it.value + ' / ' + it.type)} combo: {winInfo.comboName || 'fold'}</div>}
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>
@@ -42,6 +43,16 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
       </div>
 
       <div className="game__wrapper">
+
+        {winInfo && <div className="game__winner-message">
+          <div className="game__winner-wrapper">
+            <p className="game__winner-name">Winner is <span>index: {winInfo.winIndex}</span></p>
+            <p className="game__winner-cards">winning cards: </p> {winInfo.cards.map(it => it.value + ' / ' + it.type + ', ')}
+            <p className="game__winner-combo">cards combination: <span>{winInfo.comboName || 'fold'}</span> </p>
+            <p className="game__winner-bank">winner bank: <span>{winInfo.count}</span></p>
+          </div>
+        </div>}
+
         <div className="game__center-container">
           <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]}
             isOpened={winInfo != null} winner={players[winInfo?.winIndex]} />
