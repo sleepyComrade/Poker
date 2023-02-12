@@ -17,11 +17,14 @@ type LobbyProps = {
   onUserName: (a: string) => void;
   onRoomEnter: (room: string, playerIndex: number, player: Player) => void;
   roomLogic: RoomLogic;
+  user: string;
 }
 
-export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic }: LobbyProps) {
+export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic, user }: LobbyProps) {
   const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
+  const [authUser, setAuthUser] = useState('');
+  const [userPassword, setUserPassword] = useState('');
 
   return (
     <div className="lobby">
@@ -126,6 +129,24 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
               }}> Send </button>
             </div>
           </div>
+          <input onChange={(e) => {
+            setAuthUser(e.target.value);
+          }} value={authUser} type="text" />
+          <input value={userPassword} type="password" onChange={(e) => {
+            setUserPassword(e.target.value);
+          }}/>
+          <button onClick={() => {
+            socket.sendState({
+              type: 'user',
+              data: {
+                type: 'login',
+                data: {
+                  name: authUser,
+                  password: userPassword
+                }
+              },
+            })
+          }}>Log in</button>
         </div>
       </div>
     </div>

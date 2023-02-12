@@ -22,6 +22,7 @@ export function App() {
   const [roomLogic, setRoomLogic] = useState<RoomLogic | null>(null);
   const [playerIndex, setPlayerIndex] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
+  const [user, setUser] = useState('');
 
   useEffect(() => {
     const socket = new Socket();
@@ -79,7 +80,7 @@ export function App() {
     <>
       {activePage == 'lobby' ?  
 
-        <Lobby roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
+        <Lobby user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
           onRoomEnter={(room, playerId, player) => {
             setCurrentRoom(room);
             setActivePage('poker');
