@@ -48,3 +48,8 @@
 .card_wrapper_second{
     transform: rotateZ(15deg);
 }
+
+.winner-player-card {
+    border: 2px solid #f00;
+    transform: scale(1.3);
+}

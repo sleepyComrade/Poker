@@ -28,6 +28,8 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
 
+  // const [isWinCard, setIsWinCard] = useState(false);
+
   return (
     <div className="game">
       <div className="game__buttons-wrapper">
@@ -46,16 +48,16 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         {winInfo && <div className="game__winner-message">
           <div className="game__winner-wrapper">
             <p className="game__winner-name">Winner is <span>index: {winInfo.winIndex}</span></p>
-            <p className="game__winner-cards">winning cards: </p> {winInfo.cards.map(it => it.value + ' / ' + it.type + ', ')}
+            {/* <p className="game__winner-cards">winning cards: </p> {winInfo.cards.map(it => it.value + ' / ' + it.type)}          */}
             <p className="game__winner-combo">cards combination: <span>{winInfo.comboName || 'fold'}</span> </p>
             <p className="game__winner-bank">winner bank: <span>{winInfo.count}</span></p>
           </div>
         </div>}
 
-        <div className="game__center-container">
+        <div className="game__center-container">       
           <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]}
-            isOpened={winInfo != null} winner={players[winInfo?.winIndex]} />
-          <Table cards={cards} bets={_players.map(it => it.bet)} bank={bank} />
+            isOpened={winInfo != null} winner={players[winInfo?.winIndex]} winCards={winInfo?.cards}/>
+          <Table cards={cards} bets={_players.map(it => it.bet)} bank={bank} winCards={winInfo?.cards}/>
         </div>
         <ButtonsPanel actions={actions} />
       </div>

@@ -31,6 +31,12 @@
     background-repeat: no-repeat;
     background-position: -2px center;
     box-shadow: 2px 3px 5px #222121;
+    transition: transform 0.3s ease;
+}
+
+.winner-card {
+    border: 2px solid #f00;
+    transform: scale(1.2);
 }
 
 

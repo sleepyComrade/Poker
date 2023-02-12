@@ -12,17 +12,19 @@ type PlayersListProps = {
   currentPlayer: IPlayer;
   isOpened: boolean;
   winner: IPlayer | null;
+  winCards: Array<ICard> | null;
 }
 
-export default function PlayersList({ players, player, currentPlayer, isOpened, winner }: PlayersListProps) {  
+export default function PlayersList({ players, player, currentPlayer, isOpened, winner, winCards }: PlayersListProps) {  
   return (
       <div className="players-list">
-        <MainPlayer player={player} isCurrent={player == currentPlayer} isWinner={player == winner}/>
+        <MainPlayer player={player} isCurrent={player == currentPlayer} isWinner={player == winner} winCards={winCards} />
         {players.filter(it => it != player).map((_player, index) => {
           if(_player == player) return;
 
           return (        
-            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} isOpened={isOpened} isWinner={_player == winner}/>      
+            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} isOpened={isOpened} isWinner={_player == winner}
+            winCards={winCards} />      
           )           
         }          
         )}

@@ -10,9 +10,10 @@ type PlayerProps = {
   isCurrent: boolean;
   isOpened: boolean;
   isWinner: boolean;
+  winCards: Array<ICard> | null;
 }
 
-export default function Player({ player, place, isCurrent, isOpened, isWinner }: PlayerProps) {
+export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -78,7 +79,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner }:
           </div>
 
           <div className='player__bank'>
-            <TwoCards cards={cards} isFold={isFold} isOpened={isOpened}/>
+            <TwoCards cards={cards} isFold={isFold} isOpened={isOpened} winCards={winCards} />
             {isFold ? <p className="player__fold">Fold</p> : ''}
             <div className="player__chips">{chips}</div>
             <div className="player__bet">{bet > 0 && bet}</div>

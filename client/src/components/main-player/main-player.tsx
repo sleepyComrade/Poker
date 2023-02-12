@@ -3,15 +3,16 @@ import TwoCardsMainPlayer from '../two-cards--main-player/two-cards--main-player
 import '../../style.css';
 import './main-player.css';
 import img from '../../assets/222.png';
-import { IPlayer } from "../../interfaces";
+import { ICard, IPlayer } from "../../interfaces";
 
 type PlayerProps = {
   player: IPlayer;
   isCurrent: boolean;
   isWinner: boolean;
+  winCards: Array<ICard> | null;
 }
 
-export default function MainPlayer({ player, isCurrent, isWinner }: PlayerProps) {
+export default function MainPlayer({ player, isCurrent, isWinner, winCards }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -81,7 +82,7 @@ export default function MainPlayer({ player, isCurrent, isWinner }: PlayerProps)
             </div>
 
             <div className='main-player__bank'>
-              <TwoCardsMainPlayer cards={cards} isFold={isFold} />
+              <TwoCardsMainPlayer cards={cards} isFold={isFold} winCards={winCards} />
               {isFold ? <p className="main-player__fold">Fold</p> : ''}
               <div className="main-player__chips">{chips}</div>
               <div className="main-player__bet">{bet > 0 && bet}</div>

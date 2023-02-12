@@ -3,12 +3,13 @@ import Card from '../card/card';
 import BankCoin from '../bank-coin/bank-coin';
 import '../../style.css';
 import './table.css';
-import { ICard } from "../../interfaces";
+import { ICard, IDataWinner } from "../../interfaces";
 
 type TableProps = {
     cards: Array<ICard>;
     bets: Array<number>;
     bank: number;
+    winCards: Array<ICard> | null;
 }
 const bankPosition = {
     top: -5,
@@ -89,7 +90,7 @@ const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
 const colors = ['#960dcc', '#42c008', '#dd0f98', '#220ddd', '#ff8800', '#f00', '#05b2c9', '#013a01', '#ddcf0f', '#f04d55'];
 
 
-export default function Table({ cards, bets, bank }: TableProps) {
+export default function Table({ cards, bets, bank, winCards }: TableProps) {
     /*const betCoins:{count: number, coinValue: number}[][] = useMemo(()=>{
         return bets.map((it, i)=> sumToCoinsMerged(it, coinValues, betCoins?.[i]||[]));
     }, [bets.join(', ')]);*/
@@ -112,9 +113,11 @@ export default function Table({ cards, bets, bank }: TableProps) {
             <div className='table__wrapper'>
                 <div className="table_stack">
                     {cards.map((card, index) => (
-                        <div className={`table_card ani_card${index}`} >
+                        <div className={`table_card ani_card${index} ${winCards?.find(it => (it.type == card.type) && (it.value == card.value)) ? 'winner-card' : ''}` } 
+                        // style={winCards?.map(it => (it.type === card.type) && (it.value === card.value) ? {'border': '2px solid red'} : '')}
+                         >
                             <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
-                        </div>))}
+                        </div>))}                        
                 </div>
                 <div className="table__bank-coin-wrapper">
                   <div className="table__bank">{bank > 0 ? bank : ''}</div>
