@@ -1,6 +1,4 @@
-import { IRoom } from '../../../interfaces/IRoom'
 import { IMessage } from '../interfaces/IMessage'
-import { SocketLogic } from '../game/socket-logic'
 import { Signal } from "../common/signal"
 
 const createIdGenerator = (pref: string) => {
@@ -14,20 +12,20 @@ const createIdGenerator = (pref: string) => {
 export default class Socket {
   webSocket: WebSocket
 
-  signal: Signal<any>
-  onMessage: (message: IMessage) => void
+  private privateMessageSignal: Signal<Record<string, any>>
+  onMessage: (messages: IMessage[]) => void
   onRoomCreate: (rooms: string[]) => void
   onTurn: (isPlayerTurn: boolean) => void
   onRoomConnectionsUpdate: (connections: string[]) => void
-  onPrivateMessage: ((res: any) => void) | null
   nextReqId: () => string = createIdGenerator("socketReq") 
   onPokerResponse: (res:any) =>void;
   onRoomJoin: (res: { playerIndex: number, roomName: string, succes: boolean }) => void
+  onChatMessage: (messages: IMessage[]) => void
   onConnect: () => void
   //socketLogic: SocketLogic
 
   constructor() {
-    this.signal = new Signal()
+    this.privateMessageSignal = new Signal()
     // this.signal.
     this.webSocket = new WebSocket('ws://localhost:4002/')
     this.webSocket.onopen = () => {
@@ -41,13 +39,9 @@ export default class Socket {
     this.webSocket.onmessage = (message) => {
       console.log(message)
       const parsedData = JSON.parse(message.data)
-      this.signal.emit(parsedData)
       if (parsedData.type === 'chatMessage') {
         console.log('recevied chatMessage: ', message)
-        this.onMessage({
-          message: parsedData.message,
-          author: parsedData.author,
-        })
+        this.onMessage(parsedData.data.messages)
       }
       if (parsedData.type === 'createRoom') {
         console.log('room create')
@@ -67,11 +61,9 @@ export default class Socket {
       if (parsedData.type === "roomStateConnections") {
         this.onRoomConnectionsUpdate(parsedData.connections)
       }
-      // if (parsedData.type === "privateMessage") {
-      //   console.log("PrivateRes", parsedData)
-      //   // if (parsedData.)
-      //   this.onPrivateMessage && this.onPrivateMessage(parsedData.data)
-      // }
+      if (parsedData.type === "privateMessage") {
+        this.privateMessageSignal.emit(parsedData)
+      }
     }
     this.webSocket.onclose = () => {
       console.log('close')
@@ -84,13 +76,13 @@ export default class Socket {
 
     const response = new Promise<Record<string, any>>(res => {
       const handler = (msg: any) => {
-        if (msg.type === "privateMessage" && msg.requestId === state.requestId) {
-          this.signal.remove(handler)
+        if (msg.requestId === state.requestId) {
+          this.privateMessageSignal.remove(handler)
           res(msg.data)
         }
       }
 
-      this.signal.add(handler)
+      this.privateMessageSignal.add(handler)
     })
 
     return response

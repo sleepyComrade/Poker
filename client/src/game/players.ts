@@ -23,6 +23,22 @@ export class Player {
   getCurrentState(){
     return Promise.resolve(this.roomState);
   }
+
+  sendChatMessage(room: string, message: string) {
+    console.log("send chatMessage")
+    this.onMessage?.({
+      type: "poker",
+      // @ts-ignore
+      roomName: room,
+      data: {
+        type: "chatMessage",
+        message: {
+          author: this.name,
+          message,
+        },
+      }
+    })
+  }
 }
 
 export class BotPlayer {
@@ -50,6 +66,20 @@ export class BotPlayer {
 
   getCurrentState(){
     return Promise.resolve(this.roomState);
+  }
+
+  sendChatMessage(room: string, message: string) {
+    this.onMessage?.({
+      type: "chatMessage",
+      // @ts-ignore
+      roomName: room,
+      data: {
+        message: {
+          author: this.name,
+          message,
+        },
+      }
+    })
   }
 }
 

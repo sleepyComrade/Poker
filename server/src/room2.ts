@@ -5,16 +5,18 @@ import { IActions, ICard, IPlayer } from '../../client/src/interfaces'
 import { connection } from "websocket"
 import { RoomLogic } from '../../client/src/game/room-logic';
 import { Player, BotPlayer } from '../../client/src/game/players';
+import { IMessage } from '../../client/src/interfaces/IMessage';
 
 export class Room {
     roomLogic: RoomLogic
-    messages: string[]
     players: Map<connection, Player | BotPlayer> = new Map()
     lastActions: IActions = null;
     lastPlayer: Player = null;
+    messages: IMessage[]
 
     constructor(public name: string) {
         this.roomLogic = new RoomLogic();
+        this.messages = []
         // setInterval(() => {
         //     if(Math.random() < 0.02) {
         //         const bot = new BotPlayer('bot' + Math.random() * 100000);
@@ -111,6 +113,18 @@ export class Room {
                     }
                 }))
                 break;
+            }
+            case "chatMessage": {
+                this.messages.push(msg.message)
+                this.players.forEach((player, connection) => {
+                    console.log("try send message")
+                    connection.send(JSON.stringify({
+                        type: "chatMessage",
+                        data: {
+                            messages: this.messages,
+                        }
+                    }))
+                })                  
             }
         }
     }

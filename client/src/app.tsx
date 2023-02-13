@@ -39,9 +39,9 @@ export function App() {
     }
 
     const socket = new Socket();
-    socket.onMessage = (message) => {
-      setMessages((last) => [...last, message]);
-    }
+    // socket.onMessage = (message) => {
+    //   setMessages((last) => [...last, message]);
+    // }
     socket.onRoomCreate = (rooms) => {
       setRooms(rooms);
       console.log(rooms);
@@ -81,12 +81,6 @@ export function App() {
     setRoomLogic(room);
     return () => socket.destroy();
   }, [])
-
-  useEffect(() => {
-    if (!socket) {
-      return
-    } 
-  }, [socket])
 
   return (
     <>
