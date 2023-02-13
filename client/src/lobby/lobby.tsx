@@ -8,6 +8,7 @@ import { RoomLogic } from "../game/room-logic";
 import {Player} from '../game/players';
 import { PlayerClient } from "../game/player-client";
 import { IUserData } from "../../../interfaces/IUser";
+import { Timer } from '../game/timer';
 
 type LobbyProps = {
   socket: Socket;
@@ -21,14 +22,89 @@ type LobbyProps = {
   user: IUserData;
   isGuest: boolean;
   onLogOut: () => void;
+  onUserUpdate: (user: IUserData) => void;
 }
 
-export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic, user, isGuest, onLogOut }: LobbyProps) {
+export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic, user, isGuest, onLogOut, onUserUpdate }: LobbyProps) {
   const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
+  // const [isBonusAvailable, setIsBonusAvailable] = useState(false);
+  // const bonusTime = 2;
+  // const [seconds, setSeconds] = useState((bonusTime * 60000) - Math.floor(Math.abs((user.lastBonusTime - Date.now()) % 60000) / 1000));
+  // const [minutes, setMinutes] = useState(Math.floor(Math.abs(user.lastBonusTime - Date.now()) / 60000));
+  
+  // const [minutes, setMinutes] = useState(bonusTime - Math.floor((Date.now() - user.lastBonusTime) / 60000));
+  // const [seconds, setSeconds] = useState(Math.floor(((Date.now() - user.lastBonusTime) / 1000) % 60));
+
+  // console.log(user);
+
+  // const setTimer = () => {
+  //   console.log('??????????????', '!!!!!!!!!');
+
+  //   if (Math.abs(user.lastBonusTime - Date.now()) >= bonusTime * 60000) {
+  //     setMinutes(0);
+  //     setSeconds(0);
+  //     setIsBonusAvailable(true);
+  //     console.log('??????????????', user.lastBonusTime);
+  //     console.log(Math.abs(user.lastBonusTime - Date.now()));
+  //   } else {
+  //     console.log('!!!!!!!!!!', user.lastBonusTime, Math.floor(Math.abs(user.lastBonusTime - Date.now()) / 60000), Math.floor(Math.abs(user.lastBonusTime - Date.now()) / 1000));
+  //     console.log(Math.abs(user.lastBonusTime - Date.now()));
+      
+  //     setMinutes(Math.floor(Math.abs(user.lastBonusTime - Date.now()) / 60000));
+  //     setSeconds(Math.floor(Math.abs((user.lastBonusTime - Date.now()) % 60000) / 1000));
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   setTimer();
+  // }, [])
+
+  // useEffect(() => {
+  //   let interval: NodeJS.Timer = null;
+  //   if (minutes === 0 && seconds === 0) {
+  //     clearInterval(interval);
+  //     setIsBonusAvailable(true);
+  //   } else if (seconds > 0) {
+  //     interval = setInterval(() => {
+  //       setSeconds(seconds - 1);
+  //     }, 1000);
+  //   } else if (seconds === 0 && minutes > 0) {
+  //     setMinutes(minutes - 1);
+  //     setSeconds(59);
+  //   }
+  //   return () => clearInterval(interval);
+  // }, [minutes, seconds]);
 
   return (
     <div className="lobby">
+      {!isGuest && <div>
+        <div className="lobby__user-picture"></div>
+        <div style={{color: 'white'}}>{user.userName}</div>
+        <div style={{color: 'white'}}>{user.chips}</div>
+      </div>}
+      {!isGuest && <div>
+        <div style={{color: 'white'}}>
+          <Timer onClick={() => {
+            socket.sendState({
+              type: 'bonus',
+              data: {
+                type: 'bonus',
+                data: {
+                  id: user.id
+                }
+              },
+            }).then(res => {
+              if (res.status === 'updated') {
+                onUserUpdate({...user, chips: res.chips, lastBonusTime: res.lastBonusTime});
+                // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
+              } else if (res.status === 'error') {
+                console.log('Cheating won\'t pass');
+              }
+            });
+          }} initialTime={user.lastBonusTime} />
+        </div>
+      </div>}
       <div className="lobby__wrapper">
         <div className="lobby__center-container">
           <button className="btn lobby__button lobby__button--local" onClick={() => {

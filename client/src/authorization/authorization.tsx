@@ -38,12 +38,14 @@ export function Authorization(props: AuthorizationProps) {
             console.log(res);
             switch (res.status) {
               case 'login':
-                props.setUser({
+                const user = {
                   id: res.id,
                   userName: res.userName,
                   chips: res.chips,
                   lastBonusTime: res.lastBonusTime,
-                });
+                };
+                props.setUser(user);
+                // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
                 props.setActivePage();
                 break;
               case 'Try to register':

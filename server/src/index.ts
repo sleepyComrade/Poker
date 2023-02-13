@@ -131,6 +131,11 @@ socket.on('request', (request) => {
         console.log(parsed);
         userService.handleMessage(connection, parsed.data, parsed.requestId);
       }
+
+      if (parsed.type === "bonus") {
+        console.log(parsed);
+        userService.handleMessage(connection, parsed.data, parsed.requestId);
+      }
     }
   })
 

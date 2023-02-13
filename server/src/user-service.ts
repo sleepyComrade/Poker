@@ -3,8 +3,10 @@ import { User } from './user';
 
 export class UserService {
   users: User[];
+  bonusTime: number;
   constructor() {
     this.users = [];
+    this.bonusTime = 120000;
   }
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
@@ -22,7 +24,7 @@ export class UserService {
                   id: reqeustedUser[0].id,
                   userName: reqeustedUser[0].userName,
                   chips: reqeustedUser[0].chips,
-                  lastBonusTime: reqeustedUser[0].lastBonusTime,
+                  lastBonusTime: this.bonusTime - (Date.now() - reqeustedUser[0].lastBonusTime),
                 }
               }));
             } else {
@@ -63,15 +65,39 @@ export class UserService {
                 id: this.users[this.users.length - 1].id,
                 userName: this.users[this.users.length - 1].userName,
                 chips: this.users[this.users.length - 1].chips,
-                lastBonusTime: this.users[this.users.length - 1].lastBonusTime,
+                lastBonusTime: this.bonusTime - (Date.now() - this.users[this.users.length - 1].lastBonusTime),
               }
             }));
           }
-        break;
+          break;
         default:
           break;
       }
     }
-    authorizeUser(data.data.name, data.type, data.data.password);
+    if (data.type === 'bonus') {
+      if ((Date.now() - this.users[data.data.id].lastBonusTime) >= this.bonusTime) {
+        this.users[data.data.id].chips += 6000;
+        this.users[data.data.id].lastBonusTime = Date.now();
+        connection.sendUTF(JSON.stringify({
+          type: 'privateMessage',
+          requestId: id,
+          data: {
+            status: 'updated',
+            lastBonusTime: this.bonusTime - (Date.now() - this.users[data.data.id].lastBonusTime),
+            chips: this.users[data.data.id].chips
+          }
+        }));
+      } else {
+        connection.sendUTF(JSON.stringify({
+          type: 'privateMessage',
+          requestId: id,
+          data: {
+            status: 'error',
+          }
+        }));
+      }
+    } else {
+      authorizeUser(data.data.name, data.type, data.data.password);
+    }
   }
 }

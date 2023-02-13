@@ -30,13 +30,13 @@ export function App() {
   const [authError, setAuthError] = useState('');
 
   useEffect(() => {
-    if (localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user') !== null) {
-      const data = JSON.parse(localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user'));
-      setUser(data);
-      setActivePage('lobby');
-    } else {
-      console.log('No data found in local storage');
-    }
+    // if (localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user') !== null) {
+    //   const data = JSON.parse(localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user'));
+    //   setUser(data);
+    //   setActivePage('lobby');
+    // } else {
+    //   console.log('No data found in local storage');
+    // }
 
     const socket = new Socket();
     // socket.onMessage = (message) => {
@@ -85,7 +85,9 @@ export function App() {
   return (
     <>
       {activePage === 'lobby' ?  
-        <Lobby onLogOut={() => {
+        <Lobby onUserUpdate={(user: IUserData) => {
+          setUser(user);
+        }} onLogOut={() => {
           setActivePage('authorization');
         }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
           onRoomEnter={(room, playerId, player) => {
