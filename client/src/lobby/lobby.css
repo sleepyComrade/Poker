@@ -7,13 +7,33 @@
 .lobby__wrapper {
   width: 950px;
   position: relative;
-  /* border: 1px solid red; */
   margin: 0 auto;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.lobby__button {
+  width: 150px;
+  height: 45px;
+  margin: 20px;
+  padding: 10px 5px;
+  font-size: 20px;
+  color: #fff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.lobby__button--log-out {
+  padding-left: 40px;
+  background-color: #265bec;
+  background: url('../assets//arrow-left.svg'), linear-gradient(to bottom, #265bec 0%, #110268 100%);
+  background-repeat: no-repeat;
+  background-size: 30px auto, 100%;
+  background-position: center left 15px, top left;
+  border-bottom: 1px solid #110268;
 }
 
 .lobby__center-container {
@@ -59,15 +79,6 @@
   border: 1px solid #b32d04;
   margin-right: 20px;
   border-radius: 5px;
-}
-
-.lobby__button {
-  width: 150px;
-  padding: 10px 5px;
-  font-size: 20px;
-  color: #fff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
 }
 
 .lobby__button--local {

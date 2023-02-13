@@ -29,8 +29,6 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
 
-  // const [isWinCard, setIsWinCard] = useState(false);
-
   return (
     <div className="game">
       <div className="game__buttons-wrapper">
@@ -38,11 +36,11 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
           onGameExit();
         }}>Exit</button>
 
-        {(!isMultiPlayer && isClientOut) && <button className="button-exit" onClick={() => {
+        {(!isMultiPlayer && isClientOut) && <button className="btn game__button game__button--back-to-game" onClick={() => {
           onBackToGame();
         }}>Back to Game</button>}
 
-        {isWaiting && <span style={{ color: 'white' }}>You will join on the next game</span>}
+        {isWaiting && <span className="game__info-message" style={{ color: 'white' }}>You will join on the next game</span>}
       </div>
 
       <div className="game__wrapper">

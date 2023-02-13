@@ -105,4 +105,21 @@
     background-size: 30px auto, 100%;
     background-position: center left 15px, top left;
     border-bottom: 1px solid #110268;
+    border-radius: 7px;
+}
+
+.game__button--back-to-game {
+    background-color: #e75f04;
+    background: linear-gradient(to bottom, #e75f04 0%, #b32d04 100%);
+    border-bottom: 1px solid #b32d04;
+}
+
+.game__info-message {
+    display: inline-block;
+    width: 280px;
+    padding: 6px 10px;
+    text-align: center;
+    background-color: #e75f04;
+    color: #fff;
+    font-size: 20px;
 }
