@@ -24,12 +24,10 @@ export class Player {
     return Promise.resolve(this.roomState);
   }
 
-  sendChatMessage(room: string, message: string) {
+  sendChatMessage(message: string) {
     console.log("send chatMessage")
     this.onMessage?.({
       type: "poker",
-      // @ts-ignore
-      roomName: room,
       data: {
         type: "chatMessage",
         message: {
@@ -68,11 +66,9 @@ export class BotPlayer {
     return Promise.resolve(this.roomState);
   }
 
-  sendChatMessage(room: string, message: string) {
+  sendChatMessage(message: string) {
     this.onMessage?.({
       type: "chatMessage",
-      // @ts-ignore
-      roomName: room,
       data: {
         message: {
           author: this.name,

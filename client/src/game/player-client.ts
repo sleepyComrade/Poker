@@ -70,10 +70,10 @@ export class PlayerClient extends Player{
     });
   }
 
-  sendChatMessage(room: string, message: string) {
+  sendChatMessage(message: string) {
     this.socket.sendState({
       type: "poker",
-      roomName: room,
+      roomName: this.currentRoom,
       data: {
         type: "chatMessage",
         message: {

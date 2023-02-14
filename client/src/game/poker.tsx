@@ -178,7 +178,7 @@ export function Poker(props: IProps) {
       }}>{chatIsOpen ? "close chat" : "open chat"}</span>
       {chatIsOpen && (
         <Chat messages={chatMessages} onMessageCreate={(message) => {
-          props.player.sendChatMessage(props.currentRoom, message) 
+          props.player.sendChatMessage(message) 
         }}></Chat> 
       )}
       <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex} 
