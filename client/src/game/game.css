@@ -112,6 +112,13 @@
     border-bottom: 1px solid #b32d04;
 }
 
+.game__button--exit:focus,
+.game__button--exit:hover,
+.game__button--back-to-game:focus,
+.game__button--back-to-game:hover {
+    transform: scale(1.1);
+}
+
 .game__info-message {
     display: inline-block;
     width: 280px;

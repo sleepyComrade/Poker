@@ -41,6 +41,11 @@
   border-bottom: 1px solid #110268;
 }
 
+.lobby__button--log-out:focus,
+.lobby__button--log-out:hover {
+  transform: scale(1.1);
+}
+
 .lobby__center-container {
   width: 100%;
   position: relative;
@@ -155,6 +160,7 @@
   font-size: 22px;
   line-height: 30px;
   color: #fff;
+  cursor: pointer;
 }
 
 .lobby__rooms-item span {
