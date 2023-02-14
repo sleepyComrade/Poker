@@ -25,7 +25,6 @@
     margin-left: -220px;
     border-radius: 5px;
     background-color: #000;
-    /* border: 2px solid #ee4b0a; */
     border: 2px solid #23e711;
     animation: winner 1s;
     z-index: 1001;
@@ -69,7 +68,6 @@
 .game__winner-bank span {
     font-size: 26px;
     font-weight: bold;
-    /* color: #ee4b0a; */
     color: #23e711;
 }
 
@@ -87,7 +85,7 @@
 }
 
 .game__button {
-    width: 150px;
+    min-width: 150px;
     height: 45px;
     margin: 20px;
     padding: 10px 5px;

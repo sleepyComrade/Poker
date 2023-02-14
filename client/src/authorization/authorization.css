@@ -1,0 +1,124 @@
+.auth {
+  width: 100%;
+  height: 100vh;
+  background: url('../assets/lobby-img-bg.png'), url('../assets/background.png');
+  background-size: 350px auto,  auto;
+  background-position: center 50px, top left;
+  background-repeat: no-repeat, repeat;
+}
+
+.auth__wrapper {
+  width: 950px;
+  height: 100%;
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth__center-container {
+  width: 100%;
+  position: relative;
+  margin-top: -50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth__login-block {
+  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.auth__login-wrapper,
+.auth__password-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  margin-bottom: 20px;
+}
+
+.auth__login-wrapper label,
+.auth__password-wrapper label {
+  margin-bottom: 5px;
+  margin-left: 20px;
+  color: #f00;
+  font-size: 20px;
+  align-self: flex-start;
+}
+
+.auth__input {
+  width: 200px;
+  outline: none;
+  padding: 8px;
+  border-radius: 3px;
+  background-color: #1b1d1b;
+  border: 1px solid #737070;
+  box-shadow: 0px 0px 5px #737070;
+  color: red;
+  font-size: 20px;
+}
+
+.auth__input:focus {
+  border: 2px solid #f00;
+  box-shadow: 0px 0px 5px #f00;
+}
+
+.auth__button {
+  min-width: 150px;
+  height: 45px;
+  margin: 15px;
+  padding: 10px 5px;
+  font-size: 20px;
+  color: #fff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  border-radius: 7px;
+}
+
+.auth__button:focus,
+.auth__button:hover {
+  transform: scale(1.1);
+}
+
+.auth__button--login {
+  width: 270px;
+  background-color: #f00c0c;
+  background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
+  border-bottom: 1px solid #680202;
+}
+
+.auth__button--register {
+  width: 270px;
+  background-color: #265bec;
+  background: linear-gradient(to bottom, #265bec 0%, #110268 100%);
+  border-bottom: 1px solid #110268;
+}
+
+.auth__button--guest {
+  width: 270px;
+  background-color: green;
+  background: linear-gradient(to bottom, #0dce07 0%, #085303 100%);
+  border-bottom: 1px solid #085303;
+}
+
+.auth__error-message {
+  background-color: yellow;
+  color: red;
+  font-size: 26px;
+}

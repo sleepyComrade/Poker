@@ -13,11 +13,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  background-image: url('../assets/lobby-img-bg.png');
-  background-size: 358px auto;
-  background-position: 370px 2px;
-  background-repeat:  no-repeat;
 }
 
 .lobby__button {
