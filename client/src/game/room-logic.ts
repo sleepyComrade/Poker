@@ -264,6 +264,9 @@ export class RoomLogic {
           this.handleMessage(message);
           this.onMessage?.(message);
         }
+        case "chatMesage": {
+          
+        }
         default:
           break;
       }

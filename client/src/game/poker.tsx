@@ -57,12 +57,12 @@ export function Poker(props: IProps) {
     })
   }, [players1, roomState])
 
-  useEffect(() => {
-    props.socket.onMessage = (messages) => {
-      console.log("CHAT MESSAGE", messages)
-      setChatMessages(messages)
-    }
-  })
+  // useEffect(() => {
+  //   props.socket.onMessage = (messages) => {
+  //     console.log("CHAT MESSAGE", messages)
+  //     setChatMessages(messages)
+  //   }
+  // })
 
   useEffect(() => {
     if (!props.player) {
@@ -150,6 +150,9 @@ export function Poker(props: IProps) {
         case 'wait': {
           setIsWaiting(true);
           break;
+        }
+        case "chatMessage": {
+          setChatMessages(message.data.messages)
         }
         default:
           break;

@@ -27,14 +27,15 @@ export class Player {
   sendChatMessage(message: string) {
     console.log("send chatMessage")
     this.onMessage?.({
-      type: "poker",
+      type: "chatMessage",
       data: {
-        type: "chatMessage",
-        message: {
-          author: this.name,
-          message,
-        },
-      }
+        messages: [
+          {
+            author: this.name,
+            message,
+          }
+        ]
+      },
     })
   }
 }

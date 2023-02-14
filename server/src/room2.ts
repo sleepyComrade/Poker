@@ -119,12 +119,13 @@ export class Room {
                 this.players.forEach((player, connection) => {
                     console.log("try send message")
                     connection.send(JSON.stringify({
-                        type: "chatMessage",
+                        type: "pocker",
                         data: {
-                            messages: this.messages,
+                            type: "chatMessage",
+                            data: {messages: this.messages},
                         }
                     }))
-                })                  
+                })
             }
         }
     }
