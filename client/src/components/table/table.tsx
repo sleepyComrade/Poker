@@ -115,11 +115,9 @@ export default function Table({ cards, bets, bank, winCards, winInfo, playerInde
             <div className='table__wrapper'>
                 <div className="table_stack">
                     {cards.map((card, index) => (
-                        <div className={`table_card ani_card${index} ${winCards?.find(it => (it.type == card.type) && (it.value == card.value)) ? 'winner-card' : ''}` } 
-                        // style={winCards?.map(it => (it.type === card.type) && (it.value === card.value) ? {'border': '2px solid red'} : '')}
-                         >
-                            <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
-                        </div>))}                        
+                        <div className={`table_card ani_card${index} ${winCards?.find(it => (it.type == card.type) && (it.value == card.value)) ? 'winner-card' : ''}` }>                            <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
+                        </div>
+                    ))}                        
                 </div>
                 <div className="table__bank-coin-wrapper">
                   <div className="table__bank">{bank > 0 ? bank : ''}</div>

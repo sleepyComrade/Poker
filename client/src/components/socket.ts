@@ -27,7 +27,7 @@ export default class Socket {
 
   constructor() {
     this.privateMessageSignal = new Signal()
-    // this.webSocket = new WebSocket('ws://rs-pocker-backend-production.up.railway.app:80/')
+    // this.webSocket = new WebSocket('ws://rs-pocker-backend-production.up.railway.app/')
     this.webSocket = new WebSocket('ws://localhost:4002/')
     this.webSocket.onopen = () => {
       this.onConnect()

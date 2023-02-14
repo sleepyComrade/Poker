@@ -25,7 +25,6 @@
     margin-left: -220px;
     border-radius: 5px;
     background-color: #000;
-    /* border: 2px solid #ee4b0a; */
     border: 2px solid #23e711;
     animation: winner 1s;
     z-index: 1001;
@@ -69,7 +68,6 @@
 .game__winner-bank span {
     font-size: 26px;
     font-weight: bold;
-    /* color: #ee4b0a; */
     color: #23e711;
 }
 
@@ -87,7 +85,7 @@
 }
 
 .game__button {
-    width: 150px;
+    min-width: 150px;
     height: 45px;
     margin: 20px;
     padding: 10px 5px;
@@ -105,4 +103,28 @@
     background-size: 30px auto, 100%;
     background-position: center left 15px, top left;
     border-bottom: 1px solid #110268;
+    border-radius: 7px;
+}
+
+.game__button--back-to-game {
+    background-color: #e75f04;
+    background: linear-gradient(to bottom, #e75f04 0%, #b32d04 100%);
+    border-bottom: 1px solid #b32d04;
+}
+
+.game__button--exit:focus,
+.game__button--exit:hover,
+.game__button--back-to-game:focus,
+.game__button--back-to-game:hover {
+    transform: scale(1.1);
+}
+
+.game__info-message {
+    display: inline-block;
+    width: 280px;
+    padding: 6px 10px;
+    text-align: center;
+    background-color: #e75f04;
+    color: #fff;
+    font-size: 20px;
 }

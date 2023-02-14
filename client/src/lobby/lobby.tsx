@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { CreateRoom } from './../CreateRoom/CreateRoom';
 import Socket from './../components/socket';
 import { IMessage } from '../interfaces/IMessage';
-import '../style.css';
-import './lobby.css';
 import { RoomLogic } from "../game/room-logic";
-import {Player} from '../game/players';
+import { Player } from '../game/players';
 import { PlayerClient } from "../game/player-client";
 import { IUserData } from "../../../interfaces/IUser";
 import { Timer } from '../game/timer';
+import '../style.css';
+import './lobby.css';
 
 type LobbyProps = {
   socket: Socket;
@@ -61,6 +61,13 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
       </div>}
       {!hasEnoughChips && <div style={{color: 'white'}}>You don't have enough chips to play. Wait for bonus</div>}
       <div className="lobby__wrapper">
+      <div className="lobby__buttons-wrapper">
+        <button className="btn lobby__button lobby__button--log-out" onClick={() => {
+          localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
+          onLogOut();
+        }}>Log Out</button>
+      </div>
+      <div className="lobby__wrapper">
         <div className="lobby__center-container">
           <button className="btn lobby__button lobby__button--local" onClick={() => {
             if (user.chips >= 5000) {
@@ -75,10 +82,6 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
             }
           }}>Local</button>
 
-          <button onClick={() => {
-            // localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
-            onLogOut();
-          }}>Log Out</button>
 
           {!isGuest && <div className="lobby__nav">
 
@@ -113,7 +116,9 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
               <CreateRoom onSubmit={(roomName) => {
                 socket.sendState({ type: 'createRoom', roomName: roomName })
               }} />
-              <h2 className="lobby__rooms-title">Rooms</h2>
+              {/* <h2 className="lobby__rooms-title lobby__rooms-title--rooms">Rooms</h2> */}
+              <fieldset className="lobby__select-rooms">
+                <legend className="lobby__rooms-title lobby__rooms-title--rooms">Rooms</legend>              
               <div className="lobby__rooms-list">
                 {!currentRoom &&
                   rooms.map((room, i) => (
@@ -122,14 +127,14 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                         type: 'poker',
                         roomName: room,
                         data: {
-                            type: 'join',
-                            data: {
-                                name: userName,
-                            }
+                          type: 'join',
+                          data: {
+                            name: userName,
+                          }
                         },
                         userName: userName,
                       })
-        
+
                       res.then(data => {
                         if (user.chips >= 5000) {
                           const player = new PlayerClient(user.userName, socket, room);
@@ -142,9 +147,10 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                           }, 3000);
                         }
                       })
-                    }} > room {room}</p>
+                    }} > <span>{i + 1}.</span> {room}</p>
                   ))}
               </div>
+              </fieldset>
             </div>
 
             <div className="lobby__chat">
@@ -158,12 +164,12 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                   </div>
                   <h2 className="lobby__title">chat</h2>
                   <div className="lobbi__chat-list">
-                  {messages.map((messageData, i) => {
-                    return (
-                      <p className="lobbi__chat-item" key={i}> {messageData.author}: {messageData.message} </p>
-                    )
-                  })}
-                  </div>                 
+                    {messages.map((messageData, i) => {
+                      return (
+                        <p className="lobbi__chat-item" key={i}> {messageData.author}: {messageData.message} </p>
+                      )
+                    })}
+                  </div>
                 </>
               )}
               <input className="lobby__input lobby__input--chat-message" type='text' value={text}
@@ -182,6 +188,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
           </div>}
         </div>
       </div>
+    </div>
     </div>
   )
 }
