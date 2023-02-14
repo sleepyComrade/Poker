@@ -69,4 +69,18 @@ export class PlayerClient extends Player{
       return rs.data;
     });
   }
+
+  sendChatMessage(message: string) {
+    this.socket.sendState({
+      type: "poker",
+      roomName: this.currentRoom,
+      data: {
+        type: "chatMessage",
+        message: {
+          author: this.name,
+          message,
+        },
+      }
+    })
+  }
 }

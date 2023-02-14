@@ -1,0 +1,4 @@
+.chatMessages {
+  display: flex;
+  flex-direction: column;
+}

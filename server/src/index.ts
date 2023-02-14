@@ -7,24 +7,13 @@ import { Player } from './player'
 import { UserService } from './user-service';
 
 const WebSocketServer = webSocket.server
-const port = 4002
+const port = process.env.PORT || 4002
 const userService = new UserService();
 
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
-  })
-
-  console.log('reqeust', req.url, req.method)
-  if (req.method === 'GET' && req.url === '/rooms') {
-    console.log('rooms request')
-    res.end(JSON.stringify(Object.keys(rooms)))
-  }
+  res.end("HelloWorld")
 })
 
 server.listen(port, () => {

@@ -7,6 +7,8 @@ import '../style.css';
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from "./player-client";
+import {Chat} from "../components/Chat/Chat"
+import { IMessage } from "../interfaces/IMessage";
 
 interface IProps {
   name: string;
@@ -39,6 +41,8 @@ export function Poker(props: IProps) {
   // const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
   const [isClientOut, setIsClientOut] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [chatIsOpen, setChatIsOpen] = useState(false)
+  const [chatMessages, setChatMessages] = useState<IMessage[]>([])
   const isMultiPlayer = props.currentRoom !== "";
 
   const players = useMemo(()=>{
@@ -53,10 +57,19 @@ export function Poker(props: IProps) {
     })
   }, [players1, roomState])
 
+  // useEffect(() => {
+  //   props.socket.onMessage = (messages) => {
+  //     console.log("CHAT MESSAGE", messages)
+  //     setChatMessages(messages)
+  //   }
+  // })
+
   useEffect(() => {
     if (!props.player) {
       return () => { }
     }
+
+    // props.player.setChatMessage()
 
     // const player = isMultiPlayer ? new PlayerClient('name', props.socket, props.currentRoom) : new Player('name');
     // setClientPlayer(player);
@@ -138,6 +151,9 @@ export function Poker(props: IProps) {
           setIsWaiting(true);
           break;
         }
+        case "chatMessage": {
+          setChatMessages(message.data.messages)
+        }
         default:
           break;
       }
@@ -145,7 +161,7 @@ export function Poker(props: IProps) {
 
     props.player.getCurrentState?.().then(res=>{
       setRoomState(res?.data);
-      if (res && res.data.gameState){
+      if (res && res.data.gameSate){
         if (res.data.gameState.tableCards){
         }
         setTableCards(res.data.gameState.tableCards);
@@ -160,6 +176,14 @@ export function Poker(props: IProps) {
 
   return (
     <div>
+      <span onClick={() => {
+        setChatIsOpen(!chatIsOpen)
+      }}>{chatIsOpen ? "close chat" : "open chat"}</span>
+      {chatIsOpen && (
+        <Chat messages={chatMessages} onMessageCreate={(message) => {
+          props.player.sendChatMessage(message) 
+        }}></Chat> 
+      )}
       <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex} 
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => {
           props.onGameExit();
