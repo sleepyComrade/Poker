@@ -1,5 +1,6 @@
 import { IMessage } from '../interfaces/IMessage'
 import { Signal } from "../common/signal"
+import { IUserData } from '../../../interfaces/IUser'
 
 const createIdGenerator = (pref: string) => {
   let id = 0;
@@ -22,21 +23,15 @@ export default class Socket {
   onRoomJoin: (res: { playerIndex: number, roomName: string, succes: boolean }) => void
   onChatMessage: (messages: IMessage[]) => void
   onConnect: () => void
-  //socketLogic: SocketLogic
+  onUserUpdate: (userData: IUserData) => void;
 
   constructor() {
     this.privateMessageSignal = new Signal()
-    // this.signal.
     // this.webSocket = new WebSocket('ws://rs-pocker-backend-production.up.railway.app:80/')
     this.webSocket = new WebSocket('ws://localhost:4002/')
     this.webSocket.onopen = () => {
       this.onConnect()
     }
-    /*this.socketLogic = new SocketLogic()
-    this.socketLogic.onResponse = (msg) => {
-      this.onPokerResponse({type: "poker", data: msg});
-      //this.sendState({type: "poker", data: msg, roomName:})
-    }*/
     this.webSocket.onmessage = (message) => {
       console.log(message)
       const parsedData = JSON.parse(message.data)
@@ -64,6 +59,9 @@ export default class Socket {
       }
       if (parsedData.type === "privateMessage") {
         this.privateMessageSignal.emit(parsedData)
+      }
+      if (parsedData.type === "userUpdate") {
+        this.onUserUpdate(parsedData.data);
       }
     }
     this.webSocket.onclose = () => {

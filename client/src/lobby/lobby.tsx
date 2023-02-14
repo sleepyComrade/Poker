@@ -8,6 +8,7 @@ import { RoomLogic } from "../game/room-logic";
 import {Player} from '../game/players';
 import { PlayerClient } from "../game/player-client";
 import { IUserData } from "../../../interfaces/IUser";
+import { Timer } from '../game/timer';
 
 type LobbyProps = {
   socket: Socket;
@@ -21,24 +22,61 @@ type LobbyProps = {
   user: IUserData;
   isGuest: boolean;
   onLogOut: () => void;
+  onUserUpdate: (user: IUserData) => void;
 }
 
 export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic, user, isGuest, onLogOut }: LobbyProps) {
   const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
+  const [hasEnoughChips ,setHasEnoughChips] = useState(true);
 
   return (
     <div className="lobby">
+      {!isGuest && <div>
+        <div className="lobby__user-picture"></div>
+        <div style={{color: 'white'}}>{user.userName}</div>
+        <div style={{color: 'white'}}>{user.chips}</div>
+      </div>}
+      {!isGuest && <div>
+        <div style={{color: 'white'}}>
+          <Timer onClick={() => {
+            socket.sendState({
+              type: 'bonus',
+              data: {
+                type: 'bonus',
+                data: {
+                  id: user.id
+                }
+              },
+            }).then(res => {
+              if (res.status === 'updated') {
+                // onUserUpdate({...user, chips: res.chips, lastBonusTime: res.lastBonusTime + Date.now()});
+                // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
+              } else if (res.status === 'error') {
+                console.log('Cheating won\'t pass');
+              }
+            });
+          }} initialTime={user.lastBonusTime} />
+        </div>
+      </div>}
+      {!hasEnoughChips && <div style={{color: 'white'}}>You don't have enough chips to play. Wait for bonus</div>}
       <div className="lobby__wrapper">
         <div className="lobby__center-container">
           <button className="btn lobby__button lobby__button--local" onClick={() => {
-            const player = new Player(userName);
-            const joinResult = roomLogic.join(player);
-            onRoomEnter('', joinResult, player);
+            if (user.chips >= 5000) {
+              const player = new Player(user.userName);
+              const joinResult = roomLogic.join(player);
+              onRoomEnter('', joinResult, player);
+            } else {
+              setHasEnoughChips(false);
+              setTimeout(() => {
+                setHasEnoughChips(true);
+              }, 3000);
+            }
           }}>Local</button>
 
           <button onClick={() => {
-            localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
+            // localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
             onLogOut();
           }}>Log Out</button>
 
@@ -93,9 +131,16 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                       })
         
                       res.then(data => {
-                        const player = new PlayerClient(userName, socket, room);
-                        console.log("RES",data)
-                        onRoomEnter(room, data.playerIndex, player);
+                        if (user.chips >= 5000) {
+                          const player = new PlayerClient(user.userName, socket, room);
+                          console.log("RES",data)
+                          onRoomEnter(room, data.playerIndex, player);
+                        } else {
+                          setHasEnoughChips(false);
+                          setTimeout(() => {
+                            setHasEnoughChips(true);
+                          }, 3000);
+                        }
                       })
                     }} > room {room}</p>
                   ))}
