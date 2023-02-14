@@ -63,6 +63,11 @@ export function App() {
       console.log('hello');
       
     }
+    socket.onUserUpdate = (userData) => {
+      console.log(userData);
+      setUser({...userData, lastBonusTime: userData.lastBonusTime + Date.now()});
+    }
+
     const room = new RoomLogic();
     room.onMessage = () => {
       

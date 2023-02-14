@@ -42,7 +42,7 @@ export function Authorization(props: AuthorizationProps) {
                   id: res.id,
                   userName: res.userName,
                   chips: res.chips,
-                  lastBonusTime: res.lastBonusTime,
+                  lastBonusTime: res.lastBonusTime + Date.now(),
                 };
                 props.setUser(user);
                 // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
@@ -81,9 +81,9 @@ export function Authorization(props: AuthorizationProps) {
                 id: res.id,
                 userName: res.userName,
                 chips: res.chips,
-                lastBonusTime: res.lastBonusTime,
+                lastBonusTime: res.lastBonusTime + Date.now(),
               };
-              localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(newUser));
+              // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(newUser));
               props.setUser(newUser);              
               props.setActivePage();
             break;

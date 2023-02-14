@@ -6,7 +6,7 @@ export class UserService {
   bonusTime: number;
   constructor() {
     this.users = [];
-    this.bonusTime = 120000;
+    this.bonusTime = 10000;
   }
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
@@ -27,6 +27,7 @@ export class UserService {
                   lastBonusTime: this.bonusTime - (Date.now() - reqeustedUser[0].lastBonusTime),
                 }
               }));
+              this.sendUpdatedUser(connection, this.users.indexOf(reqeustedUser[0]));
             } else {
               connection.sendUTF(JSON.stringify({
                 requestId: id,
@@ -68,6 +69,7 @@ export class UserService {
                 lastBonusTime: this.bonusTime - (Date.now() - this.users[this.users.length - 1].lastBonusTime),
               }
             }));
+            this.sendUpdatedUser(connection, this.users.length - 1);
           }
           break;
         default:
@@ -87,6 +89,7 @@ export class UserService {
             chips: this.users[data.data.id].chips
           }
         }));
+        this.sendUpdatedUser(connection, data.data.id);
       } else {
         connection.sendUTF(JSON.stringify({
           type: 'privateMessage',
@@ -98,6 +101,30 @@ export class UserService {
       }
     } else {
       authorizeUser(data.data.name, data.type, data.data.password);
+    }
+  }
+
+  sendUpdatedUser(connection: connection, id: number) {
+    connection.sendUTF(JSON.stringify({
+      type: 'userUpdate',
+      data: this.getUserData(id)
+    }))
+  }
+
+  sendPrivateUpdatedUser(connection: connection, id: number, requestId: number) {
+    connection.sendUTF(JSON.stringify({
+      type: 'privateMessage',
+      requestId: requestId,
+      data: this.getUserData(id)
+    }))
+  }
+
+  getUserData(id: number) {
+    return {
+      id: this.users[id].id,
+      userName: this.users[id].userName,
+      chips: this.users[id].chips,
+      lastBonusTime: this.bonusTime - (Date.now() - this.users[id].lastBonusTime),
     }
   }
 }
