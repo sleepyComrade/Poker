@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "module": "CommonJS",
@@ -8,5 +9,7 @@
     "allowJs": true,
     "sourceMap": true,
   },
-  "files": ["./src/index.ts"]
+  "files": [
+    "./src/index.ts"
+  ]
 }
