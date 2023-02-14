@@ -22,7 +22,9 @@ export function Authorization(props: AuthorizationProps) {
       <div className="auth__wrapper">
         <div className="auth__center-container">
 
-          <form action="" method="get" className="auth__form">
+          <form action="" method="get" className="auth__form" onSubmit={(e) => {
+            e.preventDefault();            
+          }}>
             <div className="auth__login-block">
 
               <p className="auth__login-wrapper">
