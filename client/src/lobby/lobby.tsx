@@ -62,12 +62,12 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
       {!hasEnoughChips && <div style={{color: 'white'}}>You don't have enough chips to play. Wait for bonus</div>}
       <div className="lobby__wrapper">
       <div className="lobby__buttons-wrapper">
-          <button className="btn lobby__button lobby__button--log-out" onClick={() => {
-            localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
-            onLogOut();
-          }}>Log Out</button>
-        </div>
-      <div className="lobby__wrapper">        
+        <button className="btn lobby__button lobby__button--log-out" onClick={() => {
+          localStorage.removeItem('b6fe147178bcfc06652a9d3be2c98dd89user');
+          onLogOut();
+        }}>Log Out</button>
+      </div>
+      <div className="lobby__wrapper">
         <div className="lobby__center-container">
           <button className="btn lobby__button lobby__button--local" onClick={() => {
             if (user.chips >= 5000) {
@@ -116,7 +116,9 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
               <CreateRoom onSubmit={(roomName) => {
                 socket.sendState({ type: 'createRoom', roomName: roomName })
               }} />
-              <h2 className="lobby__rooms-title">Rooms</h2>
+              {/* <h2 className="lobby__rooms-title lobby__rooms-title--rooms">Rooms</h2> */}
+              <fieldset className="lobby__select-rooms">
+                <legend className="lobby__rooms-title lobby__rooms-title--rooms">Rooms</legend>              
               <div className="lobby__rooms-list">
                 {!currentRoom &&
                   rooms.map((room, i) => (
@@ -145,9 +147,10 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                           }, 3000);
                         }
                       })
-                    }} > room {room}</p>
+                    }} > <span>{i + 1}.</span> {room}</p>
                   ))}
               </div>
+              </fieldset>
             </div>
 
             <div className="lobby__chat">
