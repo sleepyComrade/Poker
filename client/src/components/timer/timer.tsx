@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import '../../style.css';
+import './timer.css';
 
 export function Timer({ initialTime, onClick }: { initialTime: number, onClick: () => void }) {
   const [time, setTime] = useState(0);
@@ -26,9 +28,9 @@ export function Timer({ initialTime, onClick }: { initialTime: number, onClick: 
   const t = new Date(time);
 
   return (
-    <div style={{color: 'white'}}>
-      <div>6000</div>
-      <button onClick={() => {
+    <div className="timer">
+      <div className="timer__bonus-amount">Bonus amount: <span style={{'color': '#f00'}}>6000</span></div>
+      <button className="btn timer__button" onClick={() => {
         onClick();
       }}>{time <= 0 ? 'Get Bonus' : `${t.getMinutes()}:${t.getSeconds() < 10 ? '0' + t.getSeconds() : t.getSeconds()}`}</button>
     </div>
