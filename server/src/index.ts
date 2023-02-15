@@ -40,6 +40,8 @@ socket.on('request', (request) => {
         return
       }
 
+      const currentUser = userService.getUserByConnection(connection);
+
       console.log(parsed.type)
       if (parsed.type === 'createRoom') {
         console.log('Room Create Request')
@@ -135,7 +137,7 @@ socket.on('request', (request) => {
           return
         }
         console.log(parsed.roomName, parsed);
-        rooms[parsed.roomName ].handleMessage(connection, parsed.data, parsed.requestId)
+        rooms[parsed.roomName ].handleMessage(currentUser, parsed.data, parsed.requestId)
       }
 
       if (parsed.type === "user") {
