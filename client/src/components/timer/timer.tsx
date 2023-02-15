@@ -29,7 +29,7 @@ export function Timer({ initialTime, onClick }: { initialTime: number, onClick: 
 
   return (
     <div className="timer">
-      <div className="timer__bonus-amount">Bonus amount: <span style={{'color': '#f00'}}>6000</span></div>
+      <div className="timer__bonus-amount">Bonus amount: <span>6000</span></div>
       <button className="btn timer__button" onClick={() => {
         onClick();
       }}>{time <= 0 ? 'Get Bonus' : `${t.getMinutes()}:${t.getSeconds() < 10 ? '0' + t.getSeconds() : t.getSeconds()}`}</button>

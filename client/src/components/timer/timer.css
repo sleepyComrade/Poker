@@ -1,12 +1,17 @@
-.timer__bonus-amount {
-  position: relative;
+.timer {
+  text-align: center;
 }
 
-.timer__bonus-amount::after {
+.timer__bonus-amount span {
+  position: relative;
+  color: #f00;
+}
+
+.timer__bonus-amount span::after {
   position: absolute;
   content: "";
   top: -5px;
-  right: 47px;
+  left: 47px;
   width: 30px;
   height: 30px;
   background-image: url("../../assets//chip.png");
