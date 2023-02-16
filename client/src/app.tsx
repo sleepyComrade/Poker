@@ -93,7 +93,21 @@ export function App() {
         <Lobby onUserUpdate={(user: IUserData) => {
           setUser(user);
         }} onLogOut={() => {
-          setActivePage('authorization');
+          if (isGuest === false) {
+            setActivePage('authorization');
+          } else {
+            socket.sendState({
+              type: 'logout',
+              data: {
+                type: 'logout',
+                data: {}
+              },
+            }).then(res => {
+              console.log(res);
+              setActivePage('authorization');
+              setIsGuest(false);
+            })
+          }
         }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
           onRoomEnter={(room, playerId, player) => {
             setCurrentRoom(room);

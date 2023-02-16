@@ -81,7 +81,7 @@ export class Room {
                     player.chips = 5000;
                 }
                 this.players.set(currentUser.connection, player);
-                console.log("MSG JOIN",msg, "reqID", reqId)
+                console.log("MSG JOIN",msg, "reqID", reqId);
                 currentUser.connection.sendUTF(JSON.stringify({
                     type: 'privateMessage',
                     requestId: reqId,
@@ -96,8 +96,12 @@ export class Room {
             }
             case "leave": {
                 const currentPlayer = this.players.get(currentUser.connection);
-                this.roomLogic.leave(currentPlayer);
-                this.players.delete(currentUser.connection);
+                if (currentPlayer) {
+                    this.roomLogic.leave(currentPlayer);
+                    this.players.delete(currentUser.connection);       
+                } else {
+                    console.log('player is inactive!!!!!!');
+                }
                 // this.lastActions = null;
                 // this.lastPlayer = null;
                 break;

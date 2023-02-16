@@ -16,8 +16,11 @@ export class UserService {
       const reqeustedUser = this.users.filter(user => user.userName === name);
       switch (type) {
         case 'login':
+          console.log('connections!!!!!!!!!!!!', this.connections);
+          
           if (reqeustedUser.length) {
             if (reqeustedUser[0].password === password) {
+              reqeustedUser[0].connection = connection;
               this.connections.set(connection, reqeustedUser[0]);
               connection.sendUTF(JSON.stringify({
                 requestId: id,
@@ -76,6 +79,14 @@ export class UserService {
             this.sendUpdatedUser(connection, this.users.length - 1);
           }
           break;
+        case 'logout': {
+          this.connections.delete(connection);
+          connection.sendUTF(JSON.stringify({
+            type: 'privateMessage',
+            requestId: id,
+            data: {}
+          }));
+        }
         default:
           break;
       }
@@ -106,6 +117,10 @@ export class UserService {
     } else {
       authorizeUser(data.data.name, data.type, data.data.password);
     }
+  }
+
+  handleDisconnect(connection: connection) {
+    this.connections.delete(connection);
   }
 
   sendUpdatedUser(connection: connection, id: number) {

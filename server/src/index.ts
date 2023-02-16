@@ -41,6 +41,9 @@ socket.on('request', (request) => {
       }
 
       const currentUser = userService.getUserByConnection(connection);
+      if (currentUser && currentUser.connection !== connection) {
+        throw new Error("!!!!!!!!!!!!!!!!!!!!!!!!!!sdfsdgsdf!!");
+      }
 
       console.log(parsed.type)
       if (parsed.type === 'createRoom') {
@@ -153,6 +156,9 @@ socket.on('request', (request) => {
   })
 
   connection.on('close', (reasonCode, description) => {
+    console.log('Close!!!!');
+    
+    userService.handleDisconnect(connection);
     connections.splice(connections.indexOf(connection), 1)
     Object.values(rooms).forEach(room => {
       room.handleDisconnect(connection)
