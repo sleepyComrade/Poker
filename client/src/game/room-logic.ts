@@ -15,14 +15,17 @@ export class RoomLogic {
   lastState: IGameMessage<any>;
   onPlayerLeave: () => void;
   // expectants: Player | BotPlayer[];
-  playersToLeave: BotPlayer[];
+  playersToLeave: (Player | BotPlayer)[];
   botNames: string[];
   game: GameLogic;
+  playersToJoin: (Player | BotPlayer)[];
+
   constructor() {
     this.condition = false;
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
     this.playersToLeave = [];
+    this.playersToJoin = [];
     // this.expectants = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
@@ -107,8 +110,13 @@ export class RoomLogic {
       console.log('Room is full');
       this.inactivePlayers.push(player);
       return 9;
+    } else if (emptyIndex < 0 && this.players.some(player => player instanceof BotPlayer)) {
+      const botIndex = this.players.findIndex(player => player instanceof BotPlayer);
+      this.leave(this.players[botIndex]);
+      this.playersToJoin.push(player);
+    } else {
+      this.players[emptyIndex] = player;
     }
-    this.players[emptyIndex] = player;
 
     this.handleMessage({type: 'roomState', data: this.getCurrentState()});
     if (!this.isStarted) {
@@ -236,8 +244,17 @@ export class RoomLogic {
 
               this.playersToLeave.forEach(player => {
                 this.players.splice(this.players.indexOf(player), 1, null);
-                this.playersToLeave = [];
               })
+              this.playersToLeave = [];
+
+              const emptyIndexes = this.players.map((player, i) => player ? null : i).filter(el => el);
+              emptyIndexes.forEach(el => {
+                const plr = this.playersToJoin.splice(0, 1)[0];
+                if (plr) {
+                  this.players[el] = plr;
+                }
+              });
+              this.playersToJoin = [];
 
               this.players.forEach((player, i) => {
                 if (player instanceof Player && player.isOut) {

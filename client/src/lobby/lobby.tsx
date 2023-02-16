@@ -69,7 +69,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
       </div>
       <div className="lobby__wrapper">
         <div className="lobby__center-container">
-          <button className="btn lobby__button lobby__button--local" onClick={() => {
+          {isGuest && <button className="btn lobby__button lobby__button--local" onClick={() => {
             if (user.chips >= 5000) {
               const player = new Player(user.userName);
               const joinResult = roomLogic.join(player);
@@ -80,7 +80,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                 setHasEnoughChips(true);
               }, 3000);
             }
-          }}>Local</button>
+          }}>Local</button>}
 
 
           {!isGuest && <div className="lobby__nav">
