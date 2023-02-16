@@ -25,10 +25,10 @@ type GameProps = {
   isWaiting: boolean;
   dealerIndex: number;
   chatMessages: IMessage[];
-  player2: Player;
+  playerClient: Player;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, player2 }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
@@ -56,7 +56,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
 
         {chatIsOpen && (
           <Chat messages={chatMessages} onMessageCreate={(message) => {
-            player2.sendChatMessage(message)
+            playerClient.sendChatMessage(message)
           }}></Chat>
         )}
       </div>
