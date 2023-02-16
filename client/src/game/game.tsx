@@ -6,7 +6,9 @@ import '../style.css';
 import './game.css';
 import { shift } from '../game/shift';
 import { IActions, ICard, IDataWinner, IPlayer } from "../interfaces";
-
+import { IMessage } from "../interfaces/IMessage";
+import { Chat } from "../components/chat/chat";
+import { Player } from "./players";
 
 type GameProps = {
   players: Array<IPlayer>;
@@ -22,12 +24,16 @@ type GameProps = {
   isClientOut: boolean;
   isWaiting: boolean;
   dealerIndex: number;
+  chatMessages: IMessage[];
+  player2: Player;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, player2 }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
+
+  const [chatIsOpen, setChatIsOpen] = useState(false)
 
   return (
     <div className="game">
@@ -42,6 +48,19 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
 
         {isWaiting && <span className="game__info-message" style={{ color: 'white' }}>You will join on the next game</span>}
       </div>
+
+      <div className="game__chat-wrapper">
+        <p className="game__chat-toggle" onClick={() => {
+          setChatIsOpen(!chatIsOpen)
+        }}>{chatIsOpen ? "close chat" : "open chat"}</p>
+
+        {chatIsOpen && (
+          <Chat messages={chatMessages} onMessageCreate={(message) => {
+            player2.sendChatMessage(message)
+          }}></Chat>
+        )}
+      </div>
+          
 
       <div className="game__wrapper">
         {winInfo && <div className="game__winner-message">

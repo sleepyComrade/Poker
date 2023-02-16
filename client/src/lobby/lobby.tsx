@@ -164,7 +164,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
               </fieldset>
             </div>
 
-            <div className="lobby__chat">
+            {/* <div className="lobby__chat">
               {currentRoom && (
                 <>
                   <div>
@@ -195,7 +195,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
                   author: userName,
                 })
               }}> Send </button>
-            </div>
+            </div> */}
           </div>}
         </div>
       </div>

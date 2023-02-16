@@ -7,7 +7,7 @@ import '../style.css';
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from "./player-client";
-import {Chat} from "../components/Chat/Chat"
+import { Chat } from "../components/chat/chat"
 import { IMessage } from "../interfaces/IMessage";
 
 interface IProps {
@@ -21,7 +21,7 @@ interface IProps {
 }
 
 export function Poker(props: IProps) {
-  const [players1, setPlayers] = useState<IPlayer[]>(new Array(9).fill(null).map(it=> new PlayerState(true, true, 'NULL', 0)));
+  const [players1, setPlayers] = useState<IPlayer[]>(new Array(9).fill(null).map(it => new PlayerState(true, true, 'NULL', 0)));
   const [pot, setPot] = useState(0);
   // const [deck, setDeck] = useState<ICard[]>([]);
   const [tableCards, setTableCards] = useState<ICard[]>([]);
@@ -41,14 +41,14 @@ export function Poker(props: IProps) {
   // const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
   const [isClientOut, setIsClientOut] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
-  const [chatIsOpen, setChatIsOpen] = useState(false)
+
   const [chatMessages, setChatMessages] = useState<IMessage[]>([])
   const isMultiPlayer = props.currentRoom !== "";
 
-  const players = useMemo(()=>{
+  const players = useMemo(() => {
     console.log(roomState)
-    return players1.map((it, i)=>{
-      if (it.isAbsent == true){
+    return players1.map((it, i) => {
+      if (it.isAbsent == true) {
         return (roomState && (roomState.roomPlayers[i] && new PlayerState(true, true, roomState.roomPlayers[i].name, roomState.roomPlayers[i].chips))) || it;
       } else {
         return it
@@ -76,10 +76,10 @@ export function Poker(props: IProps) {
     props.player.onMessage = (message: IGameMessage<any>) => {
       console.log(message);
       switch (message.type) {
-        case 'roomState':{
+        case 'roomState': {
           setRoomState(message.data);
-          if (message.data.gameState){
-            if (message.data.gameState.tableCards){
+          if (message.data.gameState) {
+            if (message.data.gameState.tableCards) {
               console.log('!!!!!!!!!!!!!!', message.data.gameState.tableCards);
             }
             setTableCards(message.data.gameState.tableCards);
@@ -92,7 +92,7 @@ export function Poker(props: IProps) {
             setPlayers(data.players);
             setPot(data.pot);
             setTableCards(data.tableCards);
-            if (data.move == 'start'){
+            if (data.move == 'start') {
               setWinInfo(null);
               setTableCards([]);
               setPot(0);
@@ -159,10 +159,10 @@ export function Poker(props: IProps) {
       }
     }
 
-    props.player.getCurrentState?.().then(res=>{
+    props.player.getCurrentState?.().then(res => {
       setRoomState(res?.data);
-      if (res && res.data.gameSate){
-        if (res.data.gameState.tableCards){
+      if (res && res.data.gameSate) {
+        if (res.data.gameState.tableCards) {
         }
         setTableCards(res.data.gameState.tableCards);
         setPot(res.data.pot);
@@ -176,16 +176,9 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <span onClick={() => {
-        setChatIsOpen(!chatIsOpen)
-      }}>{chatIsOpen ? "close chat" : "open chat"}</span>
-      {chatIsOpen && (
-        <Chat messages={chatMessages} onMessageCreate={(message) => {
-          props.player.sendChatMessage(message) 
-        }}></Chat> 
-      )}
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex} 
-        currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} onGameExit={() => {
+      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex}
+        currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} chatMessages={chatMessages} player2={props.player}
+        onGameExit={() => {
           props.onGameExit();
           // props.roomLogic.leave(clientPlayer);
         }} onBackToGame={() => {
@@ -194,29 +187,23 @@ export function Poker(props: IProps) {
           // props.roomLogic.backToGame(clientPlayer);
         }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} isWaiting={isWaiting} />
 
-        <div style={{'display': 'none'}}>
-          
+      <div style={{ 'display': 'none' }}>
         <button onClick={() => setWinInfo({})}>Test</button>
-      <button onClick={() => {
-        setRound(last => last + 1);
-        setTableCards([]);
-        setPot(0);
-        setWinInfo(null);
-        setPlayers(testPlayers());
-        setDealerIndex(last => (last + 1) % testPlayers().length);
-      }
-      }>Restart</button>
-      <button onClick={() => {
-        // setMyPlayerIndex(last => (last + 1) % players.length)
-      }}>
-        hello
-      </button>
-      <div>
-        Pot: {pot}
+        <button onClick={() => {
+          setRound(last => last + 1);
+          setTableCards([]);
+          setPot(0);
+          setWinInfo(null);
+          setPlayers(testPlayers());
+          setDealerIndex(last => (last + 1) % testPlayers().length);
+        }
+        }>Restart</button>
+        <button onClick={() => {
+          // setMyPlayerIndex(last => (last + 1) % players.length)
+        }}>hello</button>
+        <div>Pot: {pot}</div>
       </div>
 
-        </div>
-   
     </div>
   )
 }

@@ -69,14 +69,14 @@
   border-radius: 3px;
   background-color: #1b1d1b;
   border: 1px solid #737070;
-  box-shadow: 0px 0px 5px #737070;
+  box-shadow: 0px 0px 7px #737070;
   color: red;
   font-size: 20px;
 }
 
 .auth__input:focus {
   border: 2px solid #f00;
-  box-shadow: 0px 0px 5px #f00;
+  box-shadow: 0px 0px 7px #f00;
 }
 
 .auth__button {

@@ -1,6 +1,7 @@
-import React, { useState } from "react"
-import {IMessage} from "../../../../interfaces/IMessage"
-import "./Chat.css"
+import React, { useState } from "react";
+import {IMessage} from "../../../../interfaces/IMessage";
+import '../../style.css';
+import "./chat.css";
 
 interface IProps {
   messages: IMessage[]
@@ -11,23 +12,27 @@ export function Chat(props: IProps) {
   const [message, setMessage] = useState("")
 
   return (
-    <div>
-      <div>
-        <input onChange={(e) => {
-          setMessage(e.target.value)
-        }} type="text" value={message}/>
-        <button type="submit" onClick={() => {
-          setMessage("")
-          props.onMessageCreate(message)
-        }}>send</button>  
-      </div>
-      <div className={"chatMessages"}>
+    <div className="chat">
+      <div className="chat-messages">
         {props.messages.map((message, indx) => {
           return (
-            <span key={indx}>{message.author}: {message.message}</span> 
+            <p key={indx}><span className="chat__author">{message.author}:</span>  <span className="chat__message">{message.message}</span></p> 
           )
         })}
       </div>
+      <div>
+        <input className="chat__input" onChange={(e) => {
+          setMessage(e.target.value)
+        }} type="text" value={message}/>
+        <button className="btn chat__button chat__button--submit" type="submit" onClick={() => {
+          setMessage("")
+          props.onMessageCreate(message)
+        }}></button>  
+      </div>
+
+
+     
+      
     </div>
   )
 }
