@@ -23,16 +23,17 @@
     font-size: 20px;
     color: #0dce07;
     outline: none;   
+    transition: all 0.3s ease;
     border-radius: 5px;
     background-color: #1b1d1b;
     border: 1px solid #737070;
-    box-shadow: 0px 0px 5px #737070;
+    box-shadow: 0px 0px 7px #737070;
 }
 
 .create-room__input--name:focus,
 .create-room__input--name:hover {
     border: 2px solid #0dce07;;
-    box-shadow: 0px 0px 5px #0dce07;;
+    box-shadow: 0px 0px 7px #0dce07;;
 }
 
 .create-room__button--create {
