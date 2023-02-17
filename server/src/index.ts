@@ -123,6 +123,17 @@ socket.on('request', (request) => {
       }
 
       if (parsed.type === "poker") {
+        if (!rooms[parsed.roomName]) {
+          connection.sendUTF(JSON.stringify({
+            type: "privateMessage",
+            requestId: parsed.requestId,
+            data: {
+              succes: false,
+              statusText: "There is no room with such name"
+            }
+          }))
+          return
+        }
         console.log(parsed.roomName, parsed);
         rooms[parsed.roomName ].handleMessage(connection, parsed.data, parsed.requestId)
       }
