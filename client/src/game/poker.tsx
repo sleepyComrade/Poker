@@ -7,7 +7,6 @@ import '../style.css';
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from "./player-client";
-import { Chat } from "../components/chat/chat"
 import { IMessage } from "../interfaces/IMessage";
 
 interface IProps {
@@ -63,6 +62,19 @@ export function Poker(props: IProps) {
   //     setChatMessages(messages)
   //   }
   // })
+
+  useEffect(() => {
+    props.socket.sendState({
+      type: "poker",
+      roomName: props.currentRoom,
+      data: {
+        type: "getChatHistory",
+      }
+    }).then(res => {
+        console.log
+        setChatMessages(res.messages)     
+      })
+  }, [])
 
   useEffect(() => {
     if (!props.player) {

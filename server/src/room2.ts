@@ -171,6 +171,16 @@ export class Room {
                         }
                     }))
                 })
+                break
+            }
+            case "getChatHistory": {
+                connection.sendUTF(JSON.stringify({
+                    type: "privateMessage",
+                    requestId: reqId,
+                    data: {
+                        messages: this.messages,
+                    }
+                }))
             }
         }
     }
