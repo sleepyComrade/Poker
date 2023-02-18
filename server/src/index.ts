@@ -112,22 +112,7 @@ socket.on('request', (request) => {
       //   }
       // }
 
-      if (parsed.type === 'gameStart') {
-        console.log(`game start in room ${parsed.roomName}`)
-        if (!rooms[parsed.roomName]) {
-          connection.send(
-            JSON.stringify({
-              type: 'error',
-              errortext: 'There is no such room',
-            })
-          )
-          return
-        }
-
-        rooms[parsed.roomName].startGame()
-      }
-
-      if (parsed.type === "poker") {
+      const checkRoom = ()=>{
         if (!rooms[parsed.roomName]) {
           connection.sendUTF(JSON.stringify({
             type: "privateMessage",
@@ -137,8 +122,19 @@ socket.on('request', (request) => {
               statusText: "There is no room with such name"
             }
           }))
-          return
+          return false;
         }
+        return true;
+      }
+
+      if (parsed.type === 'gameStart') {
+        if (!checkRoom()) return;
+        console.log(`game start in room ${parsed.roomName}`)
+        rooms[parsed.roomName].startGame()
+      }
+
+      if (parsed.type === "poker") {
+        if (!checkRoom()) return;
         console.log(parsed.roomName, parsed);
         rooms[parsed.roomName ].handleMessage(currentUser, parsed.data, parsed.requestId)
       }

@@ -18,7 +18,9 @@ export class RoomLogic {
   playersToLeave: BotPlayer[];
   botNames: string[];
   game: GameLogic;
-  constructor() {
+  name: string;
+  constructor(name: string = '_local') {
+    this.name = name;
     this.condition = false;
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
@@ -28,7 +30,7 @@ export class RoomLogic {
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
     this.botNames = ['James Bot', 'Botman', 'Bad Bot', 'roBot', 'BroBot', 'Bothead', 'Botzilla', 'Bottenstein', 'Bot3000', 'Botty McBot', 'Botzy', 'Botlet', 'Botburst', 'Botzap', 'Botilliant', 'Botivator', 'Botronaut', 'Botomize'];
-    this.startGame();
+    this.startGame();    
 
     setInterval(() => {
       if(Math.random() < 0.2) {
@@ -99,6 +101,7 @@ export class RoomLogic {
   }
 
   join(player: Player | BotPlayer) {
+    player.currentRoom = this;
     //if (this.lastState) {
       
     //}

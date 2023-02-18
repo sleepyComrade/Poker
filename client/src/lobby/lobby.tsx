@@ -142,7 +142,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
 
                         res.then(data => {
                           if (user.chips >= 5000) {
-                            const player = new PlayerClient(user.userName, socket, room);
+                            const player = new PlayerClient(user.userName, socket, room, data.playerUID);
                             console.log("RES", data)
                             onRoomEnter(room, data.playerIndex, player);
                           } else {

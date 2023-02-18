@@ -16,7 +16,7 @@ export class Room {
     messages: IMessage[]
 
     constructor(public name: string) {
-        this.roomLogic = new RoomLogic();
+        this.roomLogic = new RoomLogic(name);
         this.messages = []
         // setInterval(() => {
         //     if(Math.random() < 0.02) {
@@ -89,7 +89,8 @@ export class Room {
                         type: "join",
                         playerIndex: playerIndex,
                         roomName: this.name,
-                        succes: true
+                        succes: true,
+                        playerUID: player.id
                     }
                 }))
                 break;

@@ -4,12 +4,16 @@ import { IGameMessage, IActions, IDataAsk } from '../interfaces';
 
 export class PlayerClient extends Player{
   socket: Socket;
-  currentRoom: string;
-  constructor(name: string, socket:Socket, currentRoom: string){
+  currentRoomId: string;
+  playerId: string;
+  constructor(name: string, socket:Socket, currentRoom: string, playerId: string){
     super(name);
+    this.playerId = playerId;
     this.socket = socket;
-    this.currentRoom = currentRoom;
+    this.currentRoomId = currentRoom;
     socket.onPokerResponse = (msg) => {
+      if (msg?.data?.roomId != this.currentRoomId){ return; }
+      if (msg?.data?.playerUID != this.playerId){ return; }
       this.handleMessage(msg);
       console.log(msg);
     }
@@ -30,7 +34,7 @@ export class PlayerClient extends Player{
       const action = (name: string) => {
         this.socket.sendState({
           type: 'poker',
-          roomName: this.currentRoom,
+          roomName: this.currentRoomId,
           data:{
             type: 'move',
             data:{
@@ -56,7 +60,7 @@ export class PlayerClient extends Player{
   getCurrentState(){
     const res = this.socket.sendState({
       type: 'poker',
-      roomName: this.currentRoom,
+      roomName: this.currentRoomId,
       data: {
           type: 'roomState',
           data: {
@@ -73,7 +77,7 @@ export class PlayerClient extends Player{
   sendChatMessage(message: string) {
     this.socket.sendState({
       type: "poker",
-      roomName: this.currentRoom,
+      roomName: this.currentRoomId,
       data: {
         type: "chatMessage",
         message: {
