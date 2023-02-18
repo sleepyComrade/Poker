@@ -26,9 +26,10 @@ type GameProps = {
   dealerIndex: number;
   chatMessages: IMessage[];
   playerClient: Player;
+  isStarted: boolean;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
@@ -41,6 +42,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>
+        {!isStarted && <div style={{color: 'white'}}>Wait for players</div>}
 
         {(!isMultiPlayer && isClientOut) && <button className="btn game__button game__button--back-to-game" onClick={() => {
           onBackToGame();

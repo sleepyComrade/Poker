@@ -77,12 +77,17 @@ export function Poker(props: IProps) {
       console.log(message);
       switch (message.type) {
         case 'roomState': {
+          if (!message.data.isStarted) {
+            console.log('Wait for players!!');
+          }
           setRoomState(message.data);
           if (message.data.gameState) {
             if (message.data.gameState.tableCards) {
               console.log('!!!!!!!!!!!!!!', message.data.gameState.tableCards);
             }
             setTableCards(message.data.gameState.tableCards);
+            setPlayers(message.data.gameState.players);
+            setPot(message.data.gameState.pot);
           }
           break;
         }
@@ -176,7 +181,7 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <Game players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex}
+      <Game isStarted={roomState?.isStarted || false} players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex}
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} chatMessages={chatMessages} playerClient={props.player}
         onGameExit={() => {
           props.onGameExit();

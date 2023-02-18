@@ -54,7 +54,10 @@ const BankStacks = (winInfo: IDataWinnerLegacy, bankCoin: IChipStack[], splitAni
     const top = bankPosition.top;
     const left = bankPosition.left;
     const cycleIndex = winInfo && (maxPlayers + winInfo.winIndex - playerIndex) % maxPlayers;
-    const winTop = winInfo && coinPositions[cycleIndex].top;
+    if (!coinPositions[cycleIndex] && winInfo) {
+      console.log('Bank stacks!!!!!!!!',cycleIndex, playerIndex, winInfo.winIndex);
+    }
+    const winTop = winInfo && coinPositions[cycleIndex].top;    
     const winLeft = winInfo && coinPositions[cycleIndex].left;
     const time = (winTop != null && winTop != null) ? baseChipAnimationMoveTime : null;
     winInfo && console.log(winInfo.winIndex, playerIndex, cycleIndex)
@@ -110,7 +113,7 @@ export default function Table({ cards, bets, bank, winCards, winInfo, playerInde
             <div className='table__wrapper'>
                 <div className="table_stack">
                     {cards.map((card, index) => (
-                        <div className={`table_card ani_card${index} ${winCards?.find(it => (it.type == card.type) && (it.value == card.value)) ? 'winner-card' : ''}` } 
+                        <div key={index} className={`table_card ani_card${index} ${winCards?.find(it => (it.type == card.type) && (it.value == card.value)) ? 'winner-card' : ''}` } 
                         // style={winCards?.map(it => (it.type === card.type) && (it.value === card.value) ? {'border': '2px solid red'} : '')}
                          >
                             <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
@@ -131,7 +134,7 @@ export default function Table({ cards, bets, bank, winCards, winInfo, playerInde
                 </div>
                 {
                     betCoins.map((stacks, playerIndex) => {
-                        return <ChipsStack stacks={stacks} baseX = {coinPositions[playerIndex].left} baseY = {coinPositions[playerIndex].top}/>
+                        return <ChipsStack key={playerIndex} stacks={stacks} baseX = {coinPositions[playerIndex].left} baseY = {coinPositions[playerIndex].top}/>
                     })
                 }
 

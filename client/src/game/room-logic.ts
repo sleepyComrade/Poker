@@ -44,7 +44,9 @@ export class RoomLogic {
         const botName = getBotName();
         const bot = new BotPlayer(botName ? botName : 'Bot');
         if (!this.checkTable()) {
-          this.join(bot);  
+          if (this.players.filter(player => player).length < this.players.length - 1) {
+            this.join(bot);
+          }
         }
       }
       if(Math.random() < 0.1) {
