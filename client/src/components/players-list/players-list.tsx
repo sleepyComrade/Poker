@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Player from '../player/player';
+import EmptyPlace from '../empty-place/empty-place';
 import MainPlayer from '../main-player/main-player';
 import BankCoin from '../bank-coin/bank-coin';
 import { ICard, IPlayer } from "../../interfaces";
@@ -18,12 +19,14 @@ type PlayersListProps = {
 
 export default function PlayersList({ players, player, currentPlayer, isOpened, winner, winCards, dealer }: PlayersListProps) {  
   return (
-      <div className="players-list">
+      <div className="players-list">        
+
         {player && <MainPlayer player={player} isCurrent={player == currentPlayer} isWinner={player == winner} winCards={winCards} isDealer={player == dealer} />}
         {players.filter(it => it != player).map((_player, index) => {
           if(_player == player) return;
 
-          return (        
+          return (  
+            _player.isAbsent ? <EmptyPlace place={index+1} /> :      
             <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} isOpened={isOpened} isWinner={_player == winner}
             winCards={winCards} isDealer={_player == dealer} />      
           )           
