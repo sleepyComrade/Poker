@@ -15,9 +15,10 @@ type PlayersListProps = {
   winner: IPlayer | null;
   winCards: Array<ICard> | null;
   dealer: IPlayer;
+  onClick: (index: number) => void;
 }
 
-export default function PlayersList({ players, player, currentPlayer, isOpened, winner, winCards, dealer }: PlayersListProps) {  
+export default function PlayersList({ players, player, currentPlayer, isOpened, winner, winCards, dealer, onClick }: PlayersListProps) {  
   return (
       <div className="players-list">        
 
@@ -25,8 +26,8 @@ export default function PlayersList({ players, player, currentPlayer, isOpened, 
         {players.filter(it => it != player).map((_player, index) => {
           if(_player == player) return;
 
-          return (  
-            _player.isAbsent ? <EmptyPlace place={index+1} /> :      
+          return ( 
+            (_player.isAbsent && !player) ? <EmptyPlace onClick={() => onClick(index)} place={index+1} /> :      
             <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} isOpened={isOpened} isWinner={_player == winner}
             winCards={winCards} isDealer={_player == dealer} />      
           )           
