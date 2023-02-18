@@ -57,41 +57,6 @@ export class RoomLogic {
     }, 2000);
   }
 
-  // join(player: Player | BotPlayer | PlayerClient) {
-  //   // if (this.expectant === player || this.inactivePlayers.includes(player) || this.players.includes(player)) {
-  //     // return 0;
-  //   // }
-  //   const emptyIndex = this.players.indexOf(null);  
-  //   if (emptyIndex < 0) {
-  //     console.log('Room is full');
-  //     if (player instanceof Player) {
-  //       // this.expectant = player;
-  //       // this.expectant.handleMessage({type: 'wait', data: {}});
-  //     }
-  //     return 0;
-  //   }
-  //   if (player instanceof Player && this.players[0] && this.players.length > 2) {
-  //     // this.expectant = player;
-  //     // this.expectant.handleMessage({type: 'wait', data: {}});
-  //   } else if (player instanceof Player && this.players[0] && this.players.length === 1 ||
-  //              !this.players[0]) {
-  //     this.players[0] = player;
-  //   } else {
-  //     this.players[emptyIndex] = player;
-  //   }
-  //   if (this.lastState) {
-  //     player.handleMessage(this.lastState);
-  //   } else if (!this.isStarted) {
-  //     this.players.filter(player => player).forEach(player => {
-  //       player.handleMessage({type: 'join', data: {players: this.players.map(player => player ? new PlayerState(true, true, player.name, 0) : new PlayerState(true, true, 'Empty', 0))}});
-  //     })
-  //   }
-  //   if (!this.isStarted) {
-  //     this.startGame();
-  //   }
-  //   return emptyIndex;
-  // }
-
   getCurrentState(){
     return {
       roomPlayers: this.players.map(player=> player && new PlayerState(false, false, player.name, player.chips)),
