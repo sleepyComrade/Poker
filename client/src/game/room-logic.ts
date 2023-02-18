@@ -239,8 +239,8 @@ export class RoomLogic {
 
               this.playersToLeave.forEach(player => {
                 this.players.splice(this.players.indexOf(player), 1, null);
-                this.playersToLeave = [];
               })
+              this.playersToLeave = [];
 
               this.players.forEach((player, i) => {
                 if (player instanceof Player && player.isOut) {

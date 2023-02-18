@@ -29,6 +29,11 @@ export class Player {
     return Promise.resolve(this.roomState);
   }
 
+  leave() {
+    this.currentRoom.leave(this);
+    return Promise.resolve({});
+  }
+
   sendChatMessage(message: string) {
     console.log("send chatMessage")
     this.onMessage?.({
@@ -70,6 +75,11 @@ export class BotPlayer {
         setBotChoise(message);
       }, 1000);
     }
+  }
+
+  leave() {
+    this.currentRoom.leave(this);
+    return Promise.resolve({});
   }
 
   getCurrentState(){

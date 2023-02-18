@@ -98,8 +98,19 @@ export class Room {
             case "leave": {
                 const currentPlayer = this.players.get(currentUser.connection);
                 if (currentPlayer) {
-                    this.roomLogic.leave(currentPlayer);
-                    this.players.delete(currentUser.connection);       
+                    // this.roomLogic.leave(currentPlayer);
+                    currentPlayer.leave();
+                    this.players.delete(currentUser.connection);
+                    currentUser.connection.sendUTF(JSON.stringify({
+                      type: 'privateMessage',
+                      requestId: reqId,
+                      data: {
+                          type: "leave",
+                          roomName: this.name,
+                          succes: true,
+                          playerUID: currentPlayer.id
+                      }
+                  }))  
                 } else {
                     console.log('player is inactive!!!!!!');
                 }
