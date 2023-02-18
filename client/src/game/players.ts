@@ -1,23 +1,28 @@
 import { setBotChoise } from './bot-logic';
 import { ICard, IGameMessage, IDataState, IDataAsk } from '../interfaces';
 import { RoomLogic } from './room-logic';
+import { createIdGenerator } from '../components/id-generator';
 
 export class Player {
   onMessage: (message: IGameMessage<any>) => void;
   name: string;
   chips: number;
   isOut: boolean;
+  static nextId: () => string = createIdGenerator("playerId") 
   roomState: IGameMessage<any>;
+  id: string;
+  currentRoom: RoomLogic | null = null;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
     this.isOut = false;
+    this.id = Player.nextId();
   }
 
   handleMessage(message: IGameMessage<any>) {
     // console.log('Player message: ', message);
     this.roomState = message;
-    this.onMessage?.(message);
+    this.onMessage?.({...message, data: {...message.data, playerUID: this.id, roomId: this.currentRoom.name}});
   }
 
   getCurrentState(){
@@ -43,19 +48,23 @@ export class Player {
 export class BotPlayer {
   name: string;
   onMessage: (message: IGameMessage<any>) => void;
+  static nextId: () => string = createIdGenerator("botId") 
   chips: number;
   isOut: boolean;
   roomState: IGameMessage<any>;
+  id: string;
+  currentRoom: RoomLogic | null = null;
   constructor(name: string) {
     this.name = name;
     this.chips = 5000;
     this.isOut = false;
+    this.id = BotPlayer.nextId();
   }
 
   handleMessage(message: IGameMessage<any>) {
     // console.log('Bot message: ', message);
     this.roomState = message;
-    this.onMessage?.(message);
+    this.onMessage?.({...message, data: {...message.data, playerUID: this.id, roomId: this.currentRoom.name}});
     if (message.type === 'ask') {
       setTimeout(() => {
         setBotChoise(message);

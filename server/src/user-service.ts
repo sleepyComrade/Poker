@@ -4,9 +4,11 @@ import { User } from './user';
 export class UserService {
   users: User[];
   bonusTime: number;
+  connections: Map<connection, User>;
   constructor() {
     this.users = [];
     this.bonusTime = 10000;
+    this.connections = new Map();
   }
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
@@ -14,11 +16,15 @@ export class UserService {
       const reqeustedUser = this.users.filter(user => user.userName === name);
       switch (type) {
         case 'login':
+          console.log('connections!!!!!!!!!!!!', this.connections);
+          
           if (reqeustedUser.length) {
             if (reqeustedUser[0].password === password) {
+              reqeustedUser[0].connection = connection;
+              this.connections.set(connection, reqeustedUser[0]);
               connection.sendUTF(JSON.stringify({
                 requestId: id,
-                type: 'privateMessage', 
+                type: 'privateMessage',
                 data: {
                   status: 'login',
                   id: reqeustedUser[0].id,
@@ -57,7 +63,8 @@ export class UserService {
               }
             }));
           } else {
-            this.users.push(new User(name, this.users.length, password));
+            this.users.push(new User(name, this.users.length, password, connection));
+            this.connections.set(connection, this.users[this.users.length - 1]);
             connection.sendUTF(JSON.stringify({
               type: 'privateMessage',
               requestId: id,
@@ -72,6 +79,14 @@ export class UserService {
             this.sendUpdatedUser(connection, this.users.length - 1);
           }
           break;
+        case 'logout': {
+          this.connections.delete(connection);
+          connection.sendUTF(JSON.stringify({
+            type: 'privateMessage',
+            requestId: id,
+            data: {}
+          }));
+        }
         default:
           break;
       }
@@ -104,6 +119,10 @@ export class UserService {
     }
   }
 
+  handleDisconnect(connection: connection) {
+    this.connections.delete(connection);
+  }
+
   sendUpdatedUser(connection: connection, id: number) {
     connection.sendUTF(JSON.stringify({
       type: 'userUpdate',
@@ -126,5 +145,9 @@ export class UserService {
       chips: this.users[id].chips,
       lastBonusTime: this.bonusTime - (Date.now() - this.users[id].lastBonusTime),
     }
+  }
+
+  getUserByConnection(connection: connection) {
+    return this.connections.get(connection);
   }
 }

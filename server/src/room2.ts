@@ -6,6 +6,7 @@ import { connection } from "websocket"
 import { RoomLogic } from '../../client/src/game/room-logic';
 import { Player, BotPlayer } from '../../client/src/game/players';
 import { IMessage } from '../../client/src/interfaces/IMessage';
+import { User } from './user';
 
 export class Room {
     roomLogic: RoomLogic
@@ -15,7 +16,7 @@ export class Room {
     messages: IMessage[]
 
     constructor(public name: string) {
-        this.roomLogic = new RoomLogic();
+        this.roomLogic = new RoomLogic(name);
         this.messages = []
         // setInterval(() => {
         //     if(Math.random() < 0.02) {
@@ -36,58 +37,78 @@ export class Room {
     startGame(): void {
         throw new Error('Method not implemented.')
     }
-    handleMessage(connection: connection, msg: any, reqId?: string) {
+    handleMessage(currentUser: User, msg: any, reqId?: string) {
+        if (!currentUser) {
+          return;
+        }
         switch(msg.type) {
             case "join": {
-                const player = new Player(msg.data.name);
-                player.onMessage = (msg) => {
-                    if(msg.type == 'ask') {
-                        this.lastActions = msg.data.actions;
-                        this.lastPlayer = player;                        
-                        connection.sendUTF( JSON.stringify({
+                const player = new Player(currentUser.userName);
+                player.onMessage = (playerMessage) => {
+                    switch (playerMessage.type) {
+                        case 'ask':
+                            this.lastActions = playerMessage.data.actions;
+                            this.lastPlayer = player;                        
+                            currentUser.connection.sendUTF( JSON.stringify({
                             type: 'pocker',
                             data: {
-                              ...msg,
+                              ...playerMessage,
                               data: {
-                                ...msg.data,
-                                actions: Object.keys(msg.data.actions)                
+                                ...playerMessage.data,
+                                actions: Object.keys(playerMessage.data.actions)                
                               }
                             }
                           }));
-                    } else {
-                        connection.sendUTF( JSON.stringify({
-                            type: 'pocker',
-                            data: {
-                              ...msg
-                            }
-                          }));
+                            break;
+                        case 'leave':
+                            currentUser.plusChips(player.chips);
+                            player.chips = 0;
+                            break;
+                    
+                        default:
+                            currentUser.connection.sendUTF( JSON.stringify({
+                                type: 'pocker',
+                                data: {
+                                  ...playerMessage
+                                }
+                              }));
+                            break;
                     }
                 }
                 const playerIndex = this.roomLogic.join(player);
-                this.players.set(connection, player);
-                console.log("MSG JOIN",msg, "reqID", reqId)
-                connection.sendUTF(JSON.stringify({
+                if (playerIndex !== 9) {
+                    currentUser.minusChips(5000);
+                    player.chips = 5000;
+                }
+                this.players.set(currentUser.connection, player);
+                console.log("MSG JOIN",msg, "reqID", reqId);
+                currentUser.connection.sendUTF(JSON.stringify({
                     type: 'privateMessage',
                     requestId: reqId,
                     data: {
                         type: "join",
                         playerIndex: playerIndex,
                         roomName: this.name,
-                        succes: true
+                        succes: true,
+                        playerUID: player.id
                     }
                 }))
                 break;
             }
             case "leave": {
-                const currentPlayer = this.players.get(connection);
-                this.roomLogic.leave(currentPlayer);
-                this.players.delete(connection);
+                const currentPlayer = this.players.get(currentUser.connection);
+                if (currentPlayer) {
+                    this.roomLogic.leave(currentPlayer);
+                    this.players.delete(currentUser.connection);       
+                } else {
+                    console.log('player is inactive!!!!!!');
+                }
                 // this.lastActions = null;
                 // this.lastPlayer = null;
                 break;
             }
             case "move": {
-                const currentPlayer = this.players.get(connection);
+                const currentPlayer = this.players.get(currentUser.connection);
                 if(currentPlayer == this.lastPlayer) {
                     this.lastActions[msg.data.action as keyof IActions]();
                     // this.lastActions = null;
@@ -98,7 +119,7 @@ export class Room {
                 break;
             }
             case "roomState": {
-                connection.sendUTF(JSON.stringify({
+                currentUser.connection.sendUTF(JSON.stringify({
                     type: 'privateMessage',
                     // requestId: "HelloWorld",
                     data: {

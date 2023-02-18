@@ -19,7 +19,7 @@ type PlayersListProps = {
 export default function PlayersList({ players, player, currentPlayer, isOpened, winner, winCards, dealer }: PlayersListProps) {  
   return (
       <div className="players-list">
-        <MainPlayer player={player} isCurrent={player == currentPlayer} isWinner={player == winner} winCards={winCards} isDealer={player == dealer} />
+        {player && <MainPlayer player={player} isCurrent={player == currentPlayer} isWinner={player == winner} winCards={winCards} isDealer={player == dealer} />}
         {players.filter(it => it != player).map((_player, index) => {
           if(_player == player) return;
 

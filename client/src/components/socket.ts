@@ -1,14 +1,7 @@
 import { IMessage } from '../interfaces/IMessage'
 import { Signal } from "../common/signal"
 import { IUserData } from '../../../interfaces/IUser'
-
-const createIdGenerator = (pref: string) => {
-  let id = 0;
-
-  return () => {
-    return pref + id++
-  }
-}
+import { createIdGenerator } from './id-generator';
 
 export default class Socket {
   webSocket: WebSocket
