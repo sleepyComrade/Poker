@@ -37,11 +37,14 @@ export interface IDataAskOther {
   playerId: number;
 }
 
-export interface IDataWinner {
+export interface IDataWinnerLegacy {
   winIndex: number;
   cards: ICard[];
   count: number;
   comboName: string
+}
+export interface IDataWinner extends IDataWinnerLegacy {
+  winners: IDataWinnerLegacy[];
 }
 
 export interface IDataServer {

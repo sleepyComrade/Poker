@@ -1,4 +1,4 @@
-import { IPlayer, ICard, Round, IGameMessage, IBank, IDataWinner } from '../interfaces';
+import { IPlayer, ICard, Round, IGameMessage, IBank, IDataWinner, IDataWinnerLegacy } from '../interfaces';
 import { getCombo} from './combinations';
 import { getWinner, values } from './combo2';
 
@@ -289,8 +289,8 @@ export class GameLogic {
       console.log(leftP);
       console.log(tableC);
       const playerIndex = this.players.findIndex(player => player.name == leftPlayers[winIndex].name);
-      console.log('winners', getWinners(this.players, this.tableCards, this.banks))
-      this.onMessage({type: 'winner', data: {winIndex: playerIndex, cards: realCards, comboName: wins[winIndex].h.type, count: this.pot, banks: this.banks}});
+      const winners = getWinners(this.players, this.tableCards, this.banks)
+      this.onMessage({type: 'winner', data: {winIndex: playerIndex, cards: realCards, comboName: wins[winIndex].h.type, count: this.pot, winners: winners}});
       this.banks = [];
     }
   }
@@ -502,7 +502,7 @@ function getBankWinners(allPlayers: IPlayer[], players: IPlayer[], tableCards: I
     }
   }).filter(_=>_);
 
-  const winners: Array<IDataWinner & {player: IPlayer}> = winnerDatas.map(wd=>{
+  const winners: Array<IDataWinnerLegacy & {player: IPlayer}> = winnerDatas.map(wd=>{
     return {
       player: players.find(player => player && (player.name == wd.winnerPlayer.name)),
       winIndex: allPlayers.findIndex(player => player && (player.name == wd.winnerPlayer.name)),
@@ -516,7 +516,7 @@ function getBankWinners(allPlayers: IPlayer[], players: IPlayer[], tableCards: I
 }
 
 function getWinners(players: IPlayer[], tableCards: ICard[], banks: IBank[]){
-  const winners: (IDataWinner& {player: IPlayer})[] = [];
+  const winners: (IDataWinnerLegacy & {player: IPlayer})[] = [];
   banks.forEach(bank=>{
     const bankWinners = getBankWinners(players, bank.players, tableCards, bank.bank);
     bankWinners.forEach(it=>{
