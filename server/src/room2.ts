@@ -110,7 +110,9 @@ export class Room {
                           succes: true,
                           playerUID: currentPlayer.id
                       }
-                  }))  
+                    }))
+                    currentUser.plusChips(currentPlayer.chips);
+                    currentPlayer.chips = 0;
                 } else {
                     console.log('player is inactive!!!!!!');
                 }
