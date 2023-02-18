@@ -63,6 +63,12 @@ export class Room {
                         case 'leave':
                             currentUser.plusChips(player.chips);
                             player.chips = 0;
+                            currentUser.connection.sendUTF( JSON.stringify({
+                              type: 'pocker',
+                              data: {
+                                ...playerMessage
+                              }
+                            }));
                             break;
                     
                         default:
