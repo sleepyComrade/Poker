@@ -57,6 +57,23 @@ export class PlayerClient extends Player{
     }
   }
 
+  leave() {
+    const res = this.socket.sendState({
+      type: 'poker',
+      roomName: this.currentRoomId,
+      data: {
+          type: 'leave',
+          data: {
+          }
+      },
+      userName: this.name,
+    })
+
+    return res.then((rs: any) => {
+      return rs.data;
+    });
+  }
+
   getCurrentState(){
     const res = this.socket.sendState({
       type: 'poker',

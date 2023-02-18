@@ -26,9 +26,10 @@ type GameProps = {
   dealerIndex: number;
   chatMessages: IMessage[];
   playerClient: Player;
+  isStarted: boolean;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
   shift(_players, playerIndex);
@@ -41,6 +42,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>
+        {!isStarted && <div style={{color: 'white'}}>Wait for players</div>}
 
         {(!isMultiPlayer && isClientOut) && <button className="btn game__button game__button--back-to-game" onClick={() => {
           onBackToGame();
@@ -72,7 +74,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         </div>}
 
         <div className="game__center-container">       
-          <PlayerList players={_players} player={player} currentPlayer={players[currentPlayerIndex]}
+          <PlayerList players={_players} player={isClientOut ? null : player} currentPlayer={players[currentPlayerIndex]}
             isOpened={winInfo != null} winner={players[winInfo?.winIndex]} winCards={winInfo?.cards} dealer={players[dealerIndex]} />
           <Table cards={cards} bets={_players.map(it => it.bet)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
         </div>

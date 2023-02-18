@@ -63,6 +63,12 @@ export class Room {
                         case 'leave':
                             currentUser.plusChips(player.chips);
                             player.chips = 0;
+                            currentUser.connection.sendUTF( JSON.stringify({
+                              type: 'pocker',
+                              data: {
+                                ...playerMessage
+                              }
+                            }));
                             break;
                     
                         default:
@@ -98,8 +104,21 @@ export class Room {
             case "leave": {
                 const currentPlayer = this.players.get(currentUser.connection);
                 if (currentPlayer) {
-                    this.roomLogic.leave(currentPlayer);
-                    this.players.delete(currentUser.connection);       
+                    // this.roomLogic.leave(currentPlayer);
+                    currentPlayer.leave();
+                    this.players.delete(currentUser.connection);
+                    currentUser.connection.sendUTF(JSON.stringify({
+                      type: 'privateMessage',
+                      requestId: reqId,
+                      data: {
+                          type: "leave",
+                          roomName: this.name,
+                          succes: true,
+                          playerUID: currentPlayer.id
+                      }
+                    }))
+                    currentUser.plusChips(currentPlayer.chips);
+                    currentPlayer.chips = 0;
                 } else {
                     console.log('player is inactive!!!!!!');
                 }

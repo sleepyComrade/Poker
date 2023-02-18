@@ -127,7 +127,11 @@ export function App() {
           setIsGuest(true);
           setActivePage('lobby');
         }} socket={socket} /> :
-        <Poker player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => setActivePage('lobby')}/> }         
+        <Poker player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => {
+          player.leave().then(() => {
+            setActivePage('lobby');
+          });
+        }}/> }         
     </>
   )
 }
