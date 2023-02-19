@@ -20,19 +20,21 @@ type PlayersListProps = {
 
 export default function PlayersList({ players, player, currentPlayer, isOpened, winner, winCards, dealer, onClick }: PlayersListProps) {  
   return (
-      <div className="players-list">        
+    <div className="players-list">
 
-        {player && <MainPlayer player={player} isCurrent={player == currentPlayer} isWinner={player == winner} winCards={winCards} isDealer={player == dealer} />}
-        {players.filter(it => it != player).map((_player, index) => {
-          if(_player == player) return;
+      {players.map((_player, index) => {
+        if (_player == player) {
+          return <MainPlayer player={player} place={index + 1} isCurrent={player == currentPlayer} isWinner={player == winner} winCards={winCards} isDealer={player == dealer} />
+        }
 
-          return ( 
-            (_player.isAbsent && !player) ? <EmptyPlace onClick={() => onClick(index)} place={index+1} /> :      
-            <Player key={index} player={_player} place={index+1} isCurrent={_player == currentPlayer} isOpened={isOpened} isWinner={_player == winner}
-            winCards={winCards} isDealer={_player == dealer} />      
-          )           
-        }          
-        )}
-      </div>
+        return (
+          (_player.isAbsent && !player) ? <EmptyPlace onClick={() => onClick(index)} place={index + 1} /> :
+            <Player key={index} player={_player} place={index + 1} isCurrent={_player == currentPlayer} isOpened={isOpened} isWinner={_player == winner}
+              winCards={winCards} isDealer={_player == dealer} />
+        )
+      }
+      )}
+
+    </div>
   )
 }

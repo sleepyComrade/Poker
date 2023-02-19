@@ -33,11 +33,6 @@
     border: 3px solid red;
 }
 
-.tp9{
-    top: calc((100% - 40px) / 1);
-    left: calc((100% - var(--player-width)) / 1.9);
-}
-
 .main-player__wrapper {
    width: 100%;
     display: flex;

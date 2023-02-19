@@ -33,10 +33,14 @@ type GameProps = {
 export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted, onPlaceClick }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
+  
+  _players.map((it, index) => {
+    if (it.isAbsent && it.bet) throw new Error();    
+  })
   shift(_players, playerIndex);
 
   const [chatIsOpen, setChatIsOpen] = useState(false)
-
+ 
   return (
     <div className="game">
       <div className="game__buttons-wrapper">
@@ -79,10 +83,10 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
             isOpened={winInfo != null} winner={players[winInfo?.winIndex]} winCards={winInfo?.cards} dealer={players[dealerIndex]}
             onClick={(index) => {
               const maxPlayers = 9;
-              const cycleIndex = (maxPlayers + index + playerIndex) % maxPlayers;
+              const cycleIndex = (maxPlayers * 2 + index + playerIndex) % maxPlayers;
               onPlaceClick(cycleIndex);
             }} />
-          <Table cards={cards} bets={_players.map(it => it.bet)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
+          <Table cards={cards} players={_players.map(it => it)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
         </div>
         <ButtonsPanel actions={actions} />
       </div>

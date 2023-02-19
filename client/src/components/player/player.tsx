@@ -16,6 +16,8 @@ type PlayerProps = {
   isDealer: boolean;
 }
 
+const isDebug = false;
+
 export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards, isDealer }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
@@ -96,7 +98,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
   return (
     <div className={`abs player tp${place} ${isWinner ? 'player--winner' : ''}`}>
       <div className="player__wrapper">
-        <div className='player__name'>{name}</div>
+        <div className='player__name'>{isDebug ? name + (place-1) : name}</div>
         <div className="player__info">
 
           <div className="player__timer">
