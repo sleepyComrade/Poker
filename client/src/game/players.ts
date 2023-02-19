@@ -39,12 +39,10 @@ export class Player {
     this.onMessage?.({
       type: "chatMessage",
       data: {
-        messages: [
-          {
-            author: this.name,
-            message,
-          }
-        ]
+        message: {
+          message,
+          author: this.name,
+        }
       },
     })
   }

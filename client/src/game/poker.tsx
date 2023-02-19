@@ -64,6 +64,9 @@ export function Poker(props: IProps) {
   // })
 
   useEffect(() => {
+    if (!props.currentRoom) {
+      return
+    }
     props.socket.sendState({
       type: "poker",
       roomName: props.currentRoom,
@@ -71,7 +74,6 @@ export function Poker(props: IProps) {
         type: "getChatHistory",
       }
     }).then(res => {
-        console.log
         setChatMessages(res.messages)     
       })
   }, [])
@@ -169,6 +171,12 @@ export function Poker(props: IProps) {
           break;
         }
         case "chatMessage": {
+          // console.log("ChatMessage")
+          props.roomLogic.handleChatMessage(message.data.message)
+          // setChatMessages(message.data.messages)
+          break
+        }
+        case "chatMessages": {
           setChatMessages(message.data.messages)
         }
         default:

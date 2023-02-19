@@ -13,11 +13,9 @@ export class Room {
     players: Map<connection, Player | BotPlayer> = new Map()
     lastActions: IActions = null;
     lastPlayer: Player = null;
-    messages: IMessage[]
 
     constructor(public name: string) {
         this.roomLogic = new RoomLogic(name);
-        this.messages = []
         // setInterval(() => {
         //     if(Math.random() < 0.02) {
         //         const bot = new BotPlayer('bot' + Math.random() * 100000);
@@ -155,22 +153,33 @@ export class Room {
                 break;
             }
             case "chatMessage": {
-                this.messages.push(msg.message)
-                this.players.forEach((player, connection) => {
-                    console.log("try send message")
-                    connection.send(JSON.stringify({
-                        type: "pocker",                       
-                        data: {
-                            type: "chatMessage",
-                            roomName: this.name,                            
-                            data: { 
-                                messages: this.messages,
-                                roomId: this.name,
-                                playerUID: player.id,
-                             },
-                        }
-                    }))
-                })
+                // this.messages.push(msg.message)
+                // this.players.forEach((player, connection) => {
+                //     console.log("try send message")
+                //     connection.send(JSON.stringify({
+                //         type: "pocker",                       
+                //         data: {
+                //             type: "chatMessage",
+                //             roomName: this.name,                            
+                //             data: { 
+                //                 messages: this.messages,
+                //                 roomId: this.name,
+                //                 playerUID: player.id,
+                //              },
+                //         }
+                //     }))
+                // })
+                // this.roomLogic.messages.push(msg.message)
+                // this.players.forEach((player, connection) => {
+                //     connection.send(JSON.stringify({
+                //         type: "pocker",
+                //         data: {
+                //             type: "chatMessage",
+                //             data: {messages: this.roomLogic.messages},
+                //         }
+                //     }))
+                // })
+                this.roomLogic.handleChatMessage(msg.message)
                 break
             }
             case "getChatHistory": {
@@ -178,7 +187,7 @@ export class Room {
                     type: "privateMessage",
                     requestId: reqId,
                     data: {
-                        messages: this.messages,
+                        messages: this.roomLogic.messages,
                     }
                 }))
             }
