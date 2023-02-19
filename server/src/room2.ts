@@ -39,45 +39,45 @@ export class Room {
     }
     handleMessage(currentUser: User, msg: any, reqId?: string) {
         if (!currentUser) {
-          return;
+            return;
         }
-        switch(msg.type) {
+        switch (msg.type) {
             case "join": {
                 const player = new Player(currentUser.userName);
                 player.onMessage = (playerMessage) => {
                     switch (playerMessage.type) {
                         case 'ask':
                             this.lastActions = playerMessage.data.actions;
-                            this.lastPlayer = player;                        
-                            currentUser.connection.sendUTF( JSON.stringify({
-                            type: 'pocker',
-                            data: {
-                              ...playerMessage,
-                              data: {
-                                ...playerMessage.data,
-                                actions: Object.keys(playerMessage.data.actions)                
-                              }
-                            }
-                          }));
+                            this.lastPlayer = player;
+                            currentUser.connection.sendUTF(JSON.stringify({
+                                type: 'pocker',
+                                data: {
+                                    ...playerMessage,
+                                    data: {
+                                        ...playerMessage.data,
+                                        actions: Object.keys(playerMessage.data.actions)
+                                    }
+                                }
+                            }));
                             break;
                         case 'leave':
                             currentUser.plusChips(player.chips);
                             player.chips = 0;
-                            currentUser.connection.sendUTF( JSON.stringify({
-                              type: 'pocker',
-                              data: {
-                                ...playerMessage
-                              }
-                            }));
-                            break;
-                    
-                        default:
-                            currentUser.connection.sendUTF( JSON.stringify({
+                            currentUser.connection.sendUTF(JSON.stringify({
                                 type: 'pocker',
                                 data: {
-                                  ...playerMessage
+                                    ...playerMessage
                                 }
-                              }));
+                            }));
+                            break;
+
+                        default:
+                            currentUser.connection.sendUTF(JSON.stringify({
+                                type: 'pocker',
+                                data: {
+                                    ...playerMessage
+                                }
+                            }));
                             break;
                     }
                 }
@@ -87,7 +87,7 @@ export class Room {
                     player.chips = 5000;
                 }
                 this.players.set(currentUser.connection, player);
-                console.log("MSG JOIN",msg, "reqID", reqId);
+                console.log("MSG JOIN", msg, "reqID", reqId);
                 currentUser.connection.sendUTF(JSON.stringify({
                     type: 'privateMessage',
                     requestId: reqId,
@@ -108,14 +108,14 @@ export class Room {
                     currentPlayer.leave();
                     this.players.delete(currentUser.connection);
                     currentUser.connection.sendUTF(JSON.stringify({
-                      type: 'privateMessage',
-                      requestId: reqId,
-                      data: {
-                          type: "leave",
-                          roomName: this.name,
-                          succes: true,
-                          playerUID: currentPlayer.id
-                      }
+                        type: 'privateMessage',
+                        requestId: reqId,
+                        data: {
+                            type: "leave",
+                            roomName: this.name,
+                            succes: true,
+                            playerUID: currentPlayer.id
+                        }
                     }))
                     currentUser.plusChips(currentPlayer.chips);
                     currentPlayer.chips = 0;
@@ -128,7 +128,7 @@ export class Room {
             }
             case "move": {
                 const currentPlayer = this.players.get(currentUser.connection);
-                if(currentPlayer == this.lastPlayer) {
+                if (currentPlayer == this.lastPlayer) {
                     this.lastActions[msg.data.action as keyof IActions]();
                     // this.lastActions = null;
                     // this.lastPlayer = null;
@@ -159,20 +159,27 @@ export class Room {
                 this.players.forEach((player, connection) => {
                     console.log("try send message")
                     connection.send(JSON.stringify({
-                        type: "pocker",
+                        type: "pocker",                       
                         data: {
                             type: "chatMessage",
-                            data: {messages: this.messages},
+                            roomName: this.name,                            
+                            data: { 
+                                messages: this.messages,
+                                roomId: this.name,
+                                playerUID: player.id,
+                             },
                         }
                     }))
                 })
             }
         }
     }
-    handleDisconnect(connection: connection) {        
+    handleDisconnect(connection: connection) {
         const currentPlayer = this.players.get(connection);
-        this.roomLogic.leave(currentPlayer);
-        this.players.delete(connection);
+        if (currentPlayer) {
+            this.roomLogic.leave(currentPlayer);
+            this.players.delete(connection);
+        }
         // this.lastActions = null;
         // this.lastPlayer = null;
     }

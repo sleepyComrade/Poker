@@ -12,9 +12,10 @@ type PlayerProps = {
   isWinner: boolean;
   winCards: Array<ICard> | null;
   isDealer: boolean;
+  place: number;
 }
 
-export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDealer }: PlayerProps) {
+export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDealer, place }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -70,7 +71,7 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
     <div className="main-player">
       <img className="main-player__chair" src={img} alt="" />
 
-      <div className={`abs player1 tp9 ${isWinner ? 'player--winner' : ''}`}>
+      <div className={`abs player1 tp${place} ${isWinner ? 'player--winner' : ''}`}>
         <div className="main-player__wrapper">
           <div className='main-player__name'>{name}</div>
           <div className="main-player__info">

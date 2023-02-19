@@ -188,6 +188,7 @@ export class GameLogic {
   }
 
   private call = () => {
+    this.protectFoldedAction();
     const chipsToBet = this.getCallChips();
     if (chipsToBet >= this.players[this.currentPlayerIndex].chips) {
       this.players[this.currentPlayerIndex].bet += this.players[this.currentPlayerIndex].chips;
@@ -214,6 +215,7 @@ export class GameLogic {
   }
 
   private fold = () => {
+    this.protectFoldedAction();
     this.players[this.currentPlayerIndex].isFold = true;
     if (this.players.filter(el => !el.isFold).length === 1) {
       console.log('Start next game');
@@ -414,6 +416,9 @@ export class GameLogic {
   private protectFoldedAction(){
     if (this.players[this.currentPlayerIndex].isFold){
       throw new Error(`folded action, player ${this.currentPlayerIndex}`);
+    }
+    if (this.players[this.currentPlayerIndex].isAbsent){
+      throw new Error(`absent action, player ${this.currentPlayerIndex}`);
     }
   }
 

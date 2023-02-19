@@ -183,6 +183,9 @@ export function Poker(props: IProps) {
     <div>
       <Game isStarted={roomState?.isStarted || false} players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex}
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} chatMessages={chatMessages} playerClient={props.player}
+        onPlaceClick={(index) => {
+          console.log('place index:', index);
+        } }
         onGameExit={() => {
           props.onGameExit();
           // props.roomLogic.leave(clientPlayer);

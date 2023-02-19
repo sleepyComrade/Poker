@@ -128,14 +128,19 @@
     left: calc((100% - var(--player-width)) / 1.1);
 }
 
-.tp7{
+.tp8{
     top: calc((100% - 40px) / 1.1);
     left: calc((100% - var(--player-width)) / 10);
 }
 
-.tp8{
+.tp9{
     top: 48%;
     left: -8%;
+}
+
+.tp7{
+    top: calc((100% - 40px) / 1);
+    left: calc((100% - var(--player-width)) / 1.9);
 }
 
 .tp3 .player__info,
