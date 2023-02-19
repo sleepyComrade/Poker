@@ -7,6 +7,7 @@ import { Player } from '../game/players';
 import { PlayerClient } from "../game/player-client";
 import { IUserData } from "../../../interfaces/IUser";
 import { Timer } from '../components/timer/timer';
+import UserEditPopup from '../components/user-edit-popup/user-edit-popup';
 import '../style.css';
 import './lobby.css';
 
@@ -29,6 +30,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
   const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
   const [hasEnoughChips, setHasEnoughChips] = useState(true);
+  const [userEditMode, setUserEditMode] = useState(false);
 
   return (
     <div className="lobby">
@@ -38,12 +40,15 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
           onLogOut();
         }}>Log Out</button>
       </div>
+      {userEditMode && <UserEditPopup onClose={() => setUserEditMode(false)} />}
 
 
       {!isGuest &&
         <div className="lobby__user-info user-info">
           <div className="user-info__wrapper">
-            <div className="user-info__picture"></div>
+            <div className="user-info__picture" onClick={() => {
+              setUserEditMode(true);
+            }}></div>
             <div className="user-info__info-block">
               <div className="user-info__username">Hello, <span>{user.userName}</span></div>
               <div className="user-info__chips">You have <span>{user.chips}</span> chips</div>
