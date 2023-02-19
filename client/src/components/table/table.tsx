@@ -36,6 +36,9 @@ function ChipsStack({stacks, baseX, baseY, baseTime, name}: {stacks:IChipStack[]
             {isDebug && name && <div style={{ 'left': baseX, 'top': baseY, 'position': 'absolute', 'zIndex': '2000' }}>{name}
             </div>}
             {stacks.filter(it => it.count).reverse().map((it, index) => {
+                if(it.count < 0) {
+                    console.log('wrong count', it.count);
+                }
                 const stk = new Array(it.count).fill(null).map((jt, jdex) => {
                     const time = (baseTime) ? jdex * chipAnimationMoveDelay + baseTime : null;
                     return <BankCoin

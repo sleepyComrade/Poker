@@ -44,6 +44,9 @@ export const coinPositions = [
 export const coinValues = [50000, 10000, 5000, 1000, 500, 100, 50, 10, 5, 1];
 
 export function sumToCoins(sum: number, values: Array<number>) {
+  if(sum < 0) {
+    throw new Error('sum coins is negative');
+  }
   let leftSum = sum;
   const res = values.map(it => {
       const current = Math.floor(leftSum / it);
