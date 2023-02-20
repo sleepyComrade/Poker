@@ -115,6 +115,7 @@ export function App() {
             setActivePage('poker');
             setPlayerIndex(playerId);
             setPlayer(player);
+            setIsClientOut(false);
           }}
           onUserName={(value) => setUserName(value)}/> : 
         activePage === 'authorization' ? 
