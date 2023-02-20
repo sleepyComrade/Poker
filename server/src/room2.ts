@@ -183,10 +183,12 @@ export class Room {
                 break
             }
             case "getChatHistory": {
-                connection.sendUTF(JSON.stringify({
+                currentUser.connection.sendUTF(JSON.stringify({
                     type: "privateMessage",
                     requestId: reqId,
                     data: {
+                        // roomId: this.name,
+                        // playerUID: .id,
                         messages: this.roomLogic.messages,
                     }
                 }))

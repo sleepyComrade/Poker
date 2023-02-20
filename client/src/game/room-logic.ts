@@ -21,7 +21,7 @@ export class RoomLogic {
   game: GameLogic;
   messages: IMessage[]
   name: string;
-  
+
   constructor(name: string = '_local') {
     this.name = name;
     this.messages = []
@@ -273,6 +273,8 @@ export class RoomLogic {
       player?.handleMessage({
         type: "chatMessages",
         data: {
+          roomId: this.name,
+          playerUID: player.id,
           messages: this.messages
         }
       })
