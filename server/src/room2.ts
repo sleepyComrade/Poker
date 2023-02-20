@@ -81,8 +81,10 @@ export class Room {
                 }
                 const playerIndex = this.roomLogic.join(player);
                 if (playerIndex !== 9) {
-                    currentUser.minusChips(5000);
-                    player.chips = 5000;
+                    const isMinused = currentUser.minusChips(5000);
+                    if (isMinused) {
+                      player.chips = 5000;
+                    }
                 }
                 this.players.set(currentUser.connection, player);
                 console.log("MSG JOIN", msg, "reqID", reqId);
@@ -192,6 +194,22 @@ export class Room {
                         messages: this.roomLogic.messages,
                     }
                 }))
+            }
+            case "takeSit": {
+                const isMinused = currentUser.minusChips(5000);
+                if (isMinused) {
+                  this.roomLogic.takeSit(msg.data.name, msg.data.index);
+                  currentUser.connection.sendUTF(JSON.stringify({
+                    type: 'privateMessage',
+                    requestId: reqId,
+                    data: {
+                        type: "takeSit",
+                        success: isMinused,
+                    }
+                }))
+                } else {
+                  console.log('Not enough chips');
+                }
             }
         }
     }

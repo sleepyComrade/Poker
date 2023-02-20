@@ -28,6 +28,7 @@ export function App() {
   const [user, setUser] = useState<IUserData>(null);
   const [isGuest, setIsGuest] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [isClientOut, setIsClientOut] = useState(false);
 
   useEffect(() => {
     // if (localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user') !== null) {
@@ -114,7 +115,7 @@ export function App() {
             setActivePage('poker');
             setPlayerIndex(playerId);
             setPlayer(player);
-          }} 
+          }}
           onUserName={(value) => setUserName(value)}/> : 
         activePage === 'authorization' ? 
         <Authorization setActivePage={() => {
@@ -127,7 +128,34 @@ export function App() {
           setIsGuest(true);
           setActivePage('lobby');
         }} socket={socket} /> :
-        <Poker player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => {
+        <Poker onPlaceClick={(index: number) => {
+          if (currentRoom) {
+            const res = socket.sendState({
+              type: 'poker',
+              roomName: currentRoom,
+              data: {
+                type: 'takeSit',
+                data: {
+                  name: user.userName,
+                  index
+                }
+              },
+              userName: user.userName,
+            })
+            res.then(data => {
+              if (data.success) {
+                setPlayerIndex(index);
+                setIsClientOut(false);            
+              }
+            })
+          } else {
+            roomLogic.takeSit(player.name, index);
+            setPlayerIndex(index);
+            setIsClientOut(false);
+          }
+        }} onStateChange={(bool: boolean)=> {
+          setIsClientOut(bool);
+        }} isClientOut={isClientOut} player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => {
           player.leave().then(() => {
             setActivePage('lobby');
           });
