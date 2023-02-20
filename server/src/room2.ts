@@ -182,7 +182,7 @@ export class Room {
                 //     }))
                 // })
                 this.roomLogic.handleChatMessage(msg.message)
-                break
+                break;
             }
             case "getChatHistory": {
                 currentUser.connection.sendUTF(JSON.stringify({
@@ -194,6 +194,7 @@ export class Room {
                         messages: this.roomLogic.messages,
                     }
                 }))
+              break;
             }
             case "takeSit": {
                 const isMinused = currentUser.minusChips(5000);
@@ -210,6 +211,7 @@ export class Room {
                 } else {
                   console.log('Not enough chips');
                 }
+                break;
             }
         }
     }
