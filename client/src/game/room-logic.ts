@@ -3,6 +3,7 @@ import { IActions, IGameMessage, IDataAsk, IDataWinner } from '../interfaces';
 import { originDeck } from './players-and-deck';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
+import { IMessage } from '../interfaces/IMessage';
 
 export class RoomLogic {
   condition: boolean;
@@ -18,9 +19,12 @@ export class RoomLogic {
   playersToLeave: BotPlayer[];
   botNames: string[];
   game: GameLogic;
+  messages: IMessage[]
   name: string;
+
   constructor(name: string = '_local') {
     this.name = name;
+    this.messages = []
     this.condition = false;
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
@@ -260,6 +264,21 @@ export class RoomLogic {
                                                          getNewInitialIndex(getNextIndex(last)) :
                                                          getNextIndex(last);
     return !this.players[curIndex] ? getNewInitialIndex(curIndex) : curIndex;
+  }
+
+  handleChatMessage(message: IMessage) {
+    this.messages.push(message);
+    console.log("thisChatMessages",this.messages)
+    this.players.forEach(player => {
+      player?.handleMessage({
+        type: "chatMessages",
+        data: {
+          roomId: this.name,
+          playerUID: player.id,
+          messages: this.messages
+        }
+      })
+    })
   }
 
   checkTable() {

@@ -65,8 +65,6 @@ socket.on('request', (request) => {
           return
         }
 
-        rooms[parsed.room].messages.push(parsed.data)
-
         console.log('on message', rooms[parsed.room])
         Object.keys(rooms[parsed.room].players).forEach((key) => {
           // rooms[parsed.room].players[key].socketConnection.sendUTF(

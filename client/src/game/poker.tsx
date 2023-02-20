@@ -7,7 +7,6 @@ import '../style.css';
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from "./player-client";
-import { Chat } from "../components/chat/chat"
 import { IMessage } from "../interfaces/IMessage";
 
 interface IProps {
@@ -63,6 +62,21 @@ export function Poker(props: IProps) {
   //     setChatMessages(messages)
   //   }
   // })
+
+  useEffect(() => {
+    if (!props.currentRoom) {
+      return
+    }
+    props.socket.sendState({
+      type: "poker",
+      roomName: props.currentRoom,
+      data: {
+        type: "getChatHistory",
+      }
+    }).then(res => {
+        setChatMessages(res.messages)     
+      })
+  }, [])
 
   useEffect(() => {
     if (!props.player) {
@@ -157,6 +171,12 @@ export function Poker(props: IProps) {
           break;
         }
         case "chatMessage": {
+          // console.log("ChatMessage")
+          props.roomLogic.handleChatMessage(message.data.message)
+          // setChatMessages(message.data.messages)
+          break
+        }
+        case "chatMessages": {
           setChatMessages(message.data.messages)
         }
         default:
