@@ -17,6 +17,9 @@ interface IProps {
   onGameExit: () => void;
   playerIndex: number;
   player: Player;
+  onPlaceClick: (index: number) => void;
+  isClientOut:boolean;
+  onStateChange: (bool: boolean) => void;
 }
 
 export function Poker(props: IProps) {
@@ -38,7 +41,6 @@ export function Poker(props: IProps) {
   const [actions, setActions] = useState<IActions>({});
   // const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
   // const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
-  const [isClientOut, setIsClientOut] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
 
   const [chatMessages, setChatMessages] = useState<IMessage[]>([])
@@ -154,7 +156,7 @@ export function Poker(props: IProps) {
         }
         case 'leave': {
           setActions({});
-          setIsClientOut(true);
+          props.onStateChange(true);
           break;
         }
         case 'join': {
@@ -205,15 +207,16 @@ export function Poker(props: IProps) {
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} chatMessages={chatMessages} playerClient={props.player}
         onPlaceClick={(index) => {
           console.log('place index:', index);
-        } }
+          props.onPlaceClick(index);
+        }}
         onGameExit={() => {
           props.onGameExit();
           // props.roomLogic.leave(clientPlayer);
         }} onBackToGame={() => {
-          setIsClientOut(false);
+          props.onStateChange(false);
           setIsWaiting(true);
           // props.roomLogic.backToGame(clientPlayer);
-        }} isMultiPlayer={isMultiPlayer} isClientOut={isClientOut} isWaiting={isWaiting} />
+        }} isMultiPlayer={isMultiPlayer} isClientOut={props.isClientOut} isWaiting={isWaiting} />
 
       <div style={{ 'display': 'none' }}>
         <button onClick={() => setWinInfo({})}>Test</button>

@@ -111,6 +111,8 @@ export class RoomLogic {
   }
 
   startGame() {
+    console.log('Players!!!!!!!', this.inactivePlayers);
+    
     const activePlayers = this.players.filter(player => player);
     activePlayers.forEach(player => player.isOut = true);
     if (activePlayers.length < 2) {
@@ -283,6 +285,15 @@ export class RoomLogic {
 
   checkTable() {
     return this.players.every(player => player);
+  }
+
+  takeSit(userName: string, index: number) {
+    const playerIndex = this.inactivePlayers.findIndex(player => player.name === userName);
+    if (playerIndex >= 0) {
+      this.players.splice(index, 1, this.inactivePlayers.splice(playerIndex, 1)[0]);
+      this.players[index].isOut = false;
+      this.players[index].chips = 5000;
+    }
   }
 
   destroy() {
