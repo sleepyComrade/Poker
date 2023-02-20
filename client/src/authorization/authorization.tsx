@@ -112,7 +112,7 @@ export function Authorization(props: AuthorizationProps) {
               })
             }}>Register</button>
 
-            <div className="auth__error-message">{props.authError}</div>
+           <div className={`auth__error-message ${props.authError ? 'show-error-message' : ''}`}>{props.authError}</div>
 
             <button className="btn auth__button auth__button--guest" onClick={() => {
               props.setGuest();
