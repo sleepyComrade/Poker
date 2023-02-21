@@ -42,7 +42,6 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
       </div>
       {userEditMode && <UserEditPopup onClose={() => setUserEditMode(false)} />}
 
-
       {!isGuest &&
         <div className="lobby__user-info user-info">
           <div className="user-info__wrapper">

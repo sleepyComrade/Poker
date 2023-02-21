@@ -141,6 +141,7 @@
     background-color: #1b1d1b; 
     box-shadow: 0px 0px 7px #737070;
     overflow: hidden;
+    z-index: 1000;
 }
 
 .game__chat-toggle {
