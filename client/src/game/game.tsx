@@ -9,6 +9,7 @@ import { IActions, ICard, IDataWinner, IPlayer } from "../interfaces";
 import { IMessage } from "../interfaces/IMessage";
 import { Chat } from "../components/chat/chat";
 import { Player } from "./players";
+import { sounds } from "../game/sounds";
 
 type GameProps = {
   players: Array<IPlayer>;
@@ -33,6 +34,18 @@ type GameProps = {
 export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted, onPlaceClick }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
+  const [mute, setMute] = useState(true);
+
+  useEffect(() => {
+    const handler = (enabled: boolean) => {
+      setMute(!enabled);
+    }
+    sounds.onChange.add(handler)
+    setMute(!sounds.enabled);
+    return () => {
+      sounds.onChange.remove(handler);
+    }
+  }, [])
   
   _players.map((it, index) => {
     if (it.isAbsent && it.bet) throw new Error();    
@@ -54,6 +67,9 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         }}>Back to Game</button>}
 
         {isWaiting && <span className="game__info-message" style={{ color: 'white' }}>You will join on the next game</span>}
+        <button onClick={() => {
+          sounds.enabled = !sounds.enabled;
+        }}>Sound {!mute ? 'On' : 'Off'}</button>
       </div>
 
       <div className="game__chat-wrapper">
