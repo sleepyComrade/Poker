@@ -129,7 +129,7 @@
 }
 
 .show-error-message {
-  animation: show-error-message 1s;
+  animation: show-error-message 1s forwards;
 }
 
 @keyframes show-error-message {

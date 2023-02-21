@@ -8,6 +8,8 @@ type UserEditPopupProps = {
 
 export default function UserEditPopup({ onClose }: UserEditPopupProps) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [closePopup, setClosePopup] = useState(false);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -23,7 +25,9 @@ export default function UserEditPopup({ onClose }: UserEditPopupProps) {
   }, [image]);
 
   return (
-    <div className="user-edit-popup">
+    <div className={`user-edit-popup ${closePopup ? 'user-edit-popup-close' : ''}`} onAnimationEnd={() => {
+      closePopup && onClose() 
+     } }> 
       <div className="user-edit-popup__wrapper">
         <canvas className="user-edit-popup__canvas" ref={canvasRef} width={256} height={256}></canvas>
 
@@ -49,8 +53,13 @@ export default function UserEditPopup({ onClose }: UserEditPopupProps) {
         </div>
 
         <div className="user-edit-popup__buttons-wrapper">
-          <button className="btn user-edit-popup__button user-edit-popup__button--ok" onClick={() => onClose()}>Ok</button>
-          <button className="btn user-edit-popup__button user-edit-popup__button--cancel" onClick={() => { }}>Cancel</button>
+          <button className="btn user-edit-popup__button user-edit-popup__button--ok" onClick={() => {
+            setClosePopup(true);               
+          }}>Ok</button>
+
+          <button className="btn user-edit-popup__button user-edit-popup__button--cancel" onClick={() => {                 
+            setClosePopup(true);
+          }}>Cancel</button>
         </div>
       </div>
     </div>
