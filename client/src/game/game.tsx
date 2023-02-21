@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PlayerList from '../components/players-list/players-list';
 import Table from '../components/table/table';
-import ButtonsPanel from '../components/buttons-panel/buttons-panel';
+import ControlPanel from '../components/control-panel/control-panel';
 import '../style.css';
 import './game.css';
 import { shift } from '../game/shift';
@@ -88,7 +88,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
             }} />
           <Table cards={cards} players={_players.map(it => it)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
         </div>
-        <ButtonsPanel actions={actions} />
+        <ControlPanel actions={actions} />
       </div>
     </div>
   )
