@@ -5,6 +5,7 @@ import '../../style.css';
 import './table.css';
 import { ICard, IDataWinner, IDataWinnerLegacy, IPlayer } from "../../interfaces";
 import { bankPosition, coinPositions, coinValues, sumToCoinsMerged, sumToCoins } from './chips-tools';
+import { sounds } from "../../game/sounds";
 
 type TableProps = {
     cards: Array<ICard>;
@@ -77,6 +78,7 @@ export default function Table({ cards, players, bank, winCards, winInfo, playerI
         setBetCoins(last => {
             return players.map((it, i) => sumToCoinsMerged(it.bet, coinValues, last?.[i] || []));
         })
+        sounds.chips();
     }, [players.map(it => it.bet).join(', ')]);
 
     const [bankCoin, setBankCoin] = useState<{ count: number, coinValue: number }[]>([]);
