@@ -46,18 +46,6 @@
   animation: light 3s;
 }
 
-@keyframes light {
-  0% {
-    transform: translate(-100%, -25%) rotate(10deg);
-  }
-  10% {
-    transform: translate(100%, -25%) rotate(10deg);
-  }
-  100% {
-    transform: translate(100%, -25%) rotate(10deg);
-  }
-}
-
 .empty-place__button:focus,
 .empty-place__button:hover {
   transform: scale(1.1);

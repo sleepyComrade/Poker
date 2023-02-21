@@ -26,7 +26,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid red;
 }
 
 .auth__form {
@@ -147,7 +146,7 @@
     transform: translateX(10px);
     opacity: 1;
   }
-  
+
   100% {
     transform: translateX(10px);
     opacity: 1;

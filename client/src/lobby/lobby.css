@@ -53,9 +53,9 @@
   margin: 0 auto;
 
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .lobby__nav {
@@ -229,6 +229,7 @@
 }
 
 .user-info__picture {
+  position: relative;
   width: 80px;
   height: 80px;
   margin-right: 20px;
@@ -238,7 +239,46 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+ 
+  cursor: pointer;
 }
+
+.user-info__picture::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, .7);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.user-info__picture::after {
+  content: 'сhange avatar';
+  position: absolute;
+  top: 16px;
+  left: 8px;
+  width: 80%;
+  height: 100%;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #f00;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.user-info__picture:focus::before,
+.user-info__picture:hover::before,
+.user-info__picture:focus::after,
+.user-info__picture:hover::after {
+  opacity: 1;
+}
+
 .user-info__info-block {
   margin-bottom: 20px;
 }
