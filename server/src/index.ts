@@ -166,6 +166,13 @@ socket.on('request', (request) => {
         console.log(parsed);
         userService.handleMessage(connection, parsed.data, parsed.requestId);
       }
+
+      if (parsed.type === "userAvatar") {
+        const buffer = Buffer.from(parsed.data.img, "base64")
+        console.log("@@@", parsed.data.img.length)
+        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userName}.png`), buffer)
+        
+      }
     }
   })
 

@@ -4,7 +4,7 @@ import './user-edit-popup.css';
 import Socket from "../socket" 
 
 type UserEditPopupProps = {
-  onClose: (q: Blob) => void;
+  onClose: (q: string) => void;
   socket: Socket,
 }
 
@@ -13,7 +13,7 @@ type UserEditPopupProps = {
 export default function UserEditPopup({onClose, socket}: UserEditPopupProps) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [closePopup, setClosePopup] = useState(false);
-  const [q, setQ] = useState<Blob | null>()
+  const [q, setQ] = useState<string | null>()
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -26,19 +26,7 @@ export default function UserEditPopup({onClose, socket}: UserEditPopupProps) {
       const offsetY = aspect > 1 ? 0 : (image.naturalHeight - minSize) / 2;
       ctx?.drawImage(image, offsetX, offsetY, minSize, minSize, 0, 0, canvas.width, canvas.height);
 
-      const blobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-
-
-      fetch(canvas.toDataURL("image/png")).then(it => {
-        return it.blob()
-      }).then(blob => {
-        setQ(blob)
-      })
+      setQ(canvas.toDataURL("image/png"))
     }
   }, [image]);
 
@@ -52,21 +40,22 @@ export default function UserEditPopup({onClose, socket}: UserEditPopupProps) {
         <div className="user-edit-popup__input-wrapper">
           <label htmlFor="input__file" className="user-edit-popup__label">Choose file</label>
           <input type="file" id="input__file" name="file" className="user-edit-popup__input-avatar" onChange={(e) => {
-            const file = e?.target?.files?.[0] || null;
-            if (file) {
+            const file = e?.target?.files?.[0] || null; 
+            if(file) {
               const reader = new FileReader();
               reader.onload = () => {
                 const img = new Image();
-                if (typeof reader.result == 'string') {
+                if(typeof reader.result == 'string') {
                   img.src = reader.result;
                   setImage(img);
                 } else {
                   console.log('file not readed');
                 }
-
+               
               }
               reader.readAsDataURL(file);
-          }}} />
+            }
+          }} />
         </div>
 
         <div className="user-edit-popup__buttons-wrapper">

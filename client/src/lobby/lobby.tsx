@@ -40,10 +40,16 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
           onLogOut();
         }}>Log Out</button>
       </div>
-      {userEditMode && <UserEditPopup socket={socket} onClose={(buffer) => {
+      {userEditMode && <UserEditPopup socket={socket} onClose={(str) => {
         setUserEditMode(false)
-        console.log("qeweqweqw",buffer)
-        socket.sendBinaryState(buffer)
+        // console.log("qeweqweqw",buffer)
+        socket.sendState({
+          type: "userAvatar",
+          data: {
+            img: str.slice(str.indexOf(",") + 1)
+          }
+        })
+        // socket.sendBinaryState(buffer)
       }} />}
 
       {!isGuest &&
