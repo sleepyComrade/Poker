@@ -29,6 +29,7 @@ export function App() {
   const [isGuest, setIsGuest] = useState(false);
   const [authError, setAuthError] = useState('');
   const [isClientOut, setIsClientOut] = useState(false);
+  const [avatar, setAvatar] = useState<string | null>(null)
 
   useEffect(() => {
     // if (localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user') !== null) {

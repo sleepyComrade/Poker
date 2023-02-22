@@ -61,6 +61,7 @@ export function Authorization(props: AuthorizationProps) {
                         userName: res.userName,
                         chips: res.chips,
                         lastBonusTime: res.lastBonusTime + Date.now(),
+                        avatarUrl: res.avatarUrl
                       };
                       props.setUser(user);
                       // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
@@ -101,6 +102,7 @@ export function Authorization(props: AuthorizationProps) {
                       userName: res.userName,
                       chips: res.chips,
                       lastBonusTime: res.lastBonusTime + Date.now(),
+                      avatarUrl: res.avatarUrl
                     };
                     // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(newUser));
                     props.setUser(newUser);              

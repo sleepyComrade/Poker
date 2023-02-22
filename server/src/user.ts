@@ -9,8 +9,10 @@ export class User {
   password: string;
   connection: connection;
   bonusTime: number;
+  avatarUrl: string
 
   constructor(name: string, id: number, password: string, connection: connection) {
+    this.avatarUrl = "https://ps.w.org/primary-cat/assets/icon-256x256.jpg?rev=2450877" 
     this.userName = name;
     this.id = id;
     this.chips = 10000;
@@ -18,6 +20,9 @@ export class User {
     this.password = password;
     this.connection = connection;
     this.bonusTime = 10000;
+    setTimeout(() => {
+      this.changeAvatar("https://miro.medium.com/max/256/0*LNZoB7qzpH69z0_d")
+    }, 10000)
   }
 
   private sendUpdate() {
@@ -40,6 +45,11 @@ export class User {
     this.chips += chips;
     this.sendUpdate();
   }
+  
+  changeAvatar(newAvatarUrl: string) {
+    this.avatarUrl = newAvatarUrl
+    this.sendUpdate()
+  }
 
   private getUserData() {
     return {
@@ -47,6 +57,7 @@ export class User {
       userName: this.userName,
       chips: this.chips,
       lastBonusTime: this.bonusTime - (Date.now() - this.lastBonusTime),
+      avatarUrl: this.avatarUrl,
     }
   }
 }

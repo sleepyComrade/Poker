@@ -5,6 +5,9 @@ import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
 import { UserService } from './user-service';
+import {createIdGenerator} from "../../client/src/components/id-generator"
+import * as path from "path"
+import * as fs from "fs"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
@@ -13,7 +16,15 @@ const userService = new UserService();
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
-  res.end("HelloWorld")
+  if (req.url === "/defaultProfilePicture" && req.method === "GET") {
+    const stream = fs.createReadStream(path.join(__dirname, "../", "public", "tapeta-kot-brytyjski-krotkowlosy-na-pomaranczowym-tle.jpg")) 
+    res.writeHead(200, {"Content-Type": "image/jpg"})
+    stream.pipe(res)
+    return
+  }
+  res.writeHead(404)
+
+  res.end("not found")
 })
 
 server.listen(port, () => {
@@ -23,7 +34,10 @@ server.listen(port, () => {
 const socket = new WebSocketServer({
   httpServer: server,
   autoAcceptConnections: false,
+  maxReceivedFrameSize: 1000000,
 })
+
+const nextImageId = createIdGenerator("avatar")
 
 const connections: connection[] = []
 
@@ -33,6 +47,12 @@ socket.on('request', (request) => {
   console.log(new Date() + ' Connection accepted.')
 
   connection.on('message', (message) => {
+    console.log("Message")
+    if (message.type === "binary") {
+      // console.log(message.binaryData.toString("utf8"))
+      fs.promises.writeFile(path.join(__dirname, "../", "public", "test.png"), new DataView(message.binaryData.buffer))
+      console.log(message.binaryData)
+    }
     if (message.type === 'utf8') {
       const parsed = JSON.parse(message.utf8Data)
 
@@ -150,7 +170,7 @@ socket.on('request', (request) => {
   })
 
   connection.on('close', (reasonCode, description) => {
-    console.log('Close!!!!');
+    console.log('Close!!!!', description);
     
     userService.handleDisconnect(connection);
     connections.splice(connections.indexOf(connection), 1)

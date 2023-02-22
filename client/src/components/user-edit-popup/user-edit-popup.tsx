@@ -1,15 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import '../../style.css';
 import './user-edit-popup.css';
+import Socket from "../socket" 
 
 type UserEditPopupProps = {
-  onClose: () => void;
+  onClose: (q: Blob) => void;
+  socket: Socket,
 }
 
-export default function UserEditPopup({ onClose }: UserEditPopupProps) {
+
+
+export default function UserEditPopup({onClose, socket}: UserEditPopupProps) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [closePopup, setClosePopup] = useState(false);
-
+  const [q, setQ] = useState<Blob | null>()
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -21,6 +25,20 @@ export default function UserEditPopup({ onClose }: UserEditPopupProps) {
       const offsetX = aspect < 1 ? 0 : (image.naturalWidth - minSize) / 2;
       const offsetY = aspect > 1 ? 0 : (image.naturalHeight - minSize) / 2;
       ctx?.drawImage(image, offsetX, offsetY, minSize, minSize, 0, 0, canvas.width, canvas.height);
+
+      const blobToBase64 = (blob: Blob) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+
+
+      fetch(canvas.toDataURL("image/png")).then(it => {
+        return it.blob()
+      }).then(blob => {
+        setQ(blob)
+      })
     }
   }, [image]);
 
@@ -48,8 +66,7 @@ export default function UserEditPopup({ onClose }: UserEditPopupProps) {
 
               }
               reader.readAsDataURL(file);
-            }
-          }} />
+          }}} />
         </div>
 
         <div className="user-edit-popup__buttons-wrapper">

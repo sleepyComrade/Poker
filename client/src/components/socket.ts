@@ -22,6 +22,8 @@ export default class Socket {
     this.privateMessageSignal = new Signal()
     // this.webSocket = new WebSocket('ws://rs-pocker-backend-production.up.railway.app/')
     this.webSocket = new WebSocket('ws://localhost:4002/')
+    // this.webSocket.binaryType = "arraybuffer"
+    this.webSocket.binaryType = "blob"
     this.webSocket.onopen = () => {
       this.onConnect()
     }
@@ -78,6 +80,10 @@ export default class Socket {
     })
 
     return response
+  }
+
+  sendBinaryState(state: Blob) {
+    this.webSocket.send(state)
   }
 
   destroy() {

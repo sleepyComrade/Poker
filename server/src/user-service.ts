@@ -144,6 +144,7 @@ export class UserService {
       userName: this.users[id].userName,
       chips: this.users[id].chips,
       lastBonusTime: this.bonusTime - (Date.now() - this.users[id].lastBonusTime),
+      avatarUrl: this.users[id].avatarUrl,
     }
   }
 
