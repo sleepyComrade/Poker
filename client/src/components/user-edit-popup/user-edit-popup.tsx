@@ -10,7 +10,7 @@ type UserEditPopupProps = {
 export default function UserEditPopup({onClose}: UserEditPopupProps) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [closePopup, setClosePopup] = useState(false);
-  const [q, setQ] = useState<string | null>()
+  const [q, setQ] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function UserEditPopup({onClose}: UserEditPopupProps) {
 
   return (
     <div className={`user-edit-popup ${closePopup ? 'user-edit-popup-close' : ''}`} onAnimationEnd={() => {
-      closePopup && onClose(null) 
+      closePopup && onClose(q) 
      } }> 
       <div className="user-edit-popup__wrapper">
         <canvas className="user-edit-popup__canvas" ref={canvasRef} width={256} height={256}></canvas>
