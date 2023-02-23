@@ -54,7 +54,7 @@ export class User {
       userName: this.userName,
       chips: this.chips,
       lastBonusTime: this.bonusTime - (Date.now() - this.lastBonusTime),
-      avatarUrl: this.avatarUrl,
+      avatarUrl: this.avatarUrl + `?q=${Date.now()}`,
     }
   }
 }

@@ -8,6 +8,7 @@ import { UserService } from './user-service';
 import {createIdGenerator} from "../../client/src/components/id-generator"
 import * as path from "path"
 import * as fs from "fs"
+import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
@@ -17,8 +18,8 @@ const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
   if (req.url.startsWith("/avatar")) {
-    const avatar = req.url.slice(8)
-    
+    const { pathname } = url.parse(req.url)
+    const avatar = pathname.slice(8)
     fs.promises.readdir(path.join(__dirname, "../", "public")).then(ls => {
       console.log(ls)
       if (!ls.includes(avatar + ".png")) {
@@ -182,6 +183,7 @@ socket.on('request', (request) => {
       if (parsed.type === "userAvatar") {
         const buffer = Buffer.from(parsed.data.img, "base64")
         fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userName}.png`), buffer).then(() => {
+          console.log("pp was writed")
           currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userName}`)
         })
       }

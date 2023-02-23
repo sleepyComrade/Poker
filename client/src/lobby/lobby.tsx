@@ -55,7 +55,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
       {!isGuest &&
         <div className="lobby__user-info user-info">
           <div className="user-info__wrapper">
-            <img src={user.avatarUrl} width="100" height="100" alt="avatar" onClick={() => {
+            <img src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
               setUserEditMode(true)
             }}/>
             <div className="user-info__info-block">
