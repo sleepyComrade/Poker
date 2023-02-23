@@ -5,12 +5,9 @@ import Socket from "../socket"
 
 type UserEditPopupProps = {
   onClose: (q: string) => void;
-  socket: Socket,
 }
 
-
-
-export default function UserEditPopup({onClose, socket}: UserEditPopupProps) {
+export default function UserEditPopup({onClose}: UserEditPopupProps) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [closePopup, setClosePopup] = useState(false);
   const [q, setQ] = useState<string | null>()
