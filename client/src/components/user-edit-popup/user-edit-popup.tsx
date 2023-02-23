@@ -4,7 +4,7 @@ import './user-edit-popup.css';
 import Socket from "../socket" 
 
 type UserEditPopupProps = {
-  onClose: (q: string) => void;
+  onClose: (q: string | null) => void;
 }
 
 export default function UserEditPopup({onClose}: UserEditPopupProps) {
@@ -29,7 +29,7 @@ export default function UserEditPopup({onClose}: UserEditPopupProps) {
 
   return (
     <div className={`user-edit-popup ${closePopup ? 'user-edit-popup-close' : ''}`} onAnimationEnd={() => {
-      closePopup && onClose() 
+      closePopup && onClose(null) 
      } }> 
       <div className="user-edit-popup__wrapper">
         <canvas className="user-edit-popup__canvas" ref={canvasRef} width={256} height={256}></canvas>

@@ -41,6 +41,9 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
         }}>Log Out</button>
       </div>
       {userEditMode && <UserEditPopup onClose={(str) => {
+        if (!str) {
+          return
+        }
         setUserEditMode(false)
         // console.log("qeweqweqw",buffer)
         socket.sendState({
