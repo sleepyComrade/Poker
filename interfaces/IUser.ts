@@ -3,5 +3,6 @@ export interface IUserData {
   userName: string;
   chips: number;
   lastBonusTime: number;
+  avatarUrl: string
   // password: string;
 }

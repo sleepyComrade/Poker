@@ -115,6 +115,9 @@ export class UserService {
         }));
       }
     } else {
+      if (data.data.name.includes(" ")) {
+        return
+      }
       authorizeUser(data.data.name, data.type, data.data.password);
     }
   }
@@ -144,6 +147,7 @@ export class UserService {
       userName: this.users[id].userName,
       chips: this.users[id].chips,
       lastBonusTime: this.bonusTime - (Date.now() - this.users[id].lastBonusTime),
+      avatarUrl: this.users[id].avatarUrl,
     }
   }
 

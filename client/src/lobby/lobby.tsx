@@ -40,14 +40,27 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
           onLogOut();
         }}>Log Out</button>
       </div>
-      {userEditMode && <UserEditPopup onClose={() => setUserEditMode(false)} />}
+      {userEditMode && <UserEditPopup onClose={(str) => {
+        if (!str) {
+          return
+        }
+        setUserEditMode(false)
+        // console.log("qeweqweqw",buffer)
+        socket.sendState({
+          type: "userAvatar",
+          data: {
+            img: str.slice(str.indexOf(",") + 1)
+          }
+        })
+        // socket.sendBinaryState(buffer)
+      }} />}
 
       {!isGuest &&
         <div className="lobby__user-info user-info">
           <div className="user-info__wrapper">
-            <div className="user-info__picture" onClick={() => {
-              setUserEditMode(true);
-            }}></div>
+            <img src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
+              setUserEditMode(true)
+            }}/>
             <div className="user-info__info-block">
               <div className="user-info__username">Hello, <span>{user.userName}</span></div>
               <div className="user-info__chips">You have <span>{user.chips}</span> chips</div>

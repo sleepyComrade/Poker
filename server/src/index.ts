@@ -5,6 +5,10 @@ import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
 import { UserService } from './user-service';
+import {createIdGenerator} from "../../client/src/components/id-generator"
+import * as path from "path"
+import * as fs from "fs"
+import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
@@ -13,7 +17,29 @@ const userService = new UserService();
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
-  res.end("HelloWorld")
+  if (req.url.startsWith("/avatar")) {
+    const { pathname } = url.parse(req.url)
+    const avatar = pathname.slice(8)
+    fs.promises.readdir(path.join(__dirname, "../", "public")).then(ls => {
+      console.log(ls)
+      if (!ls.includes(avatar + ".png")) {
+        res.writeHead(404).end("not found")
+        return
+      }
+
+      const stream = fs.createReadStream(path.join(__dirname, "../", "public", `${avatar}.png`))
+
+      res.writeHead(200)
+
+      stream.pipe(res)
+        
+    })
+    console.log("!avatar", avatar, req.url)
+    return
+  }
+  res.writeHead(404)
+
+  res.end("not found")
 })
 
 server.listen(port, () => {
@@ -23,6 +49,7 @@ server.listen(port, () => {
 const socket = new WebSocketServer({
   httpServer: server,
   autoAcceptConnections: false,
+  maxReceivedFrameSize: 1000000,
 })
 
 const connections: connection[] = []
@@ -33,6 +60,12 @@ socket.on('request', (request) => {
   console.log(new Date() + ' Connection accepted.')
 
   connection.on('message', (message) => {
+    console.log("Message")
+    if (message.type === "binary") {
+      // console.log(message.binaryData.toString("utf8"))
+      fs.promises.writeFile(path.join(__dirname, "../", "public", "test.png"), new DataView(message.binaryData.buffer))
+      console.log(message.binaryData)
+    }
     if (message.type === 'utf8') {
       const parsed = JSON.parse(message.utf8Data)
 
@@ -146,11 +179,19 @@ socket.on('request', (request) => {
         console.log(parsed);
         userService.handleMessage(connection, parsed.data, parsed.requestId);
       }
+
+      if (parsed.type === "userAvatar") {
+        const buffer = Buffer.from(parsed.data.img, "base64")
+        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userName}.png`), buffer).then(() => {
+          console.log("pp was writed")
+          currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userName}`)
+        })
+      }
     }
   })
 
   connection.on('close', (reasonCode, description) => {
-    console.log('Close!!!!');
+    console.log('Close!!!!', description);
     
     userService.handleDisconnect(connection);
     connections.splice(connections.indexOf(connection), 1)
