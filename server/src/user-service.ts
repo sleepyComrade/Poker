@@ -115,6 +115,9 @@ export class UserService {
         }));
       }
     } else {
+      if (data.data.name.includes(" ")) {
+        return
+      }
       authorizeUser(data.data.name, data.type, data.data.password);
     }
   }

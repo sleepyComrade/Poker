@@ -16,10 +16,24 @@ const userService = new UserService();
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
-  if (req.url === "/defaultProfilePicture" && req.method === "GET") {
-    const stream = fs.createReadStream(path.join(__dirname, "../", "public", "tapeta-kot-brytyjski-krotkowlosy-na-pomaranczowym-tle.jpg")) 
-    res.writeHead(200, {"Content-Type": "image/jpg"})
-    stream.pipe(res)
+  if (req.url.startsWith("/avatar")) {
+    const avatar = req.url.slice(8)
+    
+    fs.promises.readdir(path.join(__dirname, "../", "public")).then(ls => {
+      console.log(ls)
+      if (!ls.includes(avatar + ".png")) {
+        res.writeHead(404).end("not found")
+        return
+      }
+
+      const stream = fs.createReadStream(path.join(__dirname, "../", "public", `${avatar}.png`))
+
+      res.writeHead(200)
+
+      stream.pipe(res)
+        
+    })
+    console.log("!avatar", avatar, req.url)
     return
   }
   res.writeHead(404)
@@ -36,8 +50,6 @@ const socket = new WebSocketServer({
   autoAcceptConnections: false,
   maxReceivedFrameSize: 1000000,
 })
-
-const nextImageId = createIdGenerator("avatar")
 
 const connections: connection[] = []
 
@@ -169,9 +181,9 @@ socket.on('request', (request) => {
 
       if (parsed.type === "userAvatar") {
         const buffer = Buffer.from(parsed.data.img, "base64")
-        console.log("@@@", parsed.data.img.length)
-        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userName}.png`), buffer)
-        
+        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userName}.png`), buffer).then(() => {
+          currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userName}`)
+        })
       }
     }
   })

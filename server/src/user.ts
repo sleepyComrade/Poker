@@ -20,9 +20,6 @@ export class User {
     this.password = password;
     this.connection = connection;
     this.bonusTime = 10000;
-    setTimeout(() => {
-      this.changeAvatar("https://miro.medium.com/max/256/0*LNZoB7qzpH69z0_d")
-    }, 10000)
   }
 
   private sendUpdate() {
