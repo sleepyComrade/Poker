@@ -87,7 +87,7 @@ export class GameLogic {
 
     setTimeout(() => {
       this.sendState("start")
-      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange()}});
     }, 0);
   }
 
@@ -152,9 +152,9 @@ export class GameLogic {
     return Math.max(...this.players.map(player => player.bet)) - this.players[this.currentPlayerIndex].bet;
   }
 
-  private defineBet = (bet: string) => {
+  private defineBet = (bet: string, count: number) => {
     this.protectFoldedAction();
-    const chipsToBet = this.getRaiseRange().min;
+    const chipsToBet = count || this.getRaiseRange().min;
     if (chipsToBet < this.players[this.currentPlayerIndex].chips) {
       this.players[this.currentPlayerIndex].bet += chipsToBet;
       this.players[this.currentPlayerIndex].chips -= chipsToBet;
@@ -204,13 +204,13 @@ export class GameLogic {
     }
   }
 
-  private raise = () => {
-    this.defineBet('raise');
+  private raise = (count: number) => {
+    this.defineBet('raise', count);
     console.log('raise');
   }
 
-  private bet = () => {
-    this.defineBet('bet');
+  private bet = (count: number) => {
+    this.defineBet('bet', count);
     console.log('bet');
   }
 
@@ -410,7 +410,7 @@ export class GameLogic {
       this.setNextRound();
     } else if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
       this.setNextPlayer();
-    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange()}});
   }
 
   private protectFoldedAction(){

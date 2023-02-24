@@ -155,14 +155,14 @@ export class RoomLogic {
 
           const q: IActions = {}
           Object.keys(data.actions).forEach((actionKey) => {
-            q[actionKey as keyof IActions] = () => {
+            q[actionKey as keyof IActions] = (...args: any) => {
               if (a === null) return;
               clearTimeout(a);
               a = null;
             console.log("ChtoNibud", currentPlayerIndex);
               if (this.players[currentPlayerIndex]) {
                 this.players[currentPlayerIndex].isOut = false;
-                message.data.actions[actionKey]();
+                message.data.actions[actionKey](...args);
               }
             }
           })

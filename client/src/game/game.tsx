@@ -5,7 +5,7 @@ import ControlPanel from '../components/control-panel/control-panel';
 import '../style.css';
 import './game.css';
 import { shift } from '../game/shift';
-import { IActions, ICard, IDataWinner, IPlayer } from "../interfaces";
+import { IActions, ICard, IDataAsk, IDataWinner, IPlayer } from "../interfaces";
 import { IMessage } from "../interfaces/IMessage";
 import { Chat } from "../components/chat/chat";
 import { Player } from "./players";
@@ -13,7 +13,7 @@ import { sounds } from "../game/sounds";
 
 type GameProps = {
   players: Array<IPlayer>;
-  actions: IActions;
+  actions: IDataAsk;
   cards: Array<ICard>;
   player: IPlayer;
   currentPlayerIndex: number;
@@ -104,7 +104,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
             }} />
           <Table cards={cards} players={_players.map(it => it)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
         </div>
-        <ControlPanel actions={actions} />
+        <ControlPanel dataAsk={actions} />
       </div>
     </div>
   )

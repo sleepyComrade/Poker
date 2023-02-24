@@ -38,7 +38,7 @@ export function Poker(props: IProps) {
   // const [currentRound, setCurrentRound] = useState(Round.Preflop);
   // const myPlayerIndex = 0;
 
-  const [actions, setActions] = useState<IActions>({});
+  const [actions, setActions] = useState<IDataAsk>(null);
   // const [clientPlayer, setClientPlayer] = useState<Player | null>(null);
   // const [isMultiPlayer, setIsMultiplayer] = useState(props.currentRoom !== "");
   const [isWaiting, setIsWaiting] = useState(false);
@@ -128,21 +128,21 @@ export function Poker(props: IProps) {
             const data: IDataAsk = message.data;
             const currentPlayerIndex = data.playerId;
             setCurrentPlayerIndex(data.playerId);
-            setActions(data.actions);
+            setActions(data);
             break;
           }
         case 'askOther':
           {
             const data: IDataAskOther = message.data;
             setCurrentPlayerIndex(data.playerId);
-            setActions({});
+            setActions(null);
             break;
           }
         case 'winner':
           {
             const data: IDataWinner = message.data;
             setWinInfo(data);
-            setActions({});
+            setActions(null);
             break;
           }
         case 'start': {
@@ -155,7 +155,7 @@ export function Poker(props: IProps) {
           break;
         }
         case 'leave': {
-          setActions({});
+          setActions(null);
           props.onStateChange(true);
           break;
         }

@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { IActions } from "../../interfaces";
+import { IActions, IDataAsk } from "../../interfaces";
 import '../../style.css';
 import './control-panel.css';
 
 type ControlPanelProps = {
-  actions: IActions;
+  dataAsk: IDataAsk;
 }
 
-export default function ControlPanel({ actions }: ControlPanelProps) {
-  const minValue = 100;
-  const maxValue =  1000;
+export default function ControlPanel({ dataAsk }: ControlPanelProps) {
+  const actions = dataAsk?.actions || {};
+  const range = dataAsk?.raiseRange || null;
+  const minValue = range?.min || 0;
+  const maxValue =  range?.max || 0;
 
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    // setValue(initialValue);
-  }, [actions])
+    setValue(minValue);
+  }, [dataAsk])
 
   return (
     <div className="control-panel">
@@ -29,7 +31,7 @@ export default function ControlPanel({ actions }: ControlPanelProps) {
         }
 
         {actions.bet &&
-          <button className="btn button-player button-player--bet" onClick={() => actions.bet()}>Bet</button>
+          <button className="btn button-player button-player--bet" onClick={() => actions.bet(value)}>Bet</button>
         }
 
         {actions.call &&
@@ -37,7 +39,7 @@ export default function ControlPanel({ actions }: ControlPanelProps) {
         }
 
         {actions.raise &&
-          <button className="btn button-player button-player--raise" onClick={() => actions.raise()}>Raise to</button>
+          <button className="btn button-player button-player--raise" onClick={() => actions.raise(value)}>Raise to</button>
         }
       </div>
 
@@ -50,7 +52,7 @@ export default function ControlPanel({ actions }: ControlPanelProps) {
         </div>
 
         <div className="range-panel__wrapper">
-          <span className="range-panel__range-value">600</span>
+          <span className="range-panel__range-value">{value}</span>
           <button className="btn range-panel__range-button range-panel__range-button--minus">-</button>
 
           <div className="range-panel__container">
