@@ -41,7 +41,7 @@ export class Room {
         }
         switch (msg.type) {
             case "join": {
-                const player = new Player(currentUser.userName);
+                const player = new Player(currentUser.userData.userName);
                 player.onMessage = (playerMessage) => {
                     switch (playerMessage.type) {
                         case 'ask':

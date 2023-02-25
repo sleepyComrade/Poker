@@ -1,37 +1,49 @@
 import { connection } from 'websocket';
 import { IUserData } from '../../interfaces/IUser';
 
+class UserData {
+  chips: number
+  userName: string
+  id: number
+  password: string
+  avatarUrl: string
+  lastBonusTime: number
+  
+  constructor(userName: string, id: number, password: string, avatarUrl: string, lastBonusTime?: number, chips?: number) {
+    this.userName = userName
+    this.lastBonusTime = Date.now() || lastBonusTime;
+    this.id = id
+    this.password = password
+    this.avatarUrl = avatarUrl || "https://ps.w.org/primary-cat/assets/icon-256x256.jpg?rev=2450877?q=1677317775205" 
+    this.chips = chips || 10_000
+  }
+}
+
 export class User {
-  id: number;
-  userName: string;
-  chips: number;
   lastBonusTime: number;
-  password: string;
   connection: connection;
   bonusTime: number;
-  avatarUrl: string
+  userData: UserData
+  onUpdate: (newUserData: IUserData) => void
 
-  constructor(name: string, id: number, password: string, connection: connection) {
-    this.avatarUrl = "https://ps.w.org/primary-cat/assets/icon-256x256.jpg?rev=2450877" 
-    this.userName = name;
-    this.id = id;
-    this.chips = 10000;
-    this.lastBonusTime = Date.now();
-    this.password = password;
+  constructor(name: string, id: number, password: string, connection: connection, avatarUrl?: string, lastBonusTime?: number, chips?: number) {
+    this.userData = new UserData(name, id, password, avatarUrl, lastBonusTime, chips)
     this.connection = connection;
     this.bonusTime = 10000;
   }
 
   private sendUpdate() {
+    const data = this.getUserData()
     this.connection.sendUTF(JSON.stringify({
       type: 'userUpdate',
-      data: this.getUserData()
+      data,
     }))
+    this.onUpdate(data)
   }
 
   minusChips(chips: number) {
-    if (this.chips >= chips) {
-      this.chips -= chips;
+    if (this.userData.chips >= chips) {
+      this.userData.chips -= chips;
       this.sendUpdate();
       return true;
     }
@@ -39,22 +51,26 @@ export class User {
   }
 
   plusChips(chips: number) {
-    this.chips += chips;
+    this.userData.chips += chips;
     this.sendUpdate();
   }
   
   changeAvatar(newAvatarUrl: string) {
-    this.avatarUrl = newAvatarUrl
+    this.userData.avatarUrl = newAvatarUrl
     this.sendUpdate()
   }
 
-  private getUserData() {
-    return {
-      id: this.id,
-      userName: this.userName,
-      chips: this.chips,
+  private getUserData(): IUserData  {
+    const q = {
+      id: this.userData.id,
+      userName: this.userData.userName,
+      chips: this.userData.chips,
       lastBonusTime: this.bonusTime - (Date.now() - this.lastBonusTime),
-      avatarUrl: this.avatarUrl + `?q=${Date.now()}`,
+      avatarUrl: this.userData.avatarUrl + `?q=${Date.now()}`,
     }
+    
+    console.log("sdasdasdasdassad", q)
+
+    return q
   }
 }
