@@ -1,5 +1,5 @@
 import { IPlayer, ICard, Round, IGameMessage, IBank, IDataWinner, IDataWinnerLegacy } from '../interfaces';
-import { getCombo} from './combinations';
+import { getCombo, createCards, mixCards} from './combinations';
 import { getWinner, values } from './combo2';
 
 // getCombo([]);
@@ -59,6 +59,7 @@ export class GameLogic {
       },
       ...originDeck
     ].reverse();
+    this.deck = mixCards(createCards());
     this.tableCards = [];
     this.dealerIndex = dealerIndex;
     this.initialIndex = this.setInitialIndex(3);

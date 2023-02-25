@@ -28,13 +28,13 @@ function getMaxPair(cards: Array<ICard>, count: number) {
   }
 }
 
-function createCards() {
+export function createCards() {
   const cards = [];
   for (let i = 0; i < 13; i++) {
     for (let j = 0; j < 4; j++) {
       const card = {
-        value: i,
-        type: j
+        value: i + 1,
+        type: j + 1
       }
       cards.push(card);
     }
@@ -42,7 +42,7 @@ function createCards() {
   return cards;
 }
 
-function mixCards(cards: Array<ICard>) {
+export function mixCards(cards: Array<ICard>) {
   const arr = [];
   const cards2 = [...cards];
   while (cards2.length) {
