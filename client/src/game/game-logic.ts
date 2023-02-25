@@ -88,7 +88,7 @@ export class GameLogic {
 
     setTimeout(() => {
       this.sendState("start")
-      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange()}});
+      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot}});
     }, 0);
   }
 
@@ -275,7 +275,7 @@ export class GameLogic {
       const initialIndex = this.setInitialIndex(1);
       this.currentPlayerIndex = initialIndex;
       this.setLastPlayer(initialIndex);
-      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot}});
     } else {
       console.log('Get Winner');
       this.sendState('finish');
@@ -417,7 +417,7 @@ export class GameLogic {
       this.setNextRound();
     } else if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
       this.setNextPlayer();
-    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange()}});
+    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot}});
   }
 
   private protectFoldedAction(){

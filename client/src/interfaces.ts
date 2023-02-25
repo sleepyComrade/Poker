@@ -34,7 +34,9 @@ export interface IDataAsk {
   raiseRange: {
     min: number,
     max: number
-  }
+  };
+  blind: number;
+  pot: number;
 }
 
 export interface IDataAskOther {
