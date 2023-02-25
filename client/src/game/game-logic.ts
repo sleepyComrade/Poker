@@ -106,6 +106,9 @@ export class GameLogic {
     this.players[small].chips -= this.minimalBet / 2;
     this.players[big].bet = this.minimalBet;
     this.players[big].chips -= this.minimalBet;
+    if((this.players[big].chips < 0) || (this.players[small].chips < 0)) {
+      console.error('Negitive player balance');
+    }    
   }
 
   private setLastPlayer(currentIndex: number) {
@@ -174,6 +177,9 @@ export class GameLogic {
         this.setNextPlayer();
       }
     } else {
+      if(this.players[this.currentPlayerIndex].chips <= 0) {
+        console.error('Zero or negative all-in');
+      }
       this.players[this.currentPlayerIndex].bet += this.players[this.currentPlayerIndex].chips;
       this.players[this.currentPlayerIndex].chips = 0;
       this.players[this.currentPlayerIndex].isAllIn = true;
