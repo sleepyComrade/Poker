@@ -26,19 +26,20 @@ export class PlayerClient extends Player{
       const getActions = (names: string[]) => {
         const actions: IActions = {};
         names.forEach(name => {
-          actions[name as keyof IActions] = ()=> action(name)
+          actions[name as keyof IActions] = (count?: number)=> action(name, count)
         })
         return actions;
       }        
     
-      const action = (name: string) => {
+      const action = (name: string, count?: number) => {
         this.socket.sendState({
           type: 'poker',
           roomName: this.currentRoomId,
           data:{
             type: 'move',
             data:{
-              action: name
+              action: name,
+              count: count
             }
           }
         })

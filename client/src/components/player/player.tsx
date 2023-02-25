@@ -103,7 +103,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
 
           <div className="player__timer">
             <div ref={timer} className='player__time' style={{ '--progress': progress }}>
-              <div className='player__ava'>AA</div>
+              <div className='player__ava'><img src={`http://localhost:4002/avatar/${name}`} alt="" /></div>
             </div>
           </div>
 

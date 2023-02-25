@@ -129,7 +129,7 @@ export class Room {
             case "move": {
                 const currentPlayer = this.players.get(currentUser.connection);
                 if (currentPlayer == this.lastPlayer) {
-                    this.lastActions[msg.data.action as keyof IActions]();
+                    this.lastActions[msg.data.action as keyof IActions](msg.data.count);
                     // this.lastActions = null;
                     // this.lastPlayer = null;
                 } else {

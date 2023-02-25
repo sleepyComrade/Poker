@@ -1,5 +1,5 @@
 import { IPlayer, ICard, Round, IGameMessage, IBank, IDataWinner, IDataWinnerLegacy } from '../interfaces';
-import { getCombo} from './combinations';
+import { getCombo, createCards, mixCards} from './combinations';
 import { getWinner, values } from './combo2';
 
 // getCombo([]);
@@ -59,6 +59,7 @@ export class GameLogic {
       },
       ...originDeck
     ].reverse();
+    this.deck = mixCards(createCards());
     this.tableCards = [];
     this.dealerIndex = dealerIndex;
     this.initialIndex = this.setInitialIndex(3);
@@ -87,7 +88,7 @@ export class GameLogic {
 
     setTimeout(() => {
       this.sendState("start")
-      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot}});
     }, 0);
   }
 
@@ -105,6 +106,9 @@ export class GameLogic {
     this.players[small].chips -= this.minimalBet / 2;
     this.players[big].bet = this.minimalBet;
     this.players[big].chips -= this.minimalBet;
+    if((this.players[big].chips < 0) || (this.players[small].chips < 0)) {
+      console.error('Negitive player balance');
+    }    
   }
 
   private setLastPlayer(currentIndex: number) {
@@ -152,9 +156,9 @@ export class GameLogic {
     return Math.max(...this.players.map(player => player.bet)) - this.players[this.currentPlayerIndex].bet;
   }
 
-  private defineBet = (bet: string) => {
+  private defineBet = (bet: string, count: number) => {
     this.protectFoldedAction();
-    const chipsToBet = this.getRaiseRange().min;
+    const chipsToBet = count || this.getRaiseRange().min;
     if (chipsToBet < this.players[this.currentPlayerIndex].chips) {
       this.players[this.currentPlayerIndex].bet += chipsToBet;
       this.players[this.currentPlayerIndex].chips -= chipsToBet;
@@ -173,6 +177,9 @@ export class GameLogic {
         this.setNextPlayer();
       }
     } else {
+      if(this.players[this.currentPlayerIndex].chips <= 0) {
+        console.error('Zero or negative all-in');
+      }
       this.players[this.currentPlayerIndex].bet += this.players[this.currentPlayerIndex].chips;
       this.players[this.currentPlayerIndex].chips = 0;
       this.players[this.currentPlayerIndex].isAllIn = true;
@@ -204,13 +211,13 @@ export class GameLogic {
     }
   }
 
-  private raise = () => {
-    this.defineBet('raise');
+  private raise = (count: number) => {
+    this.defineBet('raise', count);
     console.log('raise');
   }
 
-  private bet = () => {
-    this.defineBet('bet');
+  private bet = (count: number) => {
+    this.defineBet('bet', count);
     console.log('bet');
   }
 
@@ -268,7 +275,7 @@ export class GameLogic {
       const initialIndex = this.setInitialIndex(1);
       this.currentPlayerIndex = initialIndex;
       this.setLastPlayer(initialIndex);
-      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+      this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot}});
     } else {
       console.log('Get Winner');
       this.sendState('finish');
@@ -410,7 +417,7 @@ export class GameLogic {
       this.setNextRound();
     } else if (this.players[this.currentPlayerIndex].isFold || this.players[this.currentPlayerIndex].isAllIn) {
       this.setNextPlayer();
-    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex}});
+    } else this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot}});
   }
 
   private protectFoldedAction(){

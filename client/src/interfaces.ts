@@ -31,6 +31,12 @@ export interface IDataState {
 export interface IDataAsk {
   actions: IActions;
   playerId: number;
+  raiseRange: {
+    min: number,
+    max: number
+  };
+  blind: number;
+  pot: number;
 }
 
 export interface IDataAskOther {
@@ -65,11 +71,11 @@ export enum Round {
 }  
 
 export interface IActions {
-  raise?: () => void;
+  raise?: (count: number) => void;
   check?: () => void;
   fold?: () => void;
   call?: () => void;
-  bet?: () => void; 
+  bet?: (count: number) => void; 
 }
 
 export interface IBank {

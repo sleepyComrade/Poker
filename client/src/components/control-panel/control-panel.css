@@ -1,17 +1,16 @@
 .control-panel {
     width: 100%;
+    height: 100px;
     position: relative;
     bottom: -20%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid red;
 }
 
 .buttons-panel {
     width: 47%;
     /* height: 50px; */
-    border: 1px solid green;
     display: flex;
     justify-content: flex-end;
 }
