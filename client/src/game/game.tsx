@@ -57,7 +57,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
 
   return (
     <div className="game">
-      {!isStarted && <div className="game__info-message" style={{color: 'white'}}>Wait for players</div>}
+      {!isStarted && <div className="game__info-message" style={{color: 'white'}}>Wait for next game</div>}
       {isWaiting && <span className="game__info-message" style={{ color: 'white' }}>You will join on the next game</span>}
       <div className="game__buttons-wrapper">
         <button className="btn game__button game__button--exit" onClick={() => {
