@@ -12,7 +12,7 @@ import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
-const userService = new UserService();
+const userService = new UserService(true);
 
 const rooms: Record<string, Room> = {}
 
@@ -181,10 +181,8 @@ socket.on('request', (request) => {
       }
 
       if (parsed.type === "userAvatar") {
-        console.log("USER AVATR")
         const buffer = Buffer.from(parsed.data.img, "base64")
         fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userData.userName}.png`), buffer).then(() => {
-          console.log("pp was writed")
           currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userData.userName}`)
         })
       }

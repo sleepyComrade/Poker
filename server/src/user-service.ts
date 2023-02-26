@@ -6,12 +6,15 @@ export class UserService {
   users: User[];
   bonusTime: number;
   connections: Map<connection, User>;
-  collection: mongodb.Collection<mongodb.Document>
+  usersDb: mongodb.Collection<mongodb.Document>
+  withDatabase: boolean
   
-  constructor() {
+  constructor(withDatabase: boolean) {
+    this.withDatabase = withDatabase
     const client = new mongodb.MongoClient("mongodb://127.0.0.1")
-    this.collection = client.db("mongo").collection("users")
-    this.collection.find({}).toArray().then(console.log)
+    // const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority")
+    this.usersDb = client.db("mongo").collection("users")
+    this.usersDb.find({}).toArray().then(console.log)
     this.users = [];
     this.bonusTime = 10000
     this.connections = new Map();
@@ -20,10 +23,10 @@ export class UserService {
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
     const authorizeUser = async (name: string, type: string, password: string) => {
       const reqeustedUser = this.users.filter(user => user.userData.userName === name);
-      const requestedUserDB = await this.collection.find({userName: name}).toArray()
+      const requestedUserDB = await this.usersDb.find({userName: name}).toArray()
       switch (type) {
         case 'login':
-          console.log('connections!!!!!!!!!!!!', this.connections);
+          // console.log('connections!!!!!!!!!!!!', this.connections);
           
           if (requestedUserDB.length) {
             if (requestedUserDB[0].password === password) {
@@ -31,9 +34,9 @@ export class UserService {
               const user = new User(userDb.userName, userDb.id, userDb.password, connection, userDb.avatarUrl, userDb.lastBonusTime, userDb.chips)
 
               user.onUpdate = (newData) => {
-                console.log("on update")
-                this.collection.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
-                  this.collection.find().toArray().then(console.log)
+                console.log("on update", newData)
+                this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
+                  this.usersDb.find().toArray().then(console.log)
                 })
               }
 
@@ -71,7 +74,7 @@ export class UserService {
           }
           break;
         case 'register':
-          if (reqeustedUser.length || requestedUserDB.length) {
+          if (requestedUserDB.length) {
             connection.sendUTF(JSON.stringify({
               type: 'privateMessage',
               requestId: id,
@@ -80,28 +83,29 @@ export class UserService {
               }
             }));
           } else {
-            const user = new User(name, this.users.length, password, connection)
-            this.collection.insertOne(user.userData).then(() => {
-              this.collection.find().toArray().then(console.log)
+            const users = await this.usersDb.find({}).toArray()
+            const user = new User(name, users.length, password, connection)
+            this.usersDb.insertOne(user.userData).then(() => {
+              this.usersDb.find().toArray().then(console.log)
             })
             user.onUpdate = (newData) => {
-              console.log("on update")
-              this.collection.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
-                this.collection.find().toArray().then(console.log)
+              console.log("on update", newData)
+              this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
+                this.usersDb.find().toArray().then(console.log)
               })
             }
             this.users.push(user);
-            this.connections.set(connection, this.users[this.users.length - 1]);
+            this.connections.set(connection, user);
             connection.sendUTF(JSON.stringify({
               type: 'privateMessage',
               requestId: id,
               data: {
                 status: 'registered',
-                id: this.users[this.users.length - 1].userData.id,
-                userName: this.users[this.users.length - 1].userData.userName,
-                chips: this.users[this.users.length - 1].userData.chips,
-                lastBonusTime: this.bonusTime - (Date.now() - this.users[this.users.length - 1].lastBonusTime),
-                avatarUrl: this.users[this.users.length - 1].userData.avatarUrl
+                id: user.userData.id,
+                userName: user.userData.userName,
+                chips: user.userData.chips,
+                lastBonusTime: this.bonusTime - (Date.now() - user.userData.lastBonusTime),
+                avatarUrl: user.userData.avatarUrl
               }
             }));
             this.sendUpdatedUser(connection, user.userData.id);
@@ -120,15 +124,15 @@ export class UserService {
       }
     }
     if (data.type === 'bonus') {
-      if ((Date.now() - this.users[data.data.id].lastBonusTime) >= this.bonusTime) {
+      if ((Date.now() - this.users[data.data.id].userData.lastBonusTime) >= this.bonusTime) {
         this.users[data.data.id].userData.chips += 6000;
-        this.users[data.data.id].lastBonusTime = Date.now();
+        this.users[data.data.id].userData.lastBonusTime = Date.now();
         connection.sendUTF(JSON.stringify({
           type: 'privateMessage',
           requestId: id,
           data: {
             status: 'updated',
-            lastBonusTime: this.bonusTime - (Date.now() - this.users[data.data.id].lastBonusTime),
+            lastBonusTime: this.bonusTime - (Date.now() - this.users[data.data.id].userData.lastBonusTime),
             chips: this.users[data.data.id].userData.chips
           }
         }));
@@ -143,7 +147,7 @@ export class UserService {
         }));
       }
     } else {
-      if (data.data.name.includes(" ")) {
+      if (data.data.name.includes(" ") || data.data.name.match(/[a-z][A-Z]/)) {
         return
       }
       authorizeUser(data.data.name, data.type, data.data.password);
@@ -152,6 +156,10 @@ export class UserService {
 
   handleDisconnect(connection: connection) {
     this.connections.delete(connection);
+    if (!this.withDatabase) {
+      return
+    }
+    this.users.splice(this.users.findIndex(user => user.connection === connection), 1)
   }
 
   async sendUpdatedUser(connection: connection, id: number) {
@@ -172,7 +180,7 @@ export class UserService {
   }
 
   async getUserData(id: number) {
-    const [userData] = await this.collection.find({id}).toArray()
+    const [userData] = await this.usersDb.find({id}).toArray()
     if (!userData) {
       console.log("!!sfsfsd")
       return

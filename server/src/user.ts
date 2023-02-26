@@ -20,7 +20,6 @@ class UserData {
 }
 
 export class User {
-  lastBonusTime: number;
   connection: connection;
   bonusTime: number;
   userData: UserData
@@ -65,12 +64,10 @@ export class User {
       id: this.userData.id,
       userName: this.userData.userName,
       chips: this.userData.chips,
-      lastBonusTime: this.bonusTime - (Date.now() - this.lastBonusTime),
+      lastBonusTime: this.bonusTime - (Date.now() - this.userData.lastBonusTime),
       avatarUrl: this.userData.avatarUrl + `?q=${Date.now()}`,
     }
     
-    console.log("sdasdasdasdassad", q)
-
     return q
   }
 }
