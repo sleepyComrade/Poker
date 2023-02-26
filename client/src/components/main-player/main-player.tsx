@@ -5,6 +5,7 @@ import '../../style.css';
 import './main-player.css';
 import img from '../../assets/222.png';
 import { ICard, IPlayer } from "../../interfaces";
+import { avatarUrl } from '../../const';
 
 type PlayerProps = {
   player: IPlayer;
@@ -69,7 +70,7 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
   }, [timerAnimation]);
 
   useEffect(() => {
-    fetch(`http://localhost:4002/avatar/${name}`).then(res => {
+    fetch(`${avatarUrl}${name}`).then(res => {
       if(res.status == 200) {
         return res.blob();
       } else {
