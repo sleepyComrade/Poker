@@ -10,6 +10,7 @@ import { Timer } from '../components/timer/timer';
 import UserEditPopup from '../components/user-edit-popup/user-edit-popup';
 import '../style.css';
 import './lobby.css';
+import { IPlayer } from "../interfaces";
 
 type LobbyProps = {
   socket: Socket;
@@ -31,6 +32,28 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
   const [hasEnoughChips, setHasEnoughChips] = useState(true);
   const [userEditMode, setUserEditMode] = useState(false);
+  const [ava, setAva] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:4002/avatar/${user.userName}`).then(res => {
+      if(res.status == 200) {
+        return res.blob();
+      } else {
+        return null;
+      }
+    }).then(res => {
+      if(res) {
+        setAva(URL.createObjectURL(res));
+      } else {
+        setAva(null);
+      }
+    }).catch(e => {
+      setAva(null);
+    })
+    return () => {
+      if(ava) URL.revokeObjectURL(ava);
+    }
+  }, [user.userName, user.avatarUrl]);
 
   return (
     <div className="lobby">
@@ -61,7 +84,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
             <div className="user-info__picture" onClick={() => {
               setUserEditMode(true)
             }}>
-              <img className="user-info__img" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" />
+              {ava &&<img className="user-info__img" src={ `${user.avatarUrl}`} width="100" height="100" alt="avatar" />}
             </div>
             {/* <img className="user-info__picture" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
               setUserEditMode(true)

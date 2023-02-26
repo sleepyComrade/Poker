@@ -109,7 +109,7 @@ export function App() {
               setUser(null);
             })
           }
-        }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
+        }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms}  players={players} messages={messages} userName={userName} 
           onRoomEnter={(room, playerId, player) => {
             setCurrentRoom(room);
             setActivePage('poker');

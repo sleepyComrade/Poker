@@ -97,10 +97,7 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
         <div className="main-player__wrapper">
           <div className='main-player__name'>{name}</div>
           <div className="main-player__info">
-            <div className="main-player__timer">
-              {/* <button style={{ width: 100, height: 20 }} onClick={() => {
-            setTimerAnimation(last => !last);
-          }}>Start timer</button> */}
+            <div className="main-player__timer">           
               <div ref={timer} className='main-player__time' style={{ '--progress': progress }}>
                 <div className='main-player__ava'>
                   {ava ? <img className="main-player__ava-img" src={ava} /> : <span>YOU</span>}
