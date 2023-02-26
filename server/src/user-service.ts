@@ -1,59 +1,39 @@
 import { connection } from "websocket";
-import * as mongodb from "mongodb"
 import { User } from './user';
 
 export class UserService {
   users: User[];
   bonusTime: number;
   connections: Map<connection, User>;
-  usersDb: mongodb.Collection<mongodb.Document>
-  withDatabase: boolean
-  
-  constructor(withDatabase: boolean) {
-    this.withDatabase = withDatabase
-    const client = new mongodb.MongoClient("mongodb://127.0.0.1")
-    // const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority")
-    this.usersDb = client.db("mongo").collection("users")
-    this.usersDb.find({}).toArray().then(console.log)
+  constructor() {
     this.users = [];
-    this.bonusTime = 10000
+    this.bonusTime = 10000;
     this.connections = new Map();
   }
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
-    const authorizeUser = async (name: string, type: string, password: string) => {
+    const authorizeUser = (name: string, type: string, password: string) => {
       const reqeustedUser = this.users.filter(user => user.userData.userName === name);
-      const requestedUserDB = await this.usersDb.find({userName: name}).toArray()
       switch (type) {
         case 'login':
-          // console.log('connections!!!!!!!!!!!!', this.connections);
+          console.log('connections!!!!!!!!!!!!', this.connections);
           
-          if (requestedUserDB.length) {
-            if (requestedUserDB[0].password === password) {
-              const [userDb] = requestedUserDB
-              const user = new User(userDb.userName, userDb.id, userDb.password, connection, userDb.avatarUrl, userDb.lastBonusTime, userDb.chips)
-
-              user.onUpdate = (newData) => {
-                console.log("on update", newData)
-                this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
-                  this.usersDb.find().toArray().then(console.log)
-                })
-              }
-
-              this.users.push(user)
-              this.connections.set(connection, user);
+          if (reqeustedUser.length) {
+            if (reqeustedUser[0].userData.password === password) {
+              reqeustedUser[0].connection = connection;
+              this.connections.set(connection, reqeustedUser[0]);
               connection.sendUTF(JSON.stringify({
                 requestId: id,
                 type: 'privateMessage',
                 data: {
                   status: 'login',
-                  id: user.userData.id, 
-                  userName: user.userData.userName,
-                  chips: user.userData.chips,
-                  lastBonusTime: user.userData.lastBonusTime,
+                  id: reqeustedUser[0].userData.id,
+                  userName: reqeustedUser[0].userData.userName,
+                  chips: reqeustedUser[0].userData.chips,
+                  lastBonusTime: this.bonusTime - (Date.now() - reqeustedUser[0].userData.lastBonusTime),
                 }
               }));
-              this.sendUpdatedUser(connection, user.userData.id);
+              this.sendUpdatedUser(connection, this.users.indexOf(reqeustedUser[0]));
             } else {
               connection.sendUTF(JSON.stringify({
                 requestId: id,
@@ -74,7 +54,7 @@ export class UserService {
           }
           break;
         case 'register':
-          if (requestedUserDB.length) {
+          if (reqeustedUser.length) {
             connection.sendUTF(JSON.stringify({
               type: 'privateMessage',
               requestId: id,
@@ -83,32 +63,20 @@ export class UserService {
               }
             }));
           } else {
-            const users = await this.usersDb.find({}).toArray()
-            const user = new User(name, users.length, password, connection)
-            this.usersDb.insertOne(user.userData).then(() => {
-              this.usersDb.find().toArray().then(console.log)
-            })
-            user.onUpdate = (newData) => {
-              console.log("on update", newData)
-              this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
-                this.usersDb.find().toArray().then(console.log)
-              })
-            }
-            this.users.push(user);
-            this.connections.set(connection, user);
+            this.users.push(new User(name, this.users.length, password, connection));
+            this.connections.set(connection, this.users[this.users.length - 1]);
             connection.sendUTF(JSON.stringify({
               type: 'privateMessage',
               requestId: id,
               data: {
                 status: 'registered',
-                id: user.userData.id,
-                userName: user.userData.userName,
-                chips: user.userData.chips,
-                lastBonusTime: this.bonusTime - (Date.now() - user.userData.lastBonusTime),
-                avatarUrl: user.userData.avatarUrl
+                id: this.users[this.users.length - 1].userData.id,
+                userName: this.users[this.users.length - 1].userData.userName,
+                chips: this.users[this.users.length - 1].userData.chips,
+                lastBonusTime: this.bonusTime - (Date.now() - this.users[this.users.length - 1].userData.lastBonusTime),
               }
             }));
-            this.sendUpdatedUser(connection, user.userData.id);
+            this.sendUpdatedUser(connection, this.users.length - 1);
           }
           break;
         case 'logout': {
@@ -147,7 +115,7 @@ export class UserService {
         }));
       }
     } else {
-      if (data.data.name.includes(" ") || data.data.name.match(/[a-z][A-Z]/)) {
+      if (data.data.name.includes(" ")) {
         return
       }
       authorizeUser(data.data.name, data.type, data.data.password);
@@ -156,41 +124,30 @@ export class UserService {
 
   handleDisconnect(connection: connection) {
     this.connections.delete(connection);
-    if (!this.withDatabase) {
-      return
-    }
-    this.users.splice(this.users.findIndex(user => user.connection === connection), 1)
   }
 
-  async sendUpdatedUser(connection: connection, id: number) {
-    const data = await this.getUserData(id)
+  sendUpdatedUser(connection: connection, id: number) {
     connection.sendUTF(JSON.stringify({
       type: 'userUpdate',
-      data,
+      data: this.getUserData(id)
     }))
   }
 
-  async sendPrivateUpdatedUser(connection: connection, id: number, requestId: number) {
-    const data = await this.getUserData(id)
+  sendPrivateUpdatedUser(connection: connection, id: number, requestId: number) {
     connection.sendUTF(JSON.stringify({
       type: 'privateMessage',
       requestId: requestId,
-      data: data
+      data: this.getUserData(id)
     }))
   }
 
-  async getUserData(id: number) {
-    const [userData] = await this.usersDb.find({id}).toArray()
-    if (!userData) {
-      console.log("!!sfsfsd")
-      return
-    }
+  getUserData(id: number) {
     return {
-      id: userData.id,
-      userName: userData.userName,
-      chips: userData.chips,
-      lastBonusTime: this.bonusTime - (Date.now() - userData.lastBonusTime),
-      avatarUrl: userData.avatarUrl,
+      id: this.users[id].userData.id,
+      userName: this.users[id].userData.userName,
+      chips: this.users[id].userData.chips,
+      lastBonusTime: this.bonusTime - (Date.now() - this.users[id].userData.lastBonusTime),
+      avatarUrl: this.users[id].userData.avatarUrl,
     }
   }
 

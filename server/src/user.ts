@@ -37,7 +37,7 @@ export class User {
       type: 'userUpdate',
       data,
     }))
-    this.onUpdate(data)
+    this.onUpdate?.(data)
   }
 
   minusChips(chips: number) {

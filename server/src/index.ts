@@ -5,6 +5,7 @@ import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
 import { UserService } from './user-service';
+import { UserServiceDb } from './user-service-db';
 import {createIdGenerator} from "../../client/src/components/id-generator"
 import * as path from "path"
 import * as fs from "fs"
@@ -12,8 +13,8 @@ import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
-const userService = new UserService(true);
-
+const withDb = false
+const userService = withDb ? new UserServiceDb() : new UserService();
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
