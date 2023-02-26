@@ -120,11 +120,16 @@
 }
 
 .game__info-message {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
     display: inline-block;
     width: 280px;
     padding: 6px 10px;
     text-align: center;
     background-color: #e75f04;
+    border-radius: 7px;
     color: #fff;
     font-size: 20px;
 }
@@ -150,4 +155,31 @@
     color: #f00;
     text-align: center;
     cursor: pointer;
+}
+
+.game__sound {
+    padding-left: 16px;
+    background-color: #265bec;
+    background: linear-gradient(to bottom, #265bec 0%, #110268 100%);
+    border-bottom: 1px solid #110268;
+    border-radius: 7px;
+}
+
+.game__sound-off {
+    background-color: #e75f04;
+    background: linear-gradient(to bottom, #e75f04 0%, #b32d04 100%);
+}
+
+.game__room-name {
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    display: flex;
+    padding: 0 5px;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    font-size: 22px;
+    background-color: #e75f04;
+    border-radius: 5px;
 }

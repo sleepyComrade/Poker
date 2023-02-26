@@ -28,10 +28,11 @@ type GameProps = {
   chatMessages: IMessage[];
   playerClient: Player;
   isStarted: boolean;
-  onPlaceClick: (index: number) => void; 
+  onPlaceClick: (index: number) => void;
+  currentRoom: string;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted, onPlaceClick }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted, onPlaceClick, currentRoom }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
   const [mute, setMute] = useState(true);
@@ -53,23 +54,27 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
   shift(_players, playerIndex);
 
   const [chatIsOpen, setChatIsOpen] = useState(false)
- 
+
   return (
     <div className="game">
+      {!isStarted && <div className="game__info-message" style={{color: 'white'}}>Wait for next game</div>}
+      {isWaiting && <span className="game__info-message" style={{ color: 'white' }}>You will join on the next game</span>}
       <div className="game__buttons-wrapper">
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>
-        {!isStarted && <div style={{color: 'white'}}>Wait for players</div>}
 
         {(!isMultiPlayer && isClientOut) && <button className="btn game__button game__button--back-to-game" onClick={() => {
           onBackToGame();
         }}>Back to Game</button>}
 
-        {isWaiting && <span className="game__info-message" style={{ color: 'white' }}>You will join on the next game</span>}
-        <button onClick={() => {
+        <button className={`btn game__button game__sound${mute ? ' game__sound-off' : ''}`} onClick={() => {
           sounds.enabled = !sounds.enabled;
         }}>Sound {!mute ? 'On' : 'Off'}</button>
+      </div>
+
+      <div className="game__room-name" style={{color: 'white'}}>
+        <span>Room: {currentRoom ? currentRoom : 'Local room'}</span>
       </div>
 
       <div className="game__chat-wrapper">

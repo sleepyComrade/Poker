@@ -216,7 +216,7 @@ export function Poker(props: IProps) {
           props.onStateChange(false);
           setIsWaiting(true);
           // props.roomLogic.backToGame(clientPlayer);
-        }} isMultiPlayer={isMultiPlayer} isClientOut={props.isClientOut} isWaiting={isWaiting} />
+        }} isMultiPlayer={isMultiPlayer} isClientOut={props.isClientOut} isWaiting={isWaiting} currentRoom={props.currentRoom} />
 
       <div style={{ 'display': 'none' }}>
         <button onClick={() => setWinInfo({})}>Test</button>

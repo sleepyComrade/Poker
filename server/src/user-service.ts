@@ -48,7 +48,7 @@ export class UserService {
               requestId: id,
               type: 'privateMessage',
               data: {
-                status: 'Try to register'
+                status: 'Sign up'
               }
             }));
           }
@@ -91,6 +91,7 @@ export class UserService {
           break;
       }
     }
+
     if (data.type === 'bonus') {
       if ((Date.now() - this.users[data.data.id].userData.lastBonusTime) >= this.bonusTime) {
         this.users[data.data.id].userData.chips += 6000;
@@ -115,9 +116,9 @@ export class UserService {
         }));
       }
     } else {
-      if (data.data.name.includes(" ")) {
-        return
-      }
+      // if (data.data.name.includes(" ")) {
+      //   return
+      // }
       authorizeUser(data.data.name, data.type, data.data.password);
     }
   }

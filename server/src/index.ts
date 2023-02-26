@@ -13,7 +13,7 @@ import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
-const withDb = true
+const withDb = false
 const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 
@@ -178,6 +178,10 @@ socket.on('request', (request) => {
 
       if (parsed.type === "bonus") {
         console.log(parsed);
+        userService.handleMessage(connection, parsed.data, parsed.requestId);
+      }
+
+      if (parsed.type === 'logout') {
         userService.handleMessage(connection, parsed.data, parsed.requestId);
       }
 

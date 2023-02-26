@@ -20,30 +20,22 @@ export function App() {
   const [userName, setUserName] = useState(Math.random().toString());
   const [players, setPlayers] = useState<string[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [socketState, setSocketState] = useState<string>('connecting');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
   const [activePage, setActivePage] = useState<keyof typeof routes>('authorization');
   const [roomLogic, setRoomLogic] = useState<RoomLogic | null>(null);
   const [playerIndex, setPlayerIndex] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
   const [user, setUser] = useState<IUserData>(null);
-  const [isGuest, setIsGuest] = useState(false);
+  // const [isGuest, setIsGuest] = useState(true);
   const [authError, setAuthError] = useState('');
   const [isClientOut, setIsClientOut] = useState(false);
-  const [avatar, setAvatar] = useState<string | null>(null)
+  const [avatar, setAvatar] = useState<string | null>(null);
+
+  const isGuest = user === null;
 
   useEffect(() => {
-    // if (localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user') !== null) {
-    //   const data = JSON.parse(localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user'));
-    //   setUser(data);
-    //   setActivePage('lobby');
-    // } else {
-    //   console.log('No data found in local storage');
-    // }
-
     const socket = new Socket();
-    // socket.onMessage = (message) => {
-    //   setMessages((last) => [...last, message]);
-    // }
     socket.onRoomCreate = (rooms) => {
       setRooms(rooms);
       console.log(rooms);
@@ -60,7 +52,6 @@ export function App() {
       }
       console.log("join success");
     }
-    setSocket(socket);
     socket.onPokerResponse = () => {
       console.log('hello');
       
@@ -74,8 +65,13 @@ export function App() {
     room.onMessage = () => {
       
     }
+    socket.onClose = () => {
+      setSocket(null);
+      setSocketState('closed');
+    }
     socket.onConnect = async () => {
-      
+      setSocket(socket);
+      setSocketState('connected');
       console.log("HelloWorld")
       socket.sendState({
         type: "getRooms",
@@ -95,7 +91,9 @@ export function App() {
         <Lobby onUserUpdate={(user: IUserData) => {
           setUser(user);
         }} onLogOut={() => {
-          if (isGuest === false) {
+          console.log('User', user, isGuest);
+          
+          if (isGuest === true) {
             setActivePage('authorization');
           } else {
             socket.sendState({
@@ -105,9 +103,10 @@ export function App() {
                 data: {}
               },
             }).then(res => {
-              console.log(res);
+              console.log('!!!!sfdgs!!!', res);
               setActivePage('authorization');
-              setIsGuest(false);
+              // setIsGuest(true);
+              setUser(null);
             })
           }
         }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
@@ -127,9 +126,9 @@ export function App() {
         }} setUser={(data: IUserData) => {
           setUser(data);
         }} setGuest={() => {
-          setIsGuest(true);
+          // setIsGuest(true);
           setActivePage('lobby');
-        }} socket={socket} /> :
+        }} socket={socket} socketState={socketState} /> :
         <Poker onPlaceClick={(index: number) => {
           if (currentRoom) {
             const res = socket.sendState({
