@@ -44,7 +44,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
         setUserEditMode(false)
         if (!str) {
           return
-        }      
+        }
         // console.log("qeweqweqw",buffer)
         socket.sendState({
           type: "userAvatar",
@@ -57,10 +57,15 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
 
       {!isGuest &&
         <div className="lobby__user-info user-info">
-          <div className="user-info__wrapper">
-            <img className="user-info__picture" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
+          <div className="user-info__wrapper">            
+            <div className="user-info__picture" onClick={() => {
               setUserEditMode(true)
-            }}/>
+            }}>
+              <img className="user-info__img" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" />
+            </div>
+            {/* <img className="user-info__picture" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
+              setUserEditMode(true)
+            }}/> */}
             <div className="user-info__info-block">
               <div className="user-info__username">Hello, <span>{user.userName}</span></div>
               <div className="user-info__chips">You have <span>{user.chips}</span> chips</div>

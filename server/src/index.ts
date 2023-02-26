@@ -18,19 +18,30 @@ const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
+
   if (req.url.startsWith("/avatar")) {
     const { pathname } = url.parse(req.url)
     const avatar = pathname.slice(8)
     fs.promises.readdir(path.join(__dirname, "../", "public")).then(ls => {
       console.log(ls)
       if (!ls.includes(avatar + ".png")) {
-        res.writeHead(404).end("not found")
+        res.writeHead(404, {
+          'Content-Type': 'text/plain',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+        }).end("not found")
         return
       }
 
       const stream = fs.createReadStream(path.join(__dirname, "../", "public", `${avatar}.png`))
 
-      res.writeHead(200)
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+      })
 
       stream.pipe(res)
         
@@ -38,7 +49,12 @@ const server = http.createServer((req, res) => {
     console.log("!avatar", avatar, req.url)
     return
   }
-  res.writeHead(404)
+  res.writeHead(404, {
+    'Content-Type': 'text/plain',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+  })
 
   res.end("not found")
 })

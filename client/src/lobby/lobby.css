@@ -230,8 +230,8 @@
 
 .user-info__picture {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   margin-right: 20px;
   border: 3px solid #f00;
   border-radius: 50%;
@@ -239,7 +239,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
- 
+ overflow: hidden;
   cursor: pointer;
 }
 
@@ -257,10 +257,10 @@
 }
 
 .user-info__picture::after {
-  content: 'сhange avatar';
+  content: 'change avatar';
   position: absolute;
-  top: 16px;
-  left: 8px;
+  top: 28px;
+  left: 10px;
   width: 80%;
   height: 100%;
   font-size: 18px;
