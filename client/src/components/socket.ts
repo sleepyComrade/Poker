@@ -17,6 +17,7 @@ export default class Socket {
   onChatMessage: (messages: IMessage[]) => void
   onConnect: () => void
   onUserUpdate: (userData: IUserData) => void;
+  onClose: () => void;
 
   constructor() {
     this.privateMessageSignal = new Signal()
@@ -26,6 +27,10 @@ export default class Socket {
     this.webSocket.binaryType = "blob"
     this.webSocket.onopen = () => {
       this.onConnect()
+    }
+    this.webSocket.onerror = () => {
+      console.log('Socket Error');
+      this.onClose();
     }
     this.webSocket.onmessage = (message) => {
       console.log(message)
@@ -61,6 +66,7 @@ export default class Socket {
     }
     this.webSocket.onclose = () => {
       console.log('close')
+      this.onClose();
     }
   }
 

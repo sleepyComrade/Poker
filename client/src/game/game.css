@@ -175,9 +175,9 @@
     top: 90px;
     left: 20px;
     display: flex;
+    padding: 0 5px;
     justify-content: center;
     align-items: center;
-    width: 100px;
     height: 40px;
     font-size: 22px;
     background-color: #e75f04;

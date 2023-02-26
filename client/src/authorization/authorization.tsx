@@ -11,18 +11,141 @@ type AuthorizationProps = {
   setAuthError: (error: string) => void;
   authError: string;
   setActivePage: () => void;
+  socketState: string;
+}
+
+function login(props: AuthorizationProps, name: string, password: string) {
+  props.socket.sendState({
+    type: 'user',
+    data: {
+      type: 'login',
+      data: {
+        name: name,
+        password: password
+      }
+    },
+  }).then(res => {
+    console.log(res);
+    switch (res.status) {
+      case 'login':{
+        const user = {
+          id: res.id,
+          userName: res.userName,
+          chips: res.chips,
+          lastBonusTime: res.lastBonusTime + Date.now(),
+          avatarUrl: res.avatarUrl
+        };
+        props.setUser(user);
+        localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify({name, password}));
+        props.setActivePage();
+        break;
+      }
+      case 'Sign up': {
+        props.setAuthError('');
+        const status = res.status;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            props.setAuthError(status);
+          })
+        })
+        break;
+      }
+      case 'Wrong password':{
+        props.setAuthError('');
+        const status = res.status;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            props.setAuthError(status);
+          })
+        })
+        break;
+      }
+      default:
+        break;
+    }
+  })
+}
+
+function signup(props: AuthorizationProps, name: string, password: string) {
+  if (name.length >= 2 && password.length >= 8) {
+    props.socket.sendState({
+      type: 'user',
+      data: {
+        type: 'register',
+        data: {
+          name: name,
+          password: password
+        }
+      },
+    }).then(res => {
+      console.log(res);
+      switch (res.status) {
+        case 'Try to login': {
+          props.setAuthError('');
+          const status = res.status;
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              props.setAuthError(status);
+            })
+          })
+          break;
+        }
+        case 'registered':
+          const newUser = {
+            id: res.id,
+            userName: res.userName,
+            chips: res.chips,
+            lastBonusTime: res.lastBonusTime + Date.now(),
+            avatarUrl: res.avatarUrl
+          };
+          localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify({name, password}));
+          props.setUser(newUser);              
+          props.setActivePage();
+        break;
+        default:
+          break;
+      }
+    })
+  } else if (!name || !password) {
+    props.setAuthError('');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        props.setAuthError('Enter name and password');
+      })
+    })
+  } else if (name.length < 2 || password.length < 8) {
+    props.setAuthError('');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        props.setAuthError('Name or password is too short(minimum 2 characters for name and 8 for password)');
+      })
+    })
+  }
 }
 
 export function Authorization(props: AuthorizationProps) {
   const [authUser, setAuthUser] = useState('');
   const [userPassword, setUserPassword] = useState('');
 
+  useEffect(() => {
+    if (props.socket && props.socketState === 'connected') {
+      try {
+        const userData = JSON.parse(localStorage.getItem('b6fe147178bcfc06652a9d3be2c98dd89user'));
+        if (userData) {
+          login(props, userData.name, userData.password);
+        }
+      } catch (error) {
+        console.log('Local storage error');
+      }
+    }
+  }, [props.socket, props.socketState]);
+
   return (
     <div className="auth">
       <div className="auth__wrapper">
         <div className="auth__center-container">
 
-          <form action="" method="get" className="auth__form" onSubmit={(e) => {
+          {props.socketState !== 'connecting' && <form action="" method="get" className="auth__form" onSubmit={(e) => {
             e.preventDefault();            
           }}>
             <div className="auth__login-block">
@@ -42,114 +165,13 @@ export function Authorization(props: AuthorizationProps) {
                   }} id="password" />
               </p>
 
-              <button className="btn auth__button auth__button--login" onClick={() => {
-                props.socket.sendState({
-                  type: 'user',
-                  data: {
-                    type: 'login',
-                    data: {
-                      name: authUser,
-                      password: userPassword
-                    }
-                  },
-                }).then(res => {
-                  console.log(res);
-                  switch (res.status) {
-                    case 'login':{
-                      const user = {
-                        id: res.id,
-                        userName: res.userName,
-                        chips: res.chips,
-                        lastBonusTime: res.lastBonusTime + Date.now(),
-                        avatarUrl: res.avatarUrl
-                      };
-                      props.setUser(user);
-                      // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
-                      props.setActivePage();
-                      break;
-                    }
-                    case 'Sign up': {
-                      props.setAuthError('');
-                      const status = res.status;
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                          props.setAuthError(status);
-                        })
-                      })
-                      break;
-                    }
-                    case 'Wrong password':{
-                      props.setAuthError('');
-                      const status = res.status;
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                          props.setAuthError(status);
-                        })
-                      })
-                      break;
-                    }
-                    default:
-                      break;
-                  }
-                })
+              <button disabled={props.socketState !== 'connected'} className="btn auth__button auth__button--login" onClick={() => {
+                login(props, authUser, userPassword);
               }}>Log in</button>
             </div>
 
-            <button className="btn auth__button auth__button--register" onClick={() => {
-              if (authUser.length >= 2 && userPassword.length >= 8) {
-                props.socket.sendState({
-                  type: 'user',
-                  data: {
-                    type: 'register',
-                    data: {
-                      name: authUser,
-                      password: userPassword
-                    }
-                  },
-                }).then(res => {
-                  console.log(res);
-                  switch (res.status) {
-                    case 'Try to login': {
-                      props.setAuthError('');
-                      const status = res.status;
-                      requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                          props.setAuthError(status);
-                        })
-                      })
-                      break;
-                    }
-                    case 'registered':
-                      const newUser = {
-                        id: res.id,
-                        userName: res.userName,
-                        chips: res.chips,
-                        lastBonusTime: res.lastBonusTime + Date.now(),
-                        avatarUrl: res.avatarUrl
-                      };
-                      // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(newUser));
-                      props.setUser(newUser);              
-                      props.setActivePage();
-                    break;
-                    default:
-                      break;
-                  }
-                })
-              } else if (!authUser || !userPassword) {
-                props.setAuthError('');
-                requestAnimationFrame(() => {
-                  requestAnimationFrame(() => {
-                    props.setAuthError('Enter name and password');
-                  })
-                })
-              } else if (authUser.length < 2 || userPassword.length < 8) {
-                props.setAuthError('');
-                requestAnimationFrame(() => {
-                  requestAnimationFrame(() => {
-                    props.setAuthError('Name or password is too short(minimum 2 characters for name and 8 for password)');
-                  })
-                })
-              }
+            <button disabled={props.socketState !== 'connected'} className="btn auth__button auth__button--register" onClick={() => {
+              signup(props, authUser, userPassword);
             }}>Sign Up</button>
 
            {props.authError && <div className={`auth__error-message show-error-message`}>{props.authError}</div>}
@@ -158,7 +180,10 @@ export function Authorization(props: AuthorizationProps) {
               props.setGuest();
             }}>Log in as a guest</button>
 
-          </form>
+            {props.socketState === 'connecting' && <div style={{ color: 'white'}}>Try connect socket</div>}
+            {props.socketState === 'closed' && <div style={{ color: 'white'}}>Socked is unavailable, guest mode only</div>}
+
+          </form>}
         </div>
       </div>
     </div>
