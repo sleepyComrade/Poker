@@ -5,6 +5,7 @@ import * as http from 'http'
 import { IRoomServer } from './interfaces/IRoomServer'
 import { Player } from './player'
 import { UserService } from './user-service';
+import { UserServiceDb } from './user-service-db';
 import {createIdGenerator} from "../../client/src/components/id-generator"
 import * as path from "path"
 import * as fs from "fs"
@@ -12,8 +13,8 @@ import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
-const userService = new UserService();
-
+const withDb = true
+const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {
@@ -181,11 +182,9 @@ socket.on('request', (request) => {
       }
 
       if (parsed.type === "userAvatar") {
-        console.log("USER AVATR")
         const buffer = Buffer.from(parsed.data.img, "base64")
-        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userName}.png`), buffer).then(() => {
-          console.log("pp was writed")
-          currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userName}`)
+        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userData.userName}.png`), buffer).then(() => {
+          currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userData.userName}`)
         })
       }
     }
@@ -204,3 +203,4 @@ socket.on('request', (request) => {
     )
   })
 })
+

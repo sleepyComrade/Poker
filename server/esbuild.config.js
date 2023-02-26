@@ -1,5 +1,6 @@
 const esbuild = require("esbuild")
-
+const fs = require("fs/promises")
+const path = require("path")
 
 esbuild.build({
   entryPoints: ['./src/index.ts'],
@@ -9,4 +10,12 @@ esbuild.build({
   bundle: true,
   minify: true,
   // plugins: [nodeExternalsPlugins()],
-}).catch(() => process.exit(1))
+}).then(() => {
+    return fs.mkdir(path.join(__dirname, "dist", "public"))
+  })
+  .then(() => {
+    console.log("builded :)")
+  })
+  .catch((e) => {
+    console.log("something went wrong...", e)
+  })

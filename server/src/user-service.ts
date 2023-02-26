@@ -13,13 +13,13 @@ export class UserService {
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
     const authorizeUser = (name: string, type: string, password: string) => {
-      const reqeustedUser = this.users.filter(user => user.userName === name);
+      const reqeustedUser = this.users.filter(user => user.userData.userName === name);
       switch (type) {
         case 'login':
           console.log('connections!!!!!!!!!!!!', this.connections);
           
           if (reqeustedUser.length) {
-            if (reqeustedUser[0].password === password) {
+            if (reqeustedUser[0].userData.password === password) {
               reqeustedUser[0].connection = connection;
               this.connections.set(connection, reqeustedUser[0]);
               connection.sendUTF(JSON.stringify({
@@ -27,10 +27,10 @@ export class UserService {
                 type: 'privateMessage',
                 data: {
                   status: 'login',
-                  id: reqeustedUser[0].id,
-                  userName: reqeustedUser[0].userName,
-                  chips: reqeustedUser[0].chips,
-                  lastBonusTime: this.bonusTime - (Date.now() - reqeustedUser[0].lastBonusTime),
+                  id: reqeustedUser[0].userData.id,
+                  userName: reqeustedUser[0].userData.userName,
+                  chips: reqeustedUser[0].userData.chips,
+                  lastBonusTime: this.bonusTime - (Date.now() - reqeustedUser[0].userData.lastBonusTime),
                 }
               }));
               this.sendUpdatedUser(connection, this.users.indexOf(reqeustedUser[0]));
@@ -70,10 +70,10 @@ export class UserService {
               requestId: id,
               data: {
                 status: 'registered',
-                id: this.users[this.users.length - 1].id,
-                userName: this.users[this.users.length - 1].userName,
-                chips: this.users[this.users.length - 1].chips,
-                lastBonusTime: this.bonusTime - (Date.now() - this.users[this.users.length - 1].lastBonusTime),
+                id: this.users[this.users.length - 1].userData.id,
+                userName: this.users[this.users.length - 1].userData.userName,
+                chips: this.users[this.users.length - 1].userData.chips,
+                lastBonusTime: this.bonusTime - (Date.now() - this.users[this.users.length - 1].userData.lastBonusTime),
               }
             }));
             this.sendUpdatedUser(connection, this.users.length - 1);
@@ -92,16 +92,16 @@ export class UserService {
       }
     }
     if (data.type === 'bonus') {
-      if ((Date.now() - this.users[data.data.id].lastBonusTime) >= this.bonusTime) {
-        this.users[data.data.id].chips += 6000;
-        this.users[data.data.id].lastBonusTime = Date.now();
+      if ((Date.now() - this.users[data.data.id].userData.lastBonusTime) >= this.bonusTime) {
+        this.users[data.data.id].userData.chips += 6000;
+        this.users[data.data.id].userData.lastBonusTime = Date.now();
         connection.sendUTF(JSON.stringify({
           type: 'privateMessage',
           requestId: id,
           data: {
             status: 'updated',
-            lastBonusTime: this.bonusTime - (Date.now() - this.users[data.data.id].lastBonusTime),
-            chips: this.users[data.data.id].chips
+            lastBonusTime: this.bonusTime - (Date.now() - this.users[data.data.id].userData.lastBonusTime),
+            chips: this.users[data.data.id].userData.chips
           }
         }));
         this.sendUpdatedUser(connection, data.data.id);
@@ -143,11 +143,11 @@ export class UserService {
 
   getUserData(id: number) {
     return {
-      id: this.users[id].id,
-      userName: this.users[id].userName,
-      chips: this.users[id].chips,
-      lastBonusTime: this.bonusTime - (Date.now() - this.users[id].lastBonusTime),
-      avatarUrl: this.users[id].avatarUrl,
+      id: this.users[id].userData.id,
+      userName: this.users[id].userData.userName,
+      chips: this.users[id].userData.chips,
+      lastBonusTime: this.bonusTime - (Date.now() - this.users[id].userData.lastBonusTime),
+      avatarUrl: this.users[id].userData.avatarUrl,
     }
   }
 

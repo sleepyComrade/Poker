@@ -58,7 +58,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
       {!isGuest &&
         <div className="lobby__user-info user-info">
           <div className="user-info__wrapper">
-            <img src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
+            <img className="user-info__picture" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
               setUserEditMode(true)
             }}/>
             <div className="user-info__info-block">
@@ -72,6 +72,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
 
           <div className="user-info__timer">
             <Timer onClick={() => {
+              console.log("userID!!!!!!!!!", user.id)
               socket.sendState({
                 type: 'bonus',
                 data: {
