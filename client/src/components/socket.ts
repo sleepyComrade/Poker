@@ -2,6 +2,7 @@ import { IMessage } from '../interfaces/IMessage'
 import { Signal } from "../common/signal"
 import { IUserData } from '../../../interfaces/IUser'
 import { createIdGenerator } from './id-generator';
+import { socketUrl } from "../const";
 
 export default class Socket {
   webSocket: WebSocket
@@ -21,8 +22,7 @@ export default class Socket {
 
   constructor() {
     this.privateMessageSignal = new Signal()
-    // this.webSocket = new WebSocket('ws://rs-pocker-backend-production.up.railway.app/')
-    this.webSocket = new WebSocket('ws://localhost:4002/')
+    this.webSocket = new WebSocket(socketUrl)
     // this.webSocket.binaryType = "arraybuffer"
     this.webSocket.binaryType = "blob"
     this.webSocket.onopen = () => {
