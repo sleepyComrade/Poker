@@ -4,7 +4,7 @@ import DealerLabel from '../dealer-label/dealer-label';
 import '../../style.css';
 import './player.css';
 import { ICard, IPlayer } from "../../interfaces";
-import {animate} from "../../game/animate";
+import { animate } from "../../game/animate";
 
 type PlayerProps = {
   player: IPlayer;
@@ -24,17 +24,18 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
   const timer = useRef<HTMLDivElement>();
   const [progress, setProgress] = useState(0);
   const [lastChips, setLastChips] = useState(0);
+  const [ava, setAva] = useState<string | null>(null);
 
-  useEffect(()=>{
-    if (chips == lastChips){
-      return ()=>{}
+  useEffect(() => {
+    if (chips == lastChips) {
+      return () => { }
     }
     const speed = Math.abs(chips - lastChips);
     let currentChips = lastChips;
-    const cancel = animate((delta)=>{
+    const cancel = animate((delta) => {
       const sign = Math.sign(chips - lastChips);
-      currentChips += sign * delta  * speed / 500;
-      if ((sign * currentChips) < (sign * chips)){
+      currentChips += sign * delta * speed / 500;
+      if ((sign * currentChips) < (sign * chips)) {
         setLastChips(Math.floor(currentChips));
       } else {
         setLastChips(chips)
@@ -42,7 +43,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
       }
       return true;
     })
-    return ()=>{
+    return () => {
       setLastChips(chips);
       cancel();
     }
@@ -94,20 +95,43 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
       }
     }
   }, [timerAnimation]);
-  
+
+  useEffect(() => {
+    fetch(`http://localhost:4002/avatar/${name}`).then(res => {
+      if (res.status == 200) {
+        return res.blob();
+      } else {
+        return null;
+      }
+    }).then(res => {
+      if (res) {
+        setAva(URL.createObjectURL(res));
+      } else {
+        setAva(null);
+      }
+    }).catch(e => {
+      setAva(null);
+    })
+    return () => {
+      if (ava) URL.revokeObjectURL(ava);
+    }
+  }, [name]);
+
   return (
     <div className={`abs player tp${place} ${isWinner ? 'player--winner' : ''}`}>
       <div className="player__wrapper">
-        <div className='player__name'>{isDebug ? name + (place-1) : name}</div>
+        <div className='player__name'>{isDebug ? name + (place - 1) : name}</div>
         <div className="player__info">
 
           <div className="player__timer">
             <div ref={timer} className='player__time' style={{ '--progress': progress }}>
-              <div className='player__ava'><img src={`http://localhost:4002/avatar/${name}`} alt="" /></div>
+              <div className='player__ava'>
+                {ava ? <img src={ava} /> : <span>{name.slice(0, 3)}</span>}
+              </div>
             </div>
           </div>
 
-          {isDealer &&  <DealerLabel />}
+          {isDealer && <DealerLabel />}
 
           <div className='player__bank'>
             <TwoCards cards={cards} isFold={isFold} isOpened={isOpened} winCards={winCards} />
