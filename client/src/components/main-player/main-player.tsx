@@ -5,6 +5,7 @@ import '../../style.css';
 import './main-player.css';
 import img from '../../assets/222.png';
 import { ICard, IPlayer } from "../../interfaces";
+import { avatarUrl } from '../../const';
 
 type PlayerProps = {
   player: IPlayer;
@@ -20,6 +21,7 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
   const [progress, setProgress] = useState(0);
+  const [ava, setAva] = useState<string | null>(null);
 
   useEffect(() => {
     // if(isCurrent) {
@@ -67,6 +69,27 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
     }
   }, [timerAnimation]);
 
+  useEffect(() => {
+    fetch(`${avatarUrl}${name}`).then(res => {
+      if(res.status == 200) {
+        return res.blob();
+      } else {
+        return null;
+      }
+    }).then(res => {
+      if(res) {
+        setAva(URL.createObjectURL(res));
+      } else {
+        setAva(null);
+      }
+    }).catch(e => {
+      setAva(null);
+    })
+    return () => {
+      if(ava) URL.revokeObjectURL(ava);
+    }
+  }, [name]);
+
   return (
     <div className="main-player">
       <img className="main-player__chair" src={img} alt="" />
@@ -75,12 +98,11 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
         <div className="main-player__wrapper">
           <div className='main-player__name'>{name}</div>
           <div className="main-player__info">
-            <div className="main-player__timer">
-              {/* <button style={{ width: 100, height: 20 }} onClick={() => {
-            setTimerAnimation(last => !last);
-          }}>Start timer</button> */}
+            <div className="main-player__timer">           
               <div ref={timer} className='main-player__time' style={{ '--progress': progress }}>
-                <div className='main-player__ava'>YOU</div>
+                <div className='main-player__ava'>
+                  {ava ? <img className="main-player__ava-img" src={ava} /> : <span>YOU</span>}
+                </div>
               </div>
             </div>
 
