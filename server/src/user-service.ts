@@ -48,7 +48,7 @@ export class UserService {
               requestId: id,
               type: 'privateMessage',
               data: {
-                status: 'Try to register'
+                status: 'Sign up'
               }
             }));
           }

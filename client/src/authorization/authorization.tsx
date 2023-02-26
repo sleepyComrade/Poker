@@ -28,7 +28,7 @@ export function Authorization(props: AuthorizationProps) {
             <div className="auth__login-block">
 
               <p className="auth__login-wrapper">
-                <label htmlFor="login">Login </label>
+                <label htmlFor="login">Name</label>
                 <input className="auth__input auth__input--login" onChange={(e) => {
                   setAuthUser(e.target.value);
                 }} value={authUser} type="text" id="login" />
@@ -55,7 +55,7 @@ export function Authorization(props: AuthorizationProps) {
                 }).then(res => {
                   console.log(res);
                   switch (res.status) {
-                    case 'login':
+                    case 'login':{
                       const user = {
                         id: res.id,
                         userName: res.userName,
@@ -67,12 +67,27 @@ export function Authorization(props: AuthorizationProps) {
                       // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
                       props.setActivePage();
                       break;
-                    case 'Try to register':
-                      props.setAuthError(res.status);
-                    break;
-                    case 'Wrong password':
-                      props.setAuthError(res.status);
+                    }
+                    case 'Sign up': {
+                      props.setAuthError('');
+                      const status = res.status;
+                      requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                          props.setAuthError(status);
+                        })
+                      })
                       break;
+                    }
+                    case 'Wrong password':{
+                      props.setAuthError('');
+                      const status = res.status;
+                      requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                          props.setAuthError(status);
+                        })
+                      })
+                      break;
+                    }
                     default:
                       break;
                   }
@@ -81,40 +96,63 @@ export function Authorization(props: AuthorizationProps) {
             </div>
 
             <button className="btn auth__button auth__button--register" onClick={() => {
-              props.socket.sendState({
-                type: 'user',
-                data: {
-                  type: 'register',
+              if (authUser.length >= 2 && userPassword.length >= 8) {
+                props.socket.sendState({
+                  type: 'user',
                   data: {
-                    name: authUser,
-                    password: userPassword
+                    type: 'register',
+                    data: {
+                      name: authUser,
+                      password: userPassword
+                    }
+                  },
+                }).then(res => {
+                  console.log(res);
+                  switch (res.status) {
+                    case 'Try to login': {
+                      props.setAuthError('');
+                      const status = res.status;
+                      requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                          props.setAuthError(status);
+                        })
+                      })
+                      break;
+                    }
+                    case 'registered':
+                      const newUser = {
+                        id: res.id,
+                        userName: res.userName,
+                        chips: res.chips,
+                        lastBonusTime: res.lastBonusTime + Date.now(),
+                        avatarUrl: res.avatarUrl
+                      };
+                      // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(newUser));
+                      props.setUser(newUser);              
+                      props.setActivePage();
+                    break;
+                    default:
+                      break;
                   }
-                },
-              }).then(res => {
-                console.log(res);
-                switch (res.status) {
-                  case 'Try to login':
-                    props.setAuthError(res.status);
-                    break;
-                  case 'registered':
-                    const newUser = {
-                      id: res.id,
-                      userName: res.userName,
-                      chips: res.chips,
-                      lastBonusTime: res.lastBonusTime + Date.now(),
-                      avatarUrl: res.avatarUrl
-                    };
-                    // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(newUser));
-                    props.setUser(newUser);              
-                    props.setActivePage();
-                  break;
-                  default:
-                    break;
-                }
-              })
-            }}>Register</button>
+                })
+              } else if (!authUser || !userPassword) {
+                props.setAuthError('');
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    props.setAuthError('Enter name and password');
+                  })
+                })
+              } else if (authUser.length < 2 || userPassword.length < 8) {
+                props.setAuthError('');
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    props.setAuthError('Name or password is too short(minimum 2 characters for name and 8 for password)');
+                  })
+                })
+              }
+            }}>Sign Up</button>
 
-           <div className={`auth__error-message ${props.authError ? 'show-error-message' : ''}`}>{props.authError}</div>
+           {props.authError && <div className={`auth__error-message show-error-message`}>{props.authError}</div>}
 
             <button className="btn auth__button auth__button--guest" onClick={() => {
               props.setGuest();
