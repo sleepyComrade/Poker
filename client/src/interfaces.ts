@@ -37,6 +37,7 @@ export interface IDataAsk {
   };
   blind: number;
   pot: number;
+  askId: number;
 }
 
 export interface IDataAskOther {

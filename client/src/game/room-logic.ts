@@ -4,6 +4,7 @@ import { originDeck } from './players-and-deck';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
 import { IMessage } from '../interfaces/IMessage';
+import { moveTime } from "../const";
 
 export class RoomLogic {
   condition: boolean;
@@ -152,7 +153,7 @@ export class RoomLogic {
                 data.actions.fold();
               }
               a = null;
-            }, 5000)
+            }, moveTime)
 
             const q: IActions = {}
             Object.keys(data.actions).forEach((actionKey) => {

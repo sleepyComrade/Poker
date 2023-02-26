@@ -5,7 +5,7 @@ import '../../style.css';
 import './player.css';
 import { ICard, IPlayer } from "../../interfaces";
 import { animate } from "../../game/animate";
-import { avatarUrl } from '../../const';
+import { avatarUrl, moveTime } from '../../const';
 
 type PlayerProps = {
   player: IPlayer;
@@ -15,11 +15,12 @@ type PlayerProps = {
   isWinner: boolean;
   winCards: Array<ICard> | null;
   isDealer: boolean;
+  askId: number | null;
 }
 
 const isDebug = false;
 
-export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards, isDealer }: PlayerProps) {
+export default function Player({ player, place, isCurrent, isOpened, isWinner, winCards, isDealer, askId }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -67,7 +68,8 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
           const delta = time - lastTime;
           // console.log(delta);
           setProgress(last => {
-            let next = last + delta / 50;
+            const tickTime = moveTime / 100;
+            let next = last + delta / tickTime;
             if (next > 100) {
               next = 100;
               setTimerAnimation(false);

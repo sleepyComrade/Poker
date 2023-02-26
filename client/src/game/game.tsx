@@ -100,7 +100,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         </div>}
 
         <div className="game__center-container">       
-          <PlayerList players={_players} player={isClientOut ? null : player} currentPlayer={players[currentPlayerIndex]}
+          <PlayerList askId={actions?.askId} players={_players} player={isClientOut ? null : player} currentPlayer={players[currentPlayerIndex]}
             isOpened={winInfo != null} winner={players[winInfo?.winIndex]} winCards={winInfo?.cards} dealer={players[dealerIndex]}
             onClick={(index) => {
               const maxPlayers = 9;

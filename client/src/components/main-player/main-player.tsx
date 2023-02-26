@@ -5,7 +5,7 @@ import '../../style.css';
 import './main-player.css';
 import img from '../../assets/222.png';
 import { ICard, IPlayer } from "../../interfaces";
-import { avatarUrl } from '../../const';
+import { avatarUrl, moveTime } from '../../const';
 
 type PlayerProps = {
   player: IPlayer;
@@ -14,9 +14,10 @@ type PlayerProps = {
   winCards: Array<ICard> | null;
   isDealer: boolean;
   place: number;
+  askId: number | null;
 }
 
-export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDealer, place }: PlayerProps) {
+export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDealer, place, askId }: PlayerProps) {
   const { name, isFold, chips, cards, bet } = player;
   const [timerAnimation, setTimerAnimation] = useState(false);
   const timer = useRef<HTMLDivElement>();
@@ -28,7 +29,7 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
     setProgress(0);
     setTimerAnimation(isCurrent);
     // } 
-  }, [isCurrent])
+  }, [isCurrent, askId])
 
   useEffect(() => {
     let pr = 0;
@@ -39,7 +40,8 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
           const delta = time - lastTime;
           // console.log(delta);
           setProgress(last => {
-            let next = last + delta / 50;
+            const tickTime = moveTime / 100;
+            let next = last + delta / tickTime;
             if (next > 100) {
               next = 100;
               setTimerAnimation(false);
