@@ -13,8 +13,8 @@ import * as url from "url"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
-const withDb = false
-const userService = withDb ? new UserServiceDb() : new UserService();
+const withDb = true
+const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 
 const server = http.createServer((req, res) => {

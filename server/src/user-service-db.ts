@@ -20,12 +20,9 @@ export class UserServiceDb {
 
   handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
     const authorizeUser = async (name: string, type: string, password: string) => {
-      // const reqeustedUser = this.users.filter(user => user.userData.userName === name)
       const requestedUserDB = await this.usersDb.find({userName: name}).toArray()
       switch (type) {
         case 'login':
-          // console.log('connections!!!!!!!!!!!!', this.connections)
-          
           if (requestedUserDB.length) {
             if (requestedUserDB[0].password === password) {
               const [userDb] = requestedUserDB
@@ -122,16 +119,25 @@ export class UserServiceDb {
       }
     }
     if (data.type === 'bonus') {
-      if ((Date.now() - this.users[data.data.id].userData.lastBonusTime) >= this.bonusTime) {
-        this.users[data.data.id].userData.chips += 6000
-        this.users[data.data.id].userData.lastBonusTime = Date.now()
+      const userIndex = this.users.findIndex(user => user.userData.id === data.data.id)
+
+      if (userIndex < 0) {
+        return
+      }
+
+      console.log(Date.now() - this.users[userIndex].userData.lastBonusTime)
+
+      if ((Date.now() - this.users[userIndex].userData.lastBonusTime) >= this.bonusTime) {
+        this.users[userIndex].userData.chips += 6000
+        this.usersDb.updateOne({userName: this.users[userIndex].userData.userName}, {$set: {...this.users[userIndex].userData}})
+        this.users[userIndex].userData.lastBonusTime = Date.now()
         connection.sendUTF(JSON.stringify({
           type: 'privateMessage',
           requestId: id,
           data: {
             status: 'updated',
-            lastBonusTime: this.bonusTime - (Date.now() - this.users[data.data.id].userData.lastBonusTime),
-            chips: this.users[data.data.id].userData.chips
+            lastBonusTime: this.bonusTime - (Date.now() - this.users[userIndex].userData.lastBonusTime),
+            chips: this.users[userIndex].userData.chips
           }
         }))
         this.sendUpdatedUser(connection, data.data.id)
