@@ -126,7 +126,7 @@ export default function Player({ player, place, isCurrent, isOpened, isWinner, w
           <div className="player__timer">
             <div ref={timer} className='player__time' style={{ '--progress': progress }}>
               <div className='player__ava'>
-                {ava ? <img src={ava} /> : <span>{name.slice(0, 3)}</span>}
+                {ava ? <img className='player__ava-img' src={ava} /> : <span>{name.slice(0, 3)}</span>}
               </div>
             </div>
           </div>

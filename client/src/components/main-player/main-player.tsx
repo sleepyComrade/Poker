@@ -103,7 +103,7 @@ export default function MainPlayer({ player, isCurrent, isWinner, winCards, isDe
           }}>Start timer</button> */}
               <div ref={timer} className='main-player__time' style={{ '--progress': progress }}>
                 <div className='main-player__ava'>
-                  {ava ? <img src={ava} /> : <span>YOU</span>}
+                  {ava ? <img className="main-player__ava-img" src={ava} /> : <span>YOU</span>}
                 </div>
               </div>
             </div>

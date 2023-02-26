@@ -59,6 +59,11 @@
     width: 64px;
     height: 64px;
     border-radius: 100%;
+    overflow: hidden;
+}
+
+.player__ava-img {
+    width: 100%;
 }
 
 .player__time{

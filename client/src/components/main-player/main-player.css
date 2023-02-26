@@ -74,6 +74,11 @@
     width: 100px;
     height: 100px;
     border-radius: 100%;
+    overflow: hidden;
+}
+
+.main-player__ava-img {
+    width: 100%;
 }
 
 .main-player__time{
