@@ -27,10 +27,12 @@ export function App() {
   const [playerIndex, setPlayerIndex] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
   const [user, setUser] = useState<IUserData>(null);
-  const [isGuest, setIsGuest] = useState(false);
+  // const [isGuest, setIsGuest] = useState(true);
   const [authError, setAuthError] = useState('');
   const [isClientOut, setIsClientOut] = useState(false);
-  const [avatar, setAvatar] = useState<string | null>(null)
+  const [avatar, setAvatar] = useState<string | null>(null);
+
+  const isGuest = user === null;
 
   useEffect(() => {
     const socket = new Socket();
@@ -89,7 +91,9 @@ export function App() {
         <Lobby onUserUpdate={(user: IUserData) => {
           setUser(user);
         }} onLogOut={() => {
-          if (isGuest === false) {
+          console.log('User', user, isGuest);
+          
+          if (isGuest === true) {
             setActivePage('authorization');
           } else {
             socket.sendState({
@@ -99,9 +103,10 @@ export function App() {
                 data: {}
               },
             }).then(res => {
-              console.log(res);
+              console.log('!!!!sfdgs!!!', res);
               setActivePage('authorization');
-              setIsGuest(false);
+              // setIsGuest(true);
+              setUser(null);
             })
           }
         }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms} players={players} messages={messages} userName={userName} 
@@ -121,7 +126,7 @@ export function App() {
         }} setUser={(data: IUserData) => {
           setUser(data);
         }} setGuest={() => {
-          setIsGuest(true);
+          // setIsGuest(true);
           setActivePage('lobby');
         }} socket={socket} socketState={socketState} /> :
         <Poker onPlaceClick={(index: number) => {

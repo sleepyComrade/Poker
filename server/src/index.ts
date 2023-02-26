@@ -181,6 +181,10 @@ socket.on('request', (request) => {
         userService.handleMessage(connection, parsed.data, parsed.requestId);
       }
 
+      if (parsed.type === 'logout') {
+        userService.handleMessage(connection, parsed.data, parsed.requestId);
+      }
+
       if (parsed.type === "userAvatar") {
         const buffer = Buffer.from(parsed.data.img, "base64")
         fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userData.userName}.png`), buffer).then(() => {
