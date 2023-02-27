@@ -3,5 +3,7 @@ export const avatarUrl = 'http://localhost:4002/avatar/';
 export const socketUrl = 'ws://localhost:4002';
 // export const socketUrl = 'wss://rs-pocker-backend-production.up.railway.app';
 
+export const delayBetweenRounds = 6000;
+
 
 export const moveTime = 10000;

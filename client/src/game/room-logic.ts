@@ -4,7 +4,7 @@ import { originDeck } from './players-and-deck';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
 import { IMessage } from '../interfaces/IMessage';
-import { moveTime } from "../const";
+import { moveTime, delayBetweenRounds } from "../const";
 
 export class RoomLogic {
   condition: boolean;
@@ -252,7 +252,7 @@ export class RoomLogic {
               this.isStarted = false;
               this.game = null;
               this.startGame();
-            }, 3000);
+            }, delayBetweenRounds);
 
             break;
           }
