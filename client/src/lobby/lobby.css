@@ -49,7 +49,7 @@
 .lobby__center-container {
   width: 100%;
   position: relative;
-  top: -5%;
+  /* top: -5%; */
   margin: 0 auto;
 
   display: flex;
@@ -169,6 +169,34 @@
 .lobby__rooms-list {
   padding: 10px 15px;
   border-radius: 5px;
+
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Работает в Chrome, Opera и Safari */
+.lobby__rooms-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lobby__rooms-list::-webkit-scrollbar-track {
+  background: #737070;
+  border-radius: 10px;
+}
+
+.lobby__rooms-list::-webkit-scrollbar-thumb {
+  width: 6px;
+  height: 20%;
+  background: #0dce07;
+  border: 1px solid #737070;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Работает в Firefox */
+.lobby__rooms-list {
+  scrollbar-width: thin;
+  scrollbar-color: #0dce07  #737070;
 }
 
 .lobby__rooms-item {
@@ -217,6 +245,7 @@
   border-radius: 7px;
   box-shadow: 0px 0px 10px #f00;
   animation: user 1s;
+  z-index: 1000;
 }
 
 @keyframes user {
