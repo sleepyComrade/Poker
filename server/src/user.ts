@@ -1,5 +1,6 @@
 import { connection } from 'websocket';
 import { IUserData } from '../../interfaces/IUser';
+import { bonusTime } from '../../client/src/const';
 
 class UserData {
   chips: number
@@ -28,7 +29,7 @@ export class User {
   constructor(name: string, id: number, password: string, connection: connection, avatarUrl?: string, lastBonusTime?: number, chips?: number) {
     this.userData = new UserData(name, id, password, avatarUrl, lastBonusTime, chips)
     this.connection = connection;
-    this.bonusTime = 10000;
+    this.bonusTime = bonusTime;
   }
 
   private sendUpdate() {

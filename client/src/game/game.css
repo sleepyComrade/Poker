@@ -75,7 +75,6 @@
     width: 100%;
     position: relative;
     top: -5%;
-    /* border: 1px solid green; */
     margin: 0 auto;
 
     display: flex;
@@ -165,11 +164,21 @@
     border-radius: 7px;
 }
 
+.game__sound:focus,
+.game__sound:hover {
+    transform: scale(1.1);
+}
+
 .game__sound-off {
     background-color: #f00c0c;
     background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
     border-top: 1px solid #f00c0c;
     border-bottom: 1px solid #680202;
+}
+
+.game__sound-off:focus,
+.game__sound-off:hover {
+    transform: scale(1.1);
 }
 
 .game__room-name {
@@ -182,6 +191,10 @@
     align-items: center;
     height: 40px;
     font-size: 22px;
-    background: radial-gradient(#144508, #046415, #05360d);
+    /* background: radial-gradient(#144508, #046415, #05360d); */
+    /* font-size: 28px; */
+    /* background-color: #e75f04; */
     border-radius: 5px;
+    color: red;
+    font-weight: bold;
 }

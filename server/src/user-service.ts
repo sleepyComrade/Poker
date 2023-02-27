@@ -1,5 +1,6 @@
 import { connection } from "websocket";
 import { User } from './user';
+import { bonusTime } from '../../client/src/const';
 
 export class UserService {
   users: User[];
@@ -7,7 +8,7 @@ export class UserService {
   connections: Map<connection, User>;
   constructor() {
     this.users = [];
-    this.bonusTime = 10000;
+    this.bonusTime = bonusTime;
     this.connections = new Map();
   }
 

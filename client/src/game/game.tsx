@@ -73,7 +73,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         }}>Sound {!mute ? 'On' : 'Off'}</button>
       </div>
 
-      <div className="game__room-name" style={{color: 'white'}}>
+      <div className="game__room-name">
         <span>Room: {currentRoom ? currentRoom : 'Local room'}</span>
       </div>
 
