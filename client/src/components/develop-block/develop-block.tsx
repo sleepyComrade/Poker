@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import '../../style.css';
 import './develop-block.css';
-import githubProfileIcon from '../../assets/github.svg';
 
 export default function DevelopBlock() {
   const [openDev, setOpenDev] = useState(false);

@@ -30,10 +30,27 @@
   background: linear-gradient(to bottom, #265bec 0%, #110268 100%);
   border-bottom: 1px solid #110268;
 }
-/* 
-.develop-block__btn:hover {
-  transform: scale(1.1);
-} */
+
+.develop-block__btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 50%;
+  opacity: 0;  
+  outline: 3px dashed rgba(255,255,255,0.8);
+  outline-offset: 15px;
+}
+
+.develop-block__btn:hover::after {
+  opacity: 1;
+  animation: rotating 10s linear infinite;
+  transition: all 0.5s ease;
+}
+
 
 .develop-block__links {
   display: flex;

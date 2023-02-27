@@ -43,3 +43,12 @@ body{
     transform: translate(100%, -25%) rotate(10deg);
   }
 }
+
+@keyframes rotating {
+  0% {
+    transform: scale(0.92) rotate(0deg);
+  }
+  100% {
+    transform: scale(0.92) rotate(360deg);
+  }
+}
