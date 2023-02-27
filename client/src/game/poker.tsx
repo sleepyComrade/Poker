@@ -8,6 +8,7 @@ import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from "./player-client";
 import { IMessage } from "../interfaces/IMessage";
+import { sounds } from "./sounds";
 
 interface IProps {
   name: string;
@@ -112,6 +113,9 @@ export function Poker(props: IProps) {
             const data: IDataState = message.data;
             setPlayers(data.players);
             setPot(data.pot);
+            // if (data.tableCards > tableCards) {
+            //   sounds.card();
+            // }
             setTableCards(data.tableCards);
             if (data.move == 'start') {
               setWinInfo(null);
