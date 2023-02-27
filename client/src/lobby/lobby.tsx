@@ -12,6 +12,7 @@ import '../style.css';
 import './lobby.css';
 import { IPlayer } from "../interfaces";
 import { avatarUrl } from '../const';
+import DevelopBlock from '../components/develop-block/develop-block';
 
 type LobbyProps = {
   socket: Socket;
@@ -238,8 +239,10 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
               }}> Send </button>
             </div> */}
           </div>}
-        </div>
+        </div>      
       </div>
+
+      <DevelopBlock />
     </div>
   )
 }
