@@ -18,7 +18,7 @@ export class UserServiceDb {
     this.connections = new Map()
   }
 
-  handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
+  async handleMessage(connection: connection, data: { type: string, data: any }, id: string) {
     const authorizeUser = async (name: string, type: string, password: string) => {
       const requestedUserDB = await this.usersDb.find({userName: name}).toArray()
       switch (type) {
@@ -26,15 +26,18 @@ export class UserServiceDb {
           if (requestedUserDB.length) {
             if (requestedUserDB[0].password === password) {
               const [userDb] = requestedUserDB
+              console.log("!!!!!!!!!!!!!!!", userDb)
               const user = new User(userDb.userName, userDb.id, userDb.password, connection, userDb.avatarUrl, userDb.lastBonusTime, userDb.chips)
+              console.log("qweqweqwe", this.bonusTime - (userDb.lastBonusTime - Date.now()))
 
               user.onUpdate = (newData) => {
                 console.log("on update", newData)
-                this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
+                this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...user.userData}}).then(res => {
                   this.usersDb.find().toArray().then(console.log)
                 })
               }
 
+              console.log(user.userData, "<= user data")
               this.users.push(user)
               this.connections.set(connection, user)
               connection.sendUTF(JSON.stringify({
@@ -45,9 +48,11 @@ export class UserServiceDb {
                   id: user.userData.id, 
                   userName: user.userData.userName,
                   chips: user.userData.chips,
-                  lastBonusTime: user.userData.lastBonusTime,
+                  lastBonusTime: this.bonusTime - (Date.now() - user.userData.lastBonusTime),
                 }
               }))
+              console.log("bonus time date now user userData lastbounsTime", this.bonusTime, Date.now(), user.userData.lastBonusTime)
+              console.log(Date.now() - user.userData.lastBonusTime)
               this.sendUpdatedUser(connection, user.userData.id)
             } else {
               connection.sendUTF(JSON.stringify({
@@ -85,7 +90,7 @@ export class UserServiceDb {
             })
             user.onUpdate = (newData) => {
               console.log("on update", newData)
-              this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...newData}}).then(res => {
+              this.usersDb.updateOne({userName: user.userData.userName}, {$set: {...user.userData}}).then(res => {
                 this.usersDb.find().toArray().then(console.log)
               })
             }
@@ -125,12 +130,10 @@ export class UserServiceDb {
         return
       }
 
-      console.log(Date.now() - this.users[userIndex].userData.lastBonusTime)
-
       if ((Date.now() - this.users[userIndex].userData.lastBonusTime) >= this.bonusTime) {
         this.users[userIndex].userData.chips += 6000
         this.users[userIndex].userData.lastBonusTime = Date.now()
-        this.usersDb.updateOne({userName: this.users[userIndex].userData.userName}, {$set: {...this.users[userIndex].userData}})
+        await this.usersDb.updateOne({userName: this.users[userIndex].userData.userName}, {$set: {...this.users[userIndex].userData}})
         connection.sendUTF(JSON.stringify({
           type: 'privateMessage',
           requestId: id,
@@ -167,12 +170,13 @@ export class UserServiceDb {
     const data = await this.getUserData(id)
     connection.sendUTF(JSON.stringify({
       type: 'userUpdate',
+      q: "true",
       data,
     }))
   }
 
   async sendPrivateUpdatedUser(connection: connection, id: number, requestId: number) {
-    const data = await this.getUserData(id)
+    const data = this.getUserData(id)
     connection.sendUTF(JSON.stringify({
       type: 'privateMessage',
       requestId: requestId,
@@ -180,8 +184,8 @@ export class UserServiceDb {
     }))
   }
 
-  async getUserData(id: number) {
-    const [userData] = await this.usersDb.find({id}).toArray()
+  getUserData(id: number) {
+    const {userData} = this.users.find(user => user.userData.id === id)
 
     if (!userData) {
       return

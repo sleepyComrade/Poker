@@ -11,7 +11,7 @@ class UserData {
   
   constructor(userName: string, id: number, password: string, avatarUrl: string, lastBonusTime?: number, chips?: number) {
     this.userName = userName
-    this.lastBonusTime = Date.now() || lastBonusTime;
+    this.lastBonusTime = lastBonusTime || Date.now();
     this.id = id
     this.password = password
     this.avatarUrl = avatarUrl || "https://ps.w.org/primary-cat/assets/icon-256x256.jpg?rev=2450877?q=1677317775205" 

@@ -14,7 +14,7 @@ import {exists} from "./exists"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
-const withDb = false
+const withDb = true
 const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 
