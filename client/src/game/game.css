@@ -128,7 +128,7 @@
     width: 280px;
     padding: 6px 10px;
     text-align: center;
-    background-color: #e75f04;
+    background: radial-gradient(#144508, #046415, #05360d);
     border-radius: 7px;
     color: #fff;
     font-size: 20px;
@@ -166,8 +166,10 @@
 }
 
 .game__sound-off {
-    background-color: #e75f04;
-    background: linear-gradient(to bottom, #e75f04 0%, #b32d04 100%);
+    background-color: #f00c0c;
+    background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
+    border-top: 1px solid #f00c0c;
+    border-bottom: 1px solid #680202;
 }
 
 .game__room-name {
@@ -175,11 +177,11 @@
     top: 90px;
     left: 20px;
     display: flex;
-    padding: 0 5px;
+    padding: 0 10px;
     justify-content: center;
     align-items: center;
     height: 40px;
     font-size: 22px;
-    background-color: #e75f04;
+    background: radial-gradient(#144508, #046415, #05360d);
     border-radius: 5px;
 }

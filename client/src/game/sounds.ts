@@ -1,5 +1,7 @@
 import card from "../assets/sounds/card.mp3";
 import chips from "../assets/sounds/chips.mp3";
+import chips1 from "../assets/sounds/chips1.mp3";
+import chips2 from "../assets/sounds/chips2.mp3";
 import { Signal } from "../common/signal";
 
 class Sounds {
@@ -34,7 +36,8 @@ class Sounds {
   }
 
   chips() {
-    this.play(chips);
+    const sounds = [chips, chips1, chips2];
+    this.play(sounds[Math.floor(Math.random() * sounds.length)]);
   }
 }
 

@@ -67,7 +67,7 @@ function login(props: AuthorizationProps, name: string, password: string) {
 }
 
 function signup(props: AuthorizationProps, name: string, password: string) {
-  if (name.length >= 2 && password.length >= 8) {
+  if (name && password) {
     props.socket.sendState({
       type: 'user',
       data: {
@@ -106,18 +106,11 @@ function signup(props: AuthorizationProps, name: string, password: string) {
           break;
       }
     })
-  } else if (!name || !password) {
+  } else {
     props.setAuthError('');
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         props.setAuthError('Enter name and password');
-      })
-    })
-  } else if (name.length < 2 || password.length < 8) {
-    props.setAuthError('');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        props.setAuthError('Name or password is too short(minimum 2 characters for name and 8 for password)');
       })
     })
   }
