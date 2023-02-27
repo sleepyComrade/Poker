@@ -1,6 +1,7 @@
 import { connection } from "websocket"
 import * as mongodb from "mongodb"
 import { User } from './user'
+import { bonusTime } from '../../client/src/const';
 
 export class UserServiceDb {
   users: User[]
@@ -16,7 +17,7 @@ export class UserServiceDb {
     this.usersDb = client.db("mongo").collection("users")
     this.usersDb.find({}).toArray().then((q) => console.log("users (not error)", q)).catch(e => console.log("error", e))
     this.users = []
-    this.bonusTime = 10000
+    this.bonusTime = bonusTime
     this.connections = new Map()
   }
 
