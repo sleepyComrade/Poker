@@ -85,7 +85,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
             <div className="user-info__picture" onClick={() => {
               setUserEditMode(true)
             }}>
-              {ava && <img className="user-info__img" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" />}
+              {ava && <img className="user-info__img" src={`${ava}`} width="100" height="100" alt="avatar" />}
             </div>
             {/* <img className="user-info__picture" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
               setUserEditMode(true)

@@ -9,8 +9,8 @@ export class UserServiceDb {
   usersDb: mongodb.Collection<mongodb.Document>
   
   constructor() {
-    const client = new mongodb.MongoClient("mongodb://127.0.0.1")
-    // const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority")
+    // const client = new mongodb.MongoClient("mongodb://127.0.0.1")
+    const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority")
     this.usersDb = client.db("mongo").collection("users")
     this.usersDb.find({}).toArray().then(console.log)
     this.users = []
