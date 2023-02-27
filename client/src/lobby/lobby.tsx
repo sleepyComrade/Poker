@@ -37,7 +37,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
   const [ava, setAva] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${avatarUrl}${user.userName}`).then(res => {
+    fetch(`${avatarUrl}${user?.userName}`).then(res => {
       if(res.status == 200) {
         return res.blob();
       } else {
@@ -55,7 +55,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
     return () => {
       if(ava) URL.revokeObjectURL(ava);
     }
-  }, [user.userName, user.avatarUrl]);
+  }, [user?.userName, user?.avatarUrl]);
 
   return (
     <div className="lobby">
