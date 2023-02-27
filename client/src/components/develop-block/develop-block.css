@@ -1,0 +1,126 @@
+.develop-block {  
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+
+.develop-block__wrapper {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.develop-block__btn {
+  display: block;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  font-size: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  color: #fff;
+  transition: all 0.3s ease;
+
+  border-top: 1px solid #265bec;
+  background-color: #265bec;
+  background: linear-gradient(to bottom, #265bec 0%, #110268 100%);
+  border-bottom: 1px solid #110268;
+}
+
+.develop-block__btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 50%;
+  opacity: 0;  
+  outline: 3px dashed rgba(255,255,255,0.8);
+  outline-offset: 15px;
+}
+
+.develop-block__btn:hover::after {
+  opacity: 1;
+  animation: rotating 10s linear infinite;
+  transition: all 0.5s ease;
+}
+
+
+.develop-block__links {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  transition: 0.5s;
+  transform-origin: right center;
+  transform: scaleX(0) translateX(20%);
+  opacity: 0;
+}
+
+.develop-block__links--active {
+  transform: scaleX(1) translateX(0%);
+  opacity: 1;
+}
+
+.develop-block__link {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  margin-right: 25px;
+  background-image: url('../../assets/github.svg');
+  background-size: 50px 50px;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: all 0.3s ease;
+}
+
+.develop-block__link:focus,
+.develop-block__link:hover {
+  background-image: url('../../assets/github-hover.svg');
+  transform: scale(1.1);
+}
+
+.develop-block__link::before {  
+  position: absolute;
+  top: -30px;
+  width: 130px;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.develop-block__link--sleepyComrade::before {
+  content: 'sleepyComrade';
+  left: -37px;
+  opacity: 0;
+}
+
+.develop-block__link--ramitsan::before {
+  content: 'Ramitsan';
+  left: -40px;
+  opacity: 0;
+}
+
+.develop-block__link--max-romanov::before {
+  content: 'max-romanov';
+  left: -46px;
+  opacity: 0;
+}
+
+.develop-block__link--sleepyComrade:hover::before,
+.develop-block__link--ramitsan:hover::before,
+.develop-block__link--max-romanov:hover::before {
+  opacity: 1;
+}

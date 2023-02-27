@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.players {
+  display: flex;
+  gap: 20px;
+}
+
+body{
+  --player-width: 180px;
+  --card-width: 75px;
+}
+
+.btn {
+  border: 1px solid transparent;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+
+@keyframes light {
+  0% {
+    transform: translate(-100%, -25%) rotate(10deg);
+  }
+  10% {
+    transform: translate(100%, -25%) rotate(10deg);
+  }
+  100% {
+    transform: translate(100%, -25%) rotate(10deg);
+  }
+}
+
+@keyframes rotating {
+  0% {
+    transform: scale(0.92) rotate(0deg);
+  }
+  100% {
+    transform: scale(0.92) rotate(360deg);
+  }
+}

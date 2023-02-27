@@ -1,0 +1,41 @@
+.timer {
+  text-align: center;
+}
+
+.timer__bonus-amount span {
+  position: relative;
+  color: #f00;
+}
+
+.timer__bonus-amount span::after {
+  position: absolute;
+  content: "";
+  top: -5px;
+  left: 47px;
+  width: 30px;
+  height: 30px;
+  background-image: url("../../assets//chip.png");
+  background-size: 30px 30px;
+  background-repeat: no-repeat;
+}
+
+.timer__button {
+  min-width: 150px;
+  width: 190px;
+  height: 45px;
+  margin: 15px;
+  padding: 10px 5px;
+  font-size: 20px;
+  color: #fff;
+  transition: all 0.3s ease;
+  border-radius: 7px;
+ 
+  background-color: #f00c0c;
+  background: linear-gradient(to bottom, #f00c0c 0%, #680202 100%);
+  border-bottom: 1px solid #680202;
+}
+
+.timer__button:focus,
+.timer__button:hover {
+  transform: scale(1.1);
+}
