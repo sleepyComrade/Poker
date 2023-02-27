@@ -129,8 +129,8 @@ export class UserServiceDb {
 
       if ((Date.now() - this.users[userIndex].userData.lastBonusTime) >= this.bonusTime) {
         this.users[userIndex].userData.chips += 6000
-        this.usersDb.updateOne({userName: this.users[userIndex].userData.userName}, {$set: {...this.users[userIndex].userData}})
         this.users[userIndex].userData.lastBonusTime = Date.now()
+        this.usersDb.updateOne({userName: this.users[userIndex].userData.userName}, {$set: {...this.users[userIndex].userData}})
         connection.sendUTF(JSON.stringify({
           type: 'privateMessage',
           requestId: id,
