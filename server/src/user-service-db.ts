@@ -10,9 +10,11 @@ export class UserServiceDb {
   
   constructor() {
     // const client = new mongodb.MongoClient("mongodb://127.0.0.1")
-    const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority")
+    const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority", {
+      serverApi: mongodb.ServerApiVersion.v1
+    })
     this.usersDb = client.db("mongo").collection("users")
-    this.usersDb.find({}).toArray().then(console.log)
+    this.usersDb.find({}).toArray().then((q) => console.log("users (not error)", q)).catch(e => console.log("error", e))
     this.users = []
     this.bonusTime = 10000
     this.connections = new Map()
@@ -154,9 +156,9 @@ export class UserServiceDb {
         }))
       }
     } else {
-      if (data.data.name.includes(" ") || data.data.name.match(/[a-z][A-Z]/)) {
-        return
-      }
+      // if (data.data.name.includes(" ") || data.data.name.match(/[a-z][A-Z]/)) {
+      //   return
+      // }
       authorizeUser(data.data.name, data.type, data.data.password)
     }
   }

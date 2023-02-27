@@ -26,10 +26,9 @@ exists(path.join(__dirname, "public")).then(q => {
     return
   }
 
-  fs.promises.mkdir(path.join(__dirname, "public")).then(console.log)
+  fs.promises.mkdir(path.join(__dirname, "public"))
 })
 
-  fs.promises.readdir(path.join(__dirname)).then(ls => console.log(ls))
 const server = http.createServer((req, res) => {
 
   if (req.url.startsWith("/avatar")) {
