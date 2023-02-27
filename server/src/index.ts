@@ -10,6 +10,7 @@ import {createIdGenerator} from "../../client/src/components/id-generator"
 import * as path from "path"
 import * as fs from "fs"
 import * as url from "url"
+import {exists} from "./exists"
 
 const WebSocketServer = webSocket.server
 const port = process.env.PORT || 4002
@@ -17,12 +18,24 @@ const withDb = false
 const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 
+
+exists(path.join(__dirname, "public")).then(q => {
+  console.log("dirsffa fwevfwfcercfwe 213123123", q)
+
+  if (q) {
+    return
+  }
+
+  fs.promises.mkdir(path.join(__dirname, "public")).then(console.log)
+})
+
+  fs.promises.readdir(path.join(__dirname)).then(ls => console.log(ls))
 const server = http.createServer((req, res) => {
 
   if (req.url.startsWith("/avatar")) {
     const { pathname } = url.parse(req.url)
     const avatar = pathname.slice(8)
-    fs.promises.readdir(path.join(__dirname, "../", "public")).then(ls => {
+    fs.promises.readdir(path.join(__dirname, "public")).then(ls => {
       console.log(ls)
       if (!ls.includes(avatar + ".png")) {
         res.writeHead(404, {
@@ -34,7 +47,7 @@ const server = http.createServer((req, res) => {
         return
       }
 
-      const stream = fs.createReadStream(path.join(__dirname, "../", "public", `${avatar}.png`))
+      const stream = fs.createReadStream(path.join(__dirname, "public", `${avatar}.png`))
 
       res.writeHead(200, {
         'Content-Type': 'image/png',
@@ -203,7 +216,7 @@ socket.on('request', (request) => {
 
       if (parsed.type === "userAvatar") {
         const buffer = Buffer.from(parsed.data.img, "base64")
-        fs.promises.writeFile(path.join(__dirname, "../", "public", `${currentUser.userData.userName}.png`), buffer).then(() => {
+        fs.promises.writeFile(path.join(__dirname, "public", `${currentUser.userData.userName}.png`), buffer).then(() => {
           currentUser.changeAvatar(`http://localhost:4002/avatar/${currentUser.userData.userName}`)
         })
       }
