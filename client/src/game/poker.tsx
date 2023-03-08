@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { IPlayer, ICard, IActions, IGameMessage, IDataAsk, IDataState, IDataWinner, IDataServer, IDataAskOther } from '../interfaces';
 import Game from '../game/game';
-import { testPlayers } from './players-and-deck';
 import { RoomLogic } from './room-logic';
 import '../style.css';
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
-import { PlayerClient } from "./player-client";
 import { IMessage } from "../interfaces/IMessage";
 import { sounds } from "./sounds";
 
@@ -30,7 +28,6 @@ export function Poker(props: IProps) {
   const [dealerIndex, setDealerIndex] = useState(0);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(null);
   const [winInfo, setWinInfo] = useState(null);
-  const [round, setRound] = useState(0);
   const [roomState, setRoomState] = useState(null);
   const myPlayerIndex = props.playerIndex;  
   const [actions, setActions] = useState<IDataAsk>(null);
@@ -126,12 +123,8 @@ export function Poker(props: IProps) {
             break;
           }
         case 'start': {
-          // setRound(last => last + 1);
-          //setTableCards([]);
-          //setPot(0);
+          console.warn('depricated start event');
           setWinInfo(null);
-          setPlayers(testPlayers());
-          setDealerIndex(last => (last + 1) % testPlayers().length);
           break;
         }
         case 'leave': {

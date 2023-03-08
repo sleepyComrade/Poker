@@ -64,10 +64,6 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
           onGameExit();
         }}>Exit</button>
 
-        {/* {(!isMultiPlayer && isClientOut) && <button className="btn game__button game__button--back-to-game" onClick={() => {
-          onBackToGame();
-        }}>Back to Game</button>} */}
-
         <button className={`btn game__button game__sound${mute ? ' game__sound-off' : ''}`} onClick={() => {
           sounds.enabled = !sounds.enabled;
         }}>Sound {!mute ? 'On' : 'Off'}</button>

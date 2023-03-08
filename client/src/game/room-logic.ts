@@ -1,6 +1,5 @@
 import { GameLogic } from './game-logic';
 import { IActions, IGameMessage, IDataAsk, IDataWinner } from '../interfaces';
-import { originDeck } from './players-and-deck';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
 import { IMessage } from '../interfaces/IMessage';
@@ -126,7 +125,7 @@ export class RoomLogic {
     this.handleMessage({ type: 'roomState', data: this.getCurrentState() })
     const game = new GameLogic(this.players.map(player => player ?
       new PlayerState(false, false, player.name, player.chips) :
-      new PlayerState(true, true, 'Empty', 0)), originDeck, this.dealerIndex);
+      new PlayerState(true, true, 'Empty', 0)), this.dealerIndex);
     this.game = game;
     game.onMessage = (message: IGameMessage<any>) => {
       console.log('Message: ', message);
