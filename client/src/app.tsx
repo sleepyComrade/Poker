@@ -85,31 +85,60 @@ export function App() {
     return () => socket.destroy();
   }, [])
 
+  const logOut = () => {
+    console.log('User', user, isGuest);
+    
+    if (isGuest === true) {
+      setActivePage('authorization');
+    } else {
+      socket.sendState({
+        type: 'logout',
+        data: {
+          type: 'logout',
+          data: {}
+        },
+      }).then(res => {
+        console.log('!!!!sfdgs!!!', res);
+        setActivePage('authorization');
+        // setIsGuest(true);
+        setUser(null);
+      })
+    }
+  }
+
+  const enterPlace =  (index: number) => {
+    if (currentRoom) {
+      const res = socket.sendState({
+        type: 'poker',
+        roomName: currentRoom,
+        data: {
+          type: 'takeSit',
+          data: {
+            name: user.userName,
+            index
+          }
+        },
+        userName: user.userName,
+      })
+      res.then(data => {
+        if (data.success) {
+          setPlayerIndex(index);
+          setIsClientOut(false);            
+        }
+      })
+    } else {
+      roomLogic.takeSit(player.name, index);
+      setPlayerIndex(index);
+      setIsClientOut(false);
+    }
+  }
+
   return (
     <>
       {activePage === 'lobby' ?  
         <Lobby onUserUpdate={(user: IUserData) => {
           setUser(user);
-        }} onLogOut={() => {
-          console.log('User', user, isGuest);
-          
-          if (isGuest === true) {
-            setActivePage('authorization');
-          } else {
-            socket.sendState({
-              type: 'logout',
-              data: {
-                type: 'logout',
-                data: {}
-              },
-            }).then(res => {
-              console.log('!!!!sfdgs!!!', res);
-              setActivePage('authorization');
-              // setIsGuest(true);
-              setUser(null);
-            })
-          }
-        }} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms}  players={players} messages={messages} userName={userName} 
+        }} onLogOut={logOut} isGuest={isGuest} user={user} roomLogic={roomLogic} socket={socket} rooms={rooms}  players={players} messages={messages} userName={userName} 
           onRoomEnter={(room, playerId, player) => {
             setCurrentRoom(room);
             setActivePage('poker');
@@ -129,32 +158,7 @@ export function App() {
           // setIsGuest(true);
           setActivePage('lobby');
         }} socket={socket} socketState={socketState} /> :
-        <Poker onPlaceClick={(index: number) => {
-          if (currentRoom) {
-            const res = socket.sendState({
-              type: 'poker',
-              roomName: currentRoom,
-              data: {
-                type: 'takeSit',
-                data: {
-                  name: user.userName,
-                  index
-                }
-              },
-              userName: user.userName,
-            })
-            res.then(data => {
-              if (data.success) {
-                setPlayerIndex(index);
-                setIsClientOut(false);            
-              }
-            })
-          } else {
-            roomLogic.takeSit(player.name, index);
-            setPlayerIndex(index);
-            setIsClientOut(false);
-          }
-        }} onStateChange={(bool: boolean)=> {
+        <Poker onPlaceClick={enterPlace} onStateChange={(bool: boolean)=> {
           setIsClientOut(bool);
         }} isClientOut={isClientOut} player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => {
           player.leave().then(() => {
