@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CreateRoom } from './../CreateRoom/CreateRoom';
 import Socket from './../components/socket';
-import { IMessage } from '../interfaces/IMessage';
 import { RoomLogic } from "../game/room-logic";
 import { Player } from '../game/players';
 import { PlayerClient } from "../game/player-client";
@@ -12,6 +11,7 @@ import '../style.css';
 import './lobby.css';
 import { avatarUrl } from '../const';
 import DevelopBlock from '../components/develop-block/develop-block';
+import { IMessage } from "../../../interfaces/IMessage";
 
 type LobbyProps = {
   socket: Socket;

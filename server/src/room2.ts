@@ -5,7 +5,6 @@ import { IActions, ICard, IPlayer } from '../../client/src/interfaces'
 import { connection } from "websocket"
 import { RoomLogic } from '../../client/src/game/room-logic';
 import { Player, BotPlayer } from '../../client/src/game/players';
-import { IMessage } from '../../client/src/interfaces/IMessage';
 import { User } from './user';
 
 export class Room {

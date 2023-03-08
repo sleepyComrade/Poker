@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Socket from './components/socket';
 import { Poker } from './game/poker';
-import { IMessage } from './interfaces/IMessage';
 import { RoomLogic } from './game/room-logic' ;
 import Lobby from './lobby/lobby';
 import { Player } from './game/players';
 import { IUserData } from '../../interfaces/IUser';
 import { Authorization } from './authorization/authorization';
+import { IMessage } from '../../interfaces/IMessage';
 
 const routes = {
   lobby: Lobby,
@@ -27,10 +27,8 @@ export function App() {
   const [playerIndex, setPlayerIndex] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
   const [user, setUser] = useState<IUserData>(null);
-  // const [isGuest, setIsGuest] = useState(true);
   const [authError, setAuthError] = useState('');
   const [isClientOut, setIsClientOut] = useState(false);
-  const [avatar, setAvatar] = useState<string | null>(null);
 
   const isGuest = user === null;
 

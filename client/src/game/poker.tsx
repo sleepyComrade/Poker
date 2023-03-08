@@ -5,8 +5,8 @@ import { RoomLogic } from './room-logic';
 import '../style.css';
 import Socket from "../components/socket";
 import { Player, BotPlayer, PlayerState } from './players';
-import { IMessage } from "../interfaces/IMessage";
 import { sounds } from "./sounds";
+import { IMessage } from "../../../interfaces/IMessage";
 
 interface IProps {
   name: string;

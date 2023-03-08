@@ -1,8 +1,8 @@
-import { IMessage } from '../interfaces/IMessage'
 import { Signal } from "../common/signal"
 import { IUserData } from '../../../interfaces/IUser'
 import { createIdGenerator } from './id-generator';
 import { socketUrl } from "../const";
+import { IMessage } from "../../../interfaces/IMessage";
 
 export default class Socket {
   webSocket: WebSocket

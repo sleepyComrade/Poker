@@ -2,8 +2,8 @@ import { GameLogic } from './game-logic';
 import { IActions, IGameMessage, IDataAsk, IDataWinner } from '../interfaces';
 import { Player, BotPlayer, PlayerState } from './players';
 import { PlayerClient } from './player-client';
-import { IMessage } from '../interfaces/IMessage';
 import { moveTime, delayBetweenRounds } from "../const";
+import { IMessage } from '../../../interfaces/IMessage';
 
 export class RoomLogic {
   condition: boolean;
@@ -15,7 +15,6 @@ export class RoomLogic {
   inactivePlayers: Player[];
   lastState: IGameMessage<any>;
   onPlayerLeave: () => void;
-  // expectants: Player | BotPlayer[];
   playersToLeave: BotPlayer[];
   botNames: string[];
   game: GameLogic;
@@ -29,7 +28,6 @@ export class RoomLogic {
     this.players = Array(9).fill(null);
     this.inactivePlayers = [];
     this.playersToLeave = [];
-    // this.expectants = [];
     this.isStarted = false;
     this.currentPlayerIndex = 0;
     this.dealerIndex = 0;
@@ -73,9 +71,7 @@ export class RoomLogic {
 
   join(player: Player | BotPlayer) {
     player.currentRoom = this;
-    //if (this.lastState) {
-
-    //}
+ 
     const emptyIndex = this.players.indexOf(null);
     if (emptyIndex < 0) {
       console.log('Room is full');
@@ -185,9 +181,6 @@ export class RoomLogic {
             this.inactivePlayers.forEach(player => {
               player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex } });
             })
-            // if (this.expectant) {
-            //   this.expectant.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex }});
-            // }
             this.onMessage?.(message);
             break;
           }
@@ -238,13 +231,7 @@ export class RoomLogic {
                   }
                 }
               })
-
-
-              // if (this.expectant) {
-              //   this.players[0] = this.expectant;
-              //   this.players[0].handleMessage({type: 'get back', data: {}});
-              //   this.expectant = null;
-              // }              
+             
               if (this.players.filter(player => player).length >= 1) {
                 this.dealerIndex = this.setDealerIndex((this.dealerIndex + 1) % this.players.length);
               }
@@ -272,9 +259,6 @@ export class RoomLogic {
   handleMessage(message: IGameMessage<any>) {
     this.players.forEach(player => player?.handleMessage(message));
     this.inactivePlayers.forEach(player => player?.handleMessage(message));
-    // if (this.expectant) {
-    //   this.expectant.handleMessage(message);
-    // }
   }
 
   setDealerIndex(curIndex: number) {

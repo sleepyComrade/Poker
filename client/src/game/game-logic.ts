@@ -36,7 +36,6 @@ export class GameLogic {
     this.currentRound = Round.Preflop;
     this.myPlayerIndex = 0;
 
-    // this.shuffleCards(this.deck);
     this.players.forEach(player => {
       if (!player.isAbsent) {
         player.cards.push(this.deck.pop());
@@ -55,15 +54,6 @@ export class GameLogic {
       this.sendState("start")
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot, askId: Date.now()}});
     }, 0);
-  }
-
-  private shuffleCards(deck: ICard[]) {
-    for (let i = deck.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * i);
-      let temp = deck[i];
-      deck[i] = deck[j];
-      deck[j] = temp;
-    }
   }
 
   private setBlinds(small: number, big: number) {

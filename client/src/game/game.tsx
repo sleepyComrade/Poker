@@ -6,10 +6,10 @@ import '../style.css';
 import './game.css';
 import { shift } from '../game/shift';
 import { IActions, ICard, IDataAsk, IDataWinner, IPlayer } from "../interfaces";
-import { IMessage } from "../interfaces/IMessage";
 import { Chat } from "../components/chat/chat";
 import { Player } from "./players";
 import { sounds } from "../game/sounds";
+import { IMessage } from "../../../interfaces/IMessage";
 
 type GameProps = {
   players: Array<IPlayer>;
