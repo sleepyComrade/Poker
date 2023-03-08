@@ -7,7 +7,7 @@ import { IMessage } from '../../../interfaces/IMessage';
 
 export class RoomLogic {
   condition: boolean;
-  onMessage: (message: IGameMessage<any>) => void;
+  // onMessage: (message: IGameMessage<any>) => void;
   players: (Player | BotPlayer | null)[];
   isStarted: boolean;
   currentPlayerIndex: number;
@@ -106,6 +106,111 @@ export class RoomLogic {
     // }
   }
 
+  private handleWinner(winData: IDataWinner) {
+
+    this.game.players.forEach((player, i) => {
+      if (!player.isAbsent) {
+        if (this.players[i]) {
+          this.players[i].chips = player.chips;
+        } else {
+          console.log('Player left');
+        }
+      }
+    })
+    if (winData.winners) {
+      winData.winners.forEach(winner => {
+        if (this.players[winner.winIndex]) {
+          this.players[winner.winIndex].chips += winner.count;
+        } else {
+          console.log('Winner left');
+        }
+      })
+    } else {
+      if (this.players[winData.winIndex]) {
+        this.players[winData.winIndex].chips += winData.count;
+      } else {
+        console.log('Winner left');
+      }
+    }
+
+    setTimeout(() => {
+      this.game.destroy();
+
+      this.playersToLeave.forEach(player => {
+        this.players.splice(this.players.indexOf(player), 1, null);
+      })
+      this.playersToLeave = [];
+
+      this.players.forEach((player, i) => {
+        if (player && ((player.chips < 100) || player.isOut)) {
+          const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
+          leftPlayer.handleMessage({ type: 'leave', data: {} });
+          if (leftPlayer instanceof Player) {
+            console.log("Moved to inactive");
+            this.inactivePlayers.push(leftPlayer);
+          }
+        }
+      })
+
+      if (this.players.filter(player => player).length >= 1) {
+        this.dealerIndex = this.setDealerIndex((this.dealerIndex + 1) % this.players.length);
+      }
+      this.isStarted = false;
+      this.game = null;
+      this.startGame();
+    }, delayBetweenRounds);
+  }
+
+  private handleAsk(data: IDataAsk) {
+    const currentPlayerIndex = data.playerId;
+    if (!this.players[currentPlayerIndex]) {
+      return
+    }
+    let a = setTimeout(() => {
+      if (data.actions.check) {
+        data.actions.check();
+      } else if (data.actions.fold) {
+        data.actions.fold();
+      }
+      a = null;
+    }, moveTime)
+
+    const q: IActions = {}
+    Object.keys(data.actions).forEach((_actionKey) => {
+      const actionKey = _actionKey as keyof IActions;
+      q[actionKey as keyof IActions] = (...args: any) => {
+        if (a === null) return;
+        clearTimeout(a);
+        a = null;
+        console.log("ChtoNibud", currentPlayerIndex);
+        if (this.players[currentPlayerIndex]) {
+          this.players[currentPlayerIndex].isOut = false;
+          (data.actions[actionKey] as (...args: any) => void)(...args);
+        }
+      }
+    })
+
+    const m = {
+      // ...message,
+      type: 'ask',
+      data: {
+        ...data,
+        actions: q
+      }
+    }
+
+    this.players[currentPlayerIndex].handleMessage(m);
+    this.players.forEach(player => {
+      if (player !== this.players[currentPlayerIndex]) {
+        player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex } });
+      }
+    });
+    this.inactivePlayers.forEach(player => {
+      player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex } });
+    })
+    // this.onMessage?.(message);
+  }
+
   startGame() {
     console.log('Players!!!!!!!', this.inactivePlayers);
 
@@ -131,120 +236,26 @@ export class RoomLogic {
             this.lastState = message;
             this.handleMessage(message);
             // this.currentPlayerIndex = message.data.currentPlayerIndex;
-            this.onMessage?.(message);
+            // this.onMessage?.(message);
             break;
           }
         case 'ask':
           {
             const data: IDataAsk = message.data;
-            const currentPlayerIndex = data.playerId;
-            if (!this.players[currentPlayerIndex]) {
-              return
-            }
-            let a = setTimeout(() => {
-              if (data.actions.check) {
-                data.actions.check();
-              } else if (data.actions.fold) {
-                data.actions.fold();
-              }
-              a = null;
-            }, moveTime)
-
-            const q: IActions = {}
-            Object.keys(data.actions).forEach((actionKey) => {
-              q[actionKey as keyof IActions] = (...args: any) => {
-                if (a === null) return;
-                clearTimeout(a);
-                a = null;
-                console.log("ChtoNibud", currentPlayerIndex);
-                if (this.players[currentPlayerIndex]) {
-                  this.players[currentPlayerIndex].isOut = false;
-                  message.data.actions[actionKey](...args);
-                }
-              }
-            })
-
-            const m = {
-              ...message,
-              data: {
-                ...message.data,
-                actions: q
-              }
-            }
-
-            this.players[currentPlayerIndex].handleMessage(m);
-            this.players.forEach(player => {
-              if (player !== this.players[currentPlayerIndex]) {
-                player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex } });
-              }
-            });
-            this.inactivePlayers.forEach(player => {
-              player?.handleMessage({ type: 'askOther', data: { playerId: currentPlayerIndex } });
-            })
-            this.onMessage?.(message);
+            this.handleAsk(data);
+           
             break;
           }
         case 'winner':
-          {
+          {            
             this.handleMessage(message);
             const winData: IDataWinner = message.data;
-            this.game.players.forEach((player, i) => {
-              if (!player.isAbsent) {
-                if (this.players[i]) {
-                  this.players[i].chips = player.chips;
-                } else {
-                  console.log('Player left');
-                }
-              }
-            })
-            if (winData.winners) {
-              winData.winners.forEach(winner => {
-                if (this.players[winner.winIndex]) {
-                  this.players[winner.winIndex].chips += winner.count;
-                } else {
-                  console.log('Winner left');
-                }
-              })
-            } else {
-              if (this.players[winData.winIndex]) {
-                this.players[winData.winIndex].chips += winData.count;
-              } else {
-                console.log('Winner left');
-              }
-            }
-
-            setTimeout(() => {
-              game.destroy();
-
-              this.playersToLeave.forEach(player => {
-                this.players.splice(this.players.indexOf(player), 1, null);
-              })
-              this.playersToLeave = [];
-
-              this.players.forEach((player, i) => {
-                if (player && ((player.chips < 100) || player.isOut)) {
-                  const leftPlayer = this.players.splice(this.players.indexOf(player), 1, null)[0];
-                  leftPlayer.handleMessage({ type: 'leave', data: {} });
-                  if (leftPlayer instanceof Player) {
-                    console.log("Moved to inactive");
-                    this.inactivePlayers.push(leftPlayer);
-                  }
-                }
-              })
-             
-              if (this.players.filter(player => player).length >= 1) {
-                this.dealerIndex = this.setDealerIndex((this.dealerIndex + 1) % this.players.length);
-              }
-              this.isStarted = false;
-              this.game = null;
-              this.startGame();
-            }, delayBetweenRounds);
-
+            this.handleWinner(winData);
             break;
           }
         case 'start': {
           this.handleMessage(message);
-          this.onMessage?.(message);
+          // this.onMessage?.(message);
         }
         case "chatMesage": {
 

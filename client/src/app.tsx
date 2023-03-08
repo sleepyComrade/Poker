@@ -60,9 +60,9 @@ export function App() {
     }
 
     const room = new RoomLogic();
-    room.onMessage = () => {
+    // room.onMessage = () => {
       
-    }
+    // }
     socket.onClose = () => {
       setSocket(null);
       setSocketState('closed');

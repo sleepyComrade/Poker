@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { IPlayer, ICard, IActions, IGameMessage, IDataAsk, IDataState, IDataWinner, IDataServer, IDataAskOther } from '../interfaces';
+import { IPlayer, ICard, IActions, IGameMessage, IDataAsk, IDataState, IDataWinner, IDataServer, IDataAskOther, IRoomState } from '../interfaces';
 import Game from '../game/game';
 import { RoomLogic } from './room-logic';
 import '../style.css';
@@ -65,39 +65,48 @@ export function Poker(props: IProps) {
     if (!props.player) {
       return () => { }
     }
+
+    const handleRoomState = (data: IRoomState) => {
+      if (!data.isStarted) {
+        console.log('Wait for players!!');
+      }
+      setRoomState(data);
+      if (data.gameState) {
+        if (data.gameState.tableCards) {
+          console.log('!!!!!!!!!!!!!!', data.gameState.tableCards);
+        }
+        setTableCards(data.gameState.tableCards);
+        setPlayers(data.gameState.players);
+        setPot(data.gameState.pot);
+      }
+    }
+
+    const handleState = (data: IDataState) => {
+      setPlayers(data.players);
+      setPot(data.pot);
+      // if (data.tableCards > tableCards) {
+      //   sounds.card();
+      // }
+      setTableCards(data.tableCards);
+      if (data.move == 'start') {
+        setWinInfo(null);
+        setTableCards([]);
+        setPot(0);
+      }
+      setDealerIndex(data.dealerIndex);
+    }
+
     props.player.onMessage = (message: IGameMessage<any>) => {
       console.log(message);
       switch (message.type) {
         case 'roomState': {
-          if (!message.data.isStarted) {
-            console.log('Wait for players!!');
-          }
-          setRoomState(message.data);
-          if (message.data.gameState) {
-            if (message.data.gameState.tableCards) {
-              console.log('!!!!!!!!!!!!!!', message.data.gameState.tableCards);
-            }
-            setTableCards(message.data.gameState.tableCards);
-            setPlayers(message.data.gameState.players);
-            setPot(message.data.gameState.pot);
-          }
+          handleRoomState(message.data)
           break;
         }
         case 'state':
           {
             const data: IDataState = message.data;
-            setPlayers(data.players);
-            setPot(data.pot);
-            // if (data.tableCards > tableCards) {
-            //   sounds.card();
-            // }
-            setTableCards(data.tableCards);
-            if (data.move == 'start') {
-              setWinInfo(null);
-              setTableCards([]);
-              setPot(0);
-            }
-            setDealerIndex(data.dealerIndex);
+            handleState(data);           
             break;
           }
         case 'ask':
