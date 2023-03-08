@@ -1,7 +1,7 @@
 import { IRoomServer } from './interfaces/IRoomServer'
 // import { Player } from './player'
 import { GameLogic } from '../../client/src/game/game-logic'
-import { IActions, ICard, IPlayer } from '../../client/src/interfaces'
+import { IActionRequest, IActions, ICard, IGameMessage, IPlayer, ITakeSitRequest } from '../../client/src/interfaces'
 import { connection } from "websocket"
 import { RoomLogic } from '../../client/src/game/room-logic';
 import { Player, BotPlayer } from '../../client/src/game/players';
@@ -34,50 +34,56 @@ export class Room {
     startGame(): void {
         throw new Error('Method not implemented.')
     }
-    handleMessage(currentUser: User, msg: any, reqId?: string) {
+
+    private createPlayer(currentUser: User) {
+        const player = new Player(currentUser.userData.userName);
+        player.onMessage = (playerMessage) => {
+            switch (playerMessage.type) {
+                case 'ask':
+                    this.lastActions = playerMessage.data.actions;
+                    this.lastPlayer = player;
+                    currentUser.connection.sendUTF(JSON.stringify({
+                        type: 'pocker',
+                        data: {
+                            ...playerMessage,
+                            data: {
+                                ...playerMessage.data,
+                                actions: Object.keys(playerMessage.data.actions)
+                            }
+                        }
+                    }));
+                    break;
+                case 'leave':
+                    currentUser.plusChips(player.chips);
+                    player.chips = 0;
+                    currentUser.connection.sendUTF(JSON.stringify({
+                        type: 'pocker',
+                        data: {
+                            ...playerMessage
+                        }
+                    }));
+                    break;
+
+                default:
+                    currentUser.connection.sendUTF(JSON.stringify({
+                        type: 'pocker',
+                        data: {
+                            ...playerMessage
+                        }
+                    }));
+                    break;
+            }
+        }
+        return player;
+    }
+
+    handleMessage(currentUser: User, msg: IGameMessage<any>, reqId?: string) {
         if (!currentUser) {
             return;
         }
         switch (msg.type) {
             case "join": {
-                const player = new Player(currentUser.userData.userName);
-                player.onMessage = (playerMessage) => {
-                    switch (playerMessage.type) {
-                        case 'ask':
-                            this.lastActions = playerMessage.data.actions;
-                            this.lastPlayer = player;
-                            currentUser.connection.sendUTF(JSON.stringify({
-                                type: 'pocker',
-                                data: {
-                                    ...playerMessage,
-                                    data: {
-                                        ...playerMessage.data,
-                                        actions: Object.keys(playerMessage.data.actions)
-                                    }
-                                }
-                            }));
-                            break;
-                        case 'leave':
-                            currentUser.plusChips(player.chips);
-                            player.chips = 0;
-                            currentUser.connection.sendUTF(JSON.stringify({
-                                type: 'pocker',
-                                data: {
-                                    ...playerMessage
-                                }
-                            }));
-                            break;
-
-                        default:
-                            currentUser.connection.sendUTF(JSON.stringify({
-                                type: 'pocker',
-                                data: {
-                                    ...playerMessage
-                                }
-                            }));
-                            break;
-                    }
-                }
+                const player = this.createPlayer(currentUser);
                 const playerIndex = this.roomLogic.join(player);
                 if (playerIndex !== 9) {
                     const isMinused = currentUser.minusChips(5000);
@@ -126,9 +132,10 @@ export class Room {
                 break;
             }
             case "move": {
+                const data: IActionRequest = msg.data;
                 const currentPlayer = this.players.get(currentUser.connection);
                 if (currentPlayer == this.lastPlayer) {
-                    this.lastActions[msg.data.action as keyof IActions](msg.data.count);
+                    this.lastActions[data.action](data.count);
                     // this.lastActions = null;
                     // this.lastPlayer = null;
                 } else {
@@ -180,7 +187,7 @@ export class Room {
                 //         }
                 //     }))
                 // })
-                this.roomLogic.handleChatMessage(msg.message)
+                this.roomLogic.handleChatMessage((msg as any).message)
                 break;
             }
             case "getChatHistory": {
@@ -196,9 +203,10 @@ export class Room {
               break;
             }
             case "takeSit": {
+                const data: ITakeSitRequest = msg.data;
                 const isMinused = currentUser.minusChips(5000);
                 if (isMinused) {
-                  this.roomLogic.takeSit(msg.data.name, msg.data.index);
+                  this.roomLogic.takeSit(data.name, data.index);
                   currentUser.connection.sendUTF(JSON.stringify({
                     type: 'privateMessage',
                     requestId: reqId,

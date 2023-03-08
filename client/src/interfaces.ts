@@ -79,6 +79,16 @@ export interface IActions {
   bet?: (count: number) => void; 
 }
 
+export interface IActionRequest {
+  action: keyof IActions;
+  count?: number;
+}
+
+export interface ITakeSitRequest {
+  index: number;
+  name: string;
+}
+
 export interface IBank {
   bank: number;
   players: IPlayer[];
@@ -100,3 +110,5 @@ export interface IRoomState {
   };
   isStarted: boolean;
 }
+
+
