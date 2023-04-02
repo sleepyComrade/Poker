@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
   const avatarPath = serverRoot + "/avatar";
   if (req.url.startsWith(avatarPath)) {
     const { pathname } = url.parse(req.url)
-    const avatar = pathname.slice(avatarPath.length)
+    const avatar = pathname.slice(avatarPath.length + 1)
     fs.promises.readdir(path.join(__dirname, "public")).then(ls => {
       console.log(ls)
       if (!ls.includes(avatar + ".png")) {
