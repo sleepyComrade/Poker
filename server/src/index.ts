@@ -18,7 +18,7 @@ const withDb = true
 const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
 // const serverRoot = ''; // local server
-const serverRoot = '/rest'; // wps server
+const serverRoot = '/'; // wps server
 
 exists(path.join(__dirname, "public")).then(q => {
   console.log("dirsffa fwevfwfcercfwe 213123123", q)
