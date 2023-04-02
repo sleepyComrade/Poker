@@ -13,11 +13,12 @@ import * as url from "url"
 import {exists} from "./exists"
 
 const WebSocketServer = webSocket.server
-const port = process.env.PORT || 4002
+const port = process.env.PORT || 4003
 const withDb = true
 const userService = withDb ? new UserServiceDb() : new UserService()
 const rooms: Record<string, Room> = {}
-
+// const serverRoot = ''; // local server
+const serverRoot = '/rest'; // wps server
 
 exists(path.join(__dirname, "public")).then(q => {
   console.log("dirsffa fwevfwfcercfwe 213123123", q)
@@ -30,10 +31,10 @@ exists(path.join(__dirname, "public")).then(q => {
 })
 
 const server = http.createServer((req, res) => {
-
-  if (req.url.startsWith("/avatar")) {
+  const avatarPath = serverRoot + "/avatar";
+  if (req.url.startsWith(avatarPath)) {
     const { pathname } = url.parse(req.url)
-    const avatar = pathname.slice(8)
+    const avatar = pathname.slice(avatarPath.length)
     fs.promises.readdir(path.join(__dirname, "public")).then(ls => {
       console.log(ls)
       if (!ls.includes(avatar + ".png")) {
