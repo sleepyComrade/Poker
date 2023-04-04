@@ -1,6 +1,6 @@
 import { Player } from './players';
 import Socket from "../components/socket";
-import { IGameMessage, IActions, IDataAsk } from '../interfaces';
+import { IGameMessage, IActions, IDataAsk, IActionRequest } from '../interfaces';
 
 export class PlayerClient extends Player{
   socket: Socket;
@@ -22,8 +22,8 @@ export class PlayerClient extends Player{
   handleMessage(message: IGameMessage<any>) {
     if (message.type === "ask") {
       console.log('Player message: ', message);
-      const data: { actions: string[], playerId: number } = message.data;
-      const getActions = (names: string[]) => {
+      const data: { actions: (keyof IActions)[], playerId: number } = message.data;
+      const getActions = (names: (keyof IActions)[]) => {
         const actions: IActions = {};
         names.forEach(name => {
           actions[name as keyof IActions] = (count?: number)=> action(name, count)
@@ -31,16 +31,17 @@ export class PlayerClient extends Player{
         return actions;
       }        
     
-      const action = (name: string, count?: number) => {
+      const action = (name: keyof IActions, count?: number) => {
+        const request: IActionRequest = {
+          action: name,
+          count: count
+        }
         this.socket.sendState({
           type: 'poker',
           roomName: this.currentRoomId,
           data:{
             type: 'move',
-            data:{
-              action: name,
-              count: count
-            }
+            data: request
           }
         })
       }

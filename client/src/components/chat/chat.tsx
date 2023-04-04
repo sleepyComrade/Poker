@@ -28,11 +28,7 @@ export function Chat(props: IProps) {
           setMessage("")
           props.onMessageCreate(message)
         }}></button>  
-      </div>
-
-
-     
-      
+      </div>      
     </div>
   )
 }

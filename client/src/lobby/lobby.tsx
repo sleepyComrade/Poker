@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CreateRoom } from './../CreateRoom/CreateRoom';
 import Socket from './../components/socket';
-import { IMessage } from '../interfaces/IMessage';
 import { RoomLogic } from "../game/room-logic";
 import { Player } from '../game/players';
 import { PlayerClient } from "../game/player-client";
@@ -10,9 +9,9 @@ import { Timer } from '../components/timer/timer';
 import UserEditPopup from '../components/user-edit-popup/user-edit-popup';
 import '../style.css';
 import './lobby.css';
-import { IPlayer } from "../interfaces";
 import { avatarUrl } from '../const';
 import DevelopBlock from '../components/develop-block/develop-block';
+import { IMessage } from "../../../interfaces/IMessage";
 
 type LobbyProps = {
   socket: Socket;
@@ -30,7 +29,6 @@ type LobbyProps = {
 }
 
 export default function Lobby({ socket, rooms, players, messages, userName, onUserName, onRoomEnter, roomLogic, user, isGuest, onLogOut }: LobbyProps) {
-  const [text, setText] = useState('');
   const [currentRoom, setCurrentRoom] = useState<null | string>(null);
   const [hasEnoughChips, setHasEnoughChips] = useState(true);
   const [userEditMode, setUserEditMode] = useState(false);
@@ -57,6 +55,67 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
     }
   }, [user?.userName, user?.avatarUrl]);
 
+
+  const enterRoom = (room: string) => {
+    const res = socket.sendState({
+      type: 'poker',
+      roomName: room,
+      data: {
+        type: 'join',
+        data: {
+          name: userName,
+        }
+      },
+      userName: userName,
+    })
+
+    res.then(data => {
+      if (user.chips >= 5000) {
+        const player = new PlayerClient(user.userName, socket, room, data.playerUID);
+        console.log("RES", data)
+        onRoomEnter(room, data.playerIndex, player);
+      } else {
+        setHasEnoughChips(false);
+        setTimeout(() => {
+          setHasEnoughChips(true);
+        }, 3000);
+      }
+    })
+  }
+
+  const getBonus = () => {
+    console.log("userID!!!!!!!!!", user.id)
+    socket.sendState({
+      type: 'bonus',
+      data: {
+        type: 'bonus',
+        data: {
+          id: user.id
+        }
+      },
+    }).then(res => {
+      if (res.status === 'updated') {
+        // onUserUpdate({...user, chips: res.chips, lastBonusTime: res.lastBonusTime + Date.now()});
+      } else if (res.status === 'error') {
+        console.log('Cheating won\'t pass');
+      }
+    });
+  }
+
+  const changeAvatar = (str: string) => {
+    setUserEditMode(false)
+    if (!str) {
+      console.log('image is not selected')
+      return
+    }
+    socket.sendState({
+      type: "userAvatar",
+      data: {
+        img: str.slice(str.indexOf(",") + 1)
+      }
+    })
+  }
+
   return (
     <div className="lobby">
       <div className="lobby__buttons-wrapper">
@@ -65,20 +124,7 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
           onLogOut();
         }}>Log Out</button>
       </div>
-      {userEditMode && <UserEditPopup onClose={(str) => {
-        setUserEditMode(false)
-        if (!str) {
-          return
-        }
-        // console.log("qeweqweqw",buffer)
-        socket.sendState({
-          type: "userAvatar",
-          data: {
-            img: str.slice(str.indexOf(",") + 1)
-          }
-        })
-        // socket.sendBinaryState(buffer)
-      }} />}
+      {userEditMode && <UserEditPopup onClose={changeAvatar} />}
 
       {!isGuest &&
         <div className="lobby__user-info user-info">
@@ -88,38 +134,14 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
             }}>
               {ava && <img className="user-info__img" src={`${ava}`} width="100" height="100" alt="avatar" />}
             </div>
-            {/* <img className="user-info__picture" src={`${user.avatarUrl}`} width="100" height="100" alt="avatar" onClick={() => {
-              setUserEditMode(true)
-            }}/> */}
             <div className="user-info__info-block">
               <div className="user-info__username">Hello, <span>{user.userName}</span></div>
               <div className="user-info__chips">You have <span>{user.chips}</span> chips</div>
             </div>
           </div>
-          {/* } */}
-
-          {/* {!isGuest && */}
 
           <div className="user-info__timer">
-            <Timer onClick={() => {
-              console.log("userID!!!!!!!!!", user.id)
-              socket.sendState({
-                type: 'bonus',
-                data: {
-                  type: 'bonus',
-                  data: {
-                    id: user.id
-                  }
-                },
-              }).then(res => {
-                if (res.status === 'updated') {
-                  // onUserUpdate({...user, chips: res.chips, lastBonusTime: res.lastBonusTime + Date.now()});
-                  // localStorage.setItem('b6fe147178bcfc06652a9d3be2c98dd89user', JSON.stringify(user));
-                } else if (res.status === 'error') {
-                  console.log('Cheating won\'t pass');
-                }
-              });
-            }} initialTime={user.lastBonusTime} />
+            <Timer onClick={getBonus} initialTime={user.lastBonusTime} />
           </div>
 
           {!hasEnoughChips && <div className="user-info__message">You don't have enough chips to play. Wait for bonus</div>}
@@ -154,7 +176,6 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
 
             <div className="lobby__rooms">
               {currentRoom && <h2 className="lobby__title">You Are in Room: {currentRoom}</h2>}
-              {/* {playerTurn && <h1>Your Turn</h1>} */}
               {currentRoom && (
                 <div className="lobby__players">
                   <h2 className="lobby__title">Players in room</h2>
@@ -169,75 +190,16 @@ export default function Lobby({ socket, rooms, players, messages, userName, onUs
               <CreateRoom onSubmit={(roomName) => {
                 socket.sendState({ type: 'createRoom', roomName: roomName })
               }} />
-              {/* <h2 className="lobby__rooms-title lobby__rooms-title--rooms">Rooms</h2> */}
               <fieldset className="lobby__select-rooms">
                 <legend className="lobby__rooms-title lobby__rooms-title--rooms">Rooms</legend>
                 <div className="lobby__rooms-list">
                   {!currentRoom &&
                     rooms.map((room, i) => (
-                      <p className="lobby__rooms-item" key={i} onClick={() => {
-                        const res = socket.sendState({
-                          type: 'poker',
-                          roomName: room,
-                          data: {
-                            type: 'join',
-                            data: {
-                              name: userName,
-                            }
-                          },
-                          userName: userName,
-                        })
-
-                        res.then(data => {
-                          if (user.chips >= 5000) {
-                            const player = new PlayerClient(user.userName, socket, room, data.playerUID);
-                            console.log("RES", data)
-                            onRoomEnter(room, data.playerIndex, player);
-                          } else {
-                            setHasEnoughChips(false);
-                            setTimeout(() => {
-                              setHasEnoughChips(true);
-                            }, 3000);
-                          }
-                        })
-                      }} > <span>{i + 1}.</span> {room}</p>
+                      <p className="lobby__rooms-item" key={i} onClick={() => enterRoom(room)} > <span>{i + 1}.</span> {room}</p>
                     ))}
                 </div>
               </fieldset>
-            </div>
-
-            {/* <div className="lobby__chat">
-              {currentRoom && (
-                <>
-                  <div>
-                    <button className="btn lobby__button">Button 1</button>
-                    <button className="btn lobby__button" onClick={() => {
-                      socket.sendState({ type: 'answer', roomName: currentRoom })
-                    }} > Button 2 </button>
-                  </div>
-                  <h2 className="lobby__title">chat</h2>
-                  <div className="lobbi__chat-list">
-                    {messages.map((messageData, i) => {
-                      return (
-                        <p className="lobbi__chat-item" key={i}> {messageData.author}: {messageData.message} </p>
-                      )
-                    })}
-                  </div>
-                </>
-              )}
-              <input className="lobby__input lobby__input--chat-message" type='text' value={text}
-                onChange={(e) => {
-                  setText(e.target.value)
-                }} />
-              <button className="btn lobby__button lobby__button--chat-send" onClick={() => {
-                socket.sendState({
-                  type: 'chatMessage',
-                  data: text,
-                  room: currentRoom,
-                  author: userName,
-                })
-              }}> Send </button>
-            </div> */}
+            </div>            
           </div>}
         </div>      
       </div>

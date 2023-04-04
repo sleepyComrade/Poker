@@ -79,7 +79,36 @@ export interface IActions {
   bet?: (count: number) => void; 
 }
 
+export interface IActionRequest {
+  action: keyof IActions;
+  count?: number;
+}
+
+export interface ITakeSitRequest {
+  index: number;
+  name: string;
+}
+
 export interface IBank {
   bank: number;
   players: IPlayer[];
 }
+export interface IRoomState {
+  roomPlayers: IPlayer[];
+  gameState: {
+      players: IPlayer[];
+      pot: number;
+      deck: ICard[];
+      tableCards: ICard[];
+      dealerIndex: number;
+      initialIndex: number;
+      currentPlayerIndex: number;
+      minimalBet: number;
+      lastInRoundIndex: number;
+      currentRound: Round;
+      myPlayerIndex: number;
+  };
+  isStarted: boolean;
+}
+
+

@@ -6,10 +6,10 @@ import '../style.css';
 import './game.css';
 import { shift } from '../game/shift';
 import { IActions, ICard, IDataAsk, IDataWinner, IPlayer } from "../interfaces";
-import { IMessage } from "../interfaces/IMessage";
 import { Chat } from "../components/chat/chat";
 import { Player } from "./players";
 import { sounds } from "../game/sounds";
+import { IMessage } from "../../../interfaces/IMessage";
 
 type GameProps = {
   players: Array<IPlayer>;
@@ -63,10 +63,6 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
         <button className="btn game__button game__button--exit" onClick={() => {
           onGameExit();
         }}>Exit</button>
-
-        {/* {(!isMultiPlayer && isClientOut) && <button className="btn game__button game__button--back-to-game" onClick={() => {
-          onBackToGame();
-        }}>Back to Game</button>} */}
 
         <button className={`btn game__button game__sound${mute ? ' game__sound-off' : ''}`} onClick={() => {
           sounds.enabled = !sounds.enabled;

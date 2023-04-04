@@ -1,5 +1,5 @@
 import { IPlayer, ICard, Round, IGameMessage, IBank, IDataWinner, IDataWinnerLegacy } from '../interfaces';
-import { getCombo, createCards, mixCards} from './combinations';
+import { createCards, mixCards} from './cards';
 import { getWinner, values } from './combo2';
 
 // getCombo([]);
@@ -20,45 +20,10 @@ export class GameLogic {
   onMessage: (message: IGameMessage<any>) => void;
   banks: IBank[];
 
-  constructor(players: IPlayer[], originDeck: ICard[], dealerIndex: number) {
+  constructor(players: IPlayer[], dealerIndex: number) {
     this.players = players;
     this.pot = 0;
-    // this.deck = [...originDeck];
-    this.deck = [
-      {
-        type: 2,
-        value: 5
-      },
-      {
-        type: 1,
-        value: 6
-      },
-      {
-        type: 2,
-        value: 13
-      },
-      {
-        type: 2,
-        value: 1
-      },
-      {
-        type: 3,
-        value: 13
-      },
-      {
-        type: 3,
-        value: 1
-      },
-      {
-        type: 4,
-        value: 13
-      },
-      {
-        type: 4,
-        value: 1
-      },
-      ...originDeck
-    ].reverse();
+        
     this.deck = mixCards(createCards());
     this.tableCards = [];
     this.dealerIndex = dealerIndex;
@@ -71,7 +36,6 @@ export class GameLogic {
     this.currentRound = Round.Preflop;
     this.myPlayerIndex = 0;
 
-    // this.shuffleCards(this.deck);
     this.players.forEach(player => {
       if (!player.isAbsent) {
         player.cards.push(this.deck.pop());
@@ -90,15 +54,6 @@ export class GameLogic {
       this.sendState("start")
       this.onMessage({type: 'ask', data: {actions: this.getActions(), playerId: this.currentPlayerIndex, raiseRange: this.getRaiseRange(), blind: this.minimalBet, pot: this.pot, askId: Date.now()}});
     }, 0);
-  }
-
-  private shuffleCards(deck: ICard[]) {
-    for (let i = deck.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * i);
-      let temp = deck[i];
-      deck[i] = deck[j];
-      deck[j] = temp;
-    }
   }
 
   private setBlinds(small: number, big: number) {
