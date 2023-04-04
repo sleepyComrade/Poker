@@ -10,8 +10,9 @@ export class UserServiceDb {
   usersDb: mongodb.Collection<mongodb.Document>
   
   constructor() {
-    // const client = new mongodb.MongoClient("mongodb://127.0.0.1")
-    const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority", {
+    // const client = new mongodb.MongoClient("mongodb://127.0.0.1")    
+    // const client = new mongodb.MongoClient("mongodb+srv://maxromanov:psina@cluster0.sm1j0uh.mongodb.net/?retryWrites=true&w=majority", {
+    const client = new mongodb.MongoClient("mongodb+srv://pokeruser:pokerpass@horns-data.6qho5.mongodb.net/?retryWrites=true&w=majority", {
       serverApi: mongodb.ServerApiVersion.v1
     })
     this.usersDb = client.db("mongo").collection("users")
