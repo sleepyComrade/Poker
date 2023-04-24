@@ -9,6 +9,7 @@ export default function DevelopBlock() {
     <div className="develop-block">
       <div className="develop-block__wrapper">
         <div className={`develop-block__links ${openDev ? 'develop-block__links--active' : ''}`}>
+          <a className="develop-block__link develop-block__link--InikonZS" href="https://github.com/InikonZS" target={"_blank"}></a>
           <a className="develop-block__link develop-block__link--sleepyComrade" href="https://github.com/sleepyComrade" target={"_blank"}></a>
           <a className="develop-block__link develop-block__link--ramitsan" href="https://github.com/Ramitsan" target={"_blank"}></a>
           <a className="develop-block__link develop-block__link--max-romanov" href="https://github.com/max-romanov" target={"_blank"}></a>
