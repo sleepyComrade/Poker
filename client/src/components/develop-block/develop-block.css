@@ -101,24 +101,27 @@
   transition: opacity 0.5s ease;
 }
 
+.develop-block__link--InikonZS::before {
+  content: 'InikonZS';
+  left: -37px;
+}
+
 .develop-block__link--sleepyComrade::before {
   content: 'sleepyComrade';
   left: -37px;
-  opacity: 0;
 }
 
 .develop-block__link--ramitsan::before {
   content: 'Ramitsan';
   left: -40px;
-  opacity: 0;
 }
 
 .develop-block__link--max-romanov::before {
   content: 'max-romanov';
   left: -46px;
-  opacity: 0;
 }
 
+.develop-block__link--InikonZS:hover::before,
 .develop-block__link--sleepyComrade:hover::before,
 .develop-block__link--ramitsan:hover::before,
 .develop-block__link--max-romanov:hover::before {
