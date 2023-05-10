@@ -29,8 +29,35 @@ export function App() {
   const [user, setUser] = useState<IUserData>(null);
   const [authError, setAuthError] = useState('');
   const [isClientOut, setIsClientOut] = useState(false);
+  const [scale, setScale] = useState(0);
 
   const isGuest = user === null;
+
+  useEffect(() => {
+    const resize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      let w = 1200;
+      let h = 856;
+      // if (matchMedia('(min-aspect-ratio: 1/1)').matches){
+      //     w = 1130 / 3 * 4;
+      //     h = 1130;
+      // }
+      const aspect = h / w;
+      const size = Math.min(height / aspect, width);
+      setScale(size / w);
+    }
+    window.addEventListener('resize', resize);
+    //window.onresize = resize;
+    resize();
+    return () => {
+      window.removeEventListener('resize', resize);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.body.style.setProperty('--base', scale.toString() + 'px');
+  }, [scale]);
 
   useEffect(() => {
     const socket = new Socket();
