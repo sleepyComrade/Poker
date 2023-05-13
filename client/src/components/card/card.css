@@ -38,3 +38,22 @@
     background-size: calc(100% * 13) calc(100% * 5);
     background-position: calc(100% / 12  * var(--value)) calc(100% / 4 * var(--type));
 }
+
+.card-adaptive__value {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.card-adaptive__type {
+    text-align: center;
+    font-size: 62px;
+    font-weight: bold;
+}
+
+.card-adaptive--red {
+    color: #ff0000;
+}
+
+.card-adaptive--black {
+    color: #000000;
+}
