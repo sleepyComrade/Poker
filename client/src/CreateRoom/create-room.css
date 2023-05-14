@@ -1,13 +1,13 @@
 .create-room__wrapper{
     margin: 0 auto;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    border-radius: calc(var(--base) * 15);
+    margin-bottom: calc(var(--base) * 20);
 }
 
 .create-room__label--room-name {
     display: inline-block;
-    margin-bottom: 10px;
-    font-size: 22px;
+    margin-bottom: calc(var(--base) * 10);
+    font-size: calc(var(--base) * 22);
     font-weight: bold;
     color: #0dce07;
 }
@@ -17,31 +17,31 @@
 }
 
 .create-room__input--name {
-    width: 200px;
-    padding: 8px;
-    margin-right: 20px;  
-    font-size: 20px;
+    width: calc(var(--base) * 200);
+    padding: calc(var(--base) * 8);
+    margin-right: calc(var(--base) * 20);  
+    font-size: calc(var(--base) * 20);
     color: #0dce07;
     outline: none;   
     transition: all 0.3s ease;
-    border-radius: 5px;
+    border-radius: calc(var(--base) * 5);
     background-color: #1b1d1b;
     border: 1px solid #737070;
-    box-shadow: 0px 0px 7px #737070;
+    box-shadow: 0px 0px calc(var(--base) * 7) #737070;
 }
 
 .create-room__input--name:focus,
 .create-room__input--name:hover {
-    border: 2px solid #0dce07;;
-    box-shadow: 0px 0px 7px #0dce07;;
+    border: calc(var(--base) * 2) solid #0dce07;
+    box-shadow: 0px 0px calc(var(--base) * 7) #0dce07;
 }
 
 .create-room__button--create {
-  width: 190px;
-  padding: 10px 5px;
-  font-size: 20px;
+  width: calc(var(--base) * 190);
+  padding: calc(var(--base) * 10) calc(var(--base) * 5);
+  font-size: calc(var(--base) * 20);
   color: #fff;
-  border-radius: 5px;
+  border-radius: calc(var(--base) * 5);
   transition: all 0.3s ease;
   background-color: green;
   background: linear-gradient(to bottom, #0dce07 0%, #085303 100%);

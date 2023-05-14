@@ -9,14 +9,14 @@
     justify-content: center;
     align-items: flex-start;
     width: var(--player-width);
-    padding: 5px;
-    border-radius: 10px;
+    padding: calc(var(--base) * 5);
+    border-radius: calc(var(--base) * 10);
     z-index: 1000;
 }
 
 .player--winner {
-    border: 3px solid #f00;
-    box-shadow: 0px 0px 10px #f00;
+    border: calc(var(--base) * 3) solid #f00;
+    box-shadow: 0px 0px calc(var(--base) * 10) #f00;
 }
 
 .player__wrapper {
@@ -35,14 +35,14 @@
 
 .player__name {
     text-align: center;
-    font-size: 16px;
+    font-size: calc(var(--base) * 16);
     font-weight: bold;
     color: #fff;
     text-transform: uppercase;
 }
 
 .player__timer {
-    margin-top: 10px;
+    margin-top: calc(var(--base) * 10);
     display: flex;
     flex-direction: column-reverse;
     justify-content: flex-start;
@@ -55,9 +55,9 @@
     justify-content: center;
     background-color: #000;
     color: #fff;
-    font-size: 32px;
-    width: 64px;
-    height: 64px;
+    font-size: calc(var(--base) * 32);
+    width: calc(var(--base) * 64);
+    height: calc(var(--base) * 64);
     border-radius: 100%;
     overflow: hidden;
 }
@@ -68,7 +68,7 @@
 
 .player__time{
     background-color: #ff0;
-    padding: 5px;
+    padding: calc(var(--base) * 5);
     border: 1px solid #000;
     border-radius: 100%;
     --progress: 30;
@@ -77,9 +77,9 @@
 
 .player__bank{
     position: relative;
-    margin-top: 5px;
-    padding: 5px;
-    padding-right: 10px;
+    margin-top: calc(var(--base) * 5);
+    padding: calc(var(--base) * 5);
+    padding-right: calc(var(--base) * 10);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -87,21 +87,21 @@
 }
 
 .player__chips {
-    font-size: 16px;
+    font-size: calc(var(--base) * 16);
     color: #fff;
 }
 
 .player__bet {
-    font-size: 16px;
+    font-size: calc(var(--base) * 16);
     font-weight: bold;
     color: #ff0;
 }
 
 .player__fold {
     position: absolute;
-    top: 25px;
+    top: calc(var(--base) * 25);
     color: #fff;
-    font-size: 18px;    
+    font-size: calc(var(--base) * 18);   
 }
 
 .tp1{

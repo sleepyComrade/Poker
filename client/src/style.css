@@ -6,12 +6,13 @@
 
 .players {
   display: flex;
-  gap: 20px;
+  gap: calc(var(--base) * 20);
 }
 
 body{
-  --player-width: 180px;
-  --card-width: 75px;
+  --player-width: calc(var(--base) * 180);
+  --card-width: calc(var(--base) * 75);
+  --base: 1px;
 }
 
 .btn {

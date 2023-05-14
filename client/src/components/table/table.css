@@ -2,11 +2,13 @@
     background-color: rgb(50, 100, 50);
     background: radial-gradient(#3da125, #046415, #05360d);
     position: relative;
-    width: 750px;
-    height: 400px;
-    padding: 50px;
-    border-radius: 200px;
-    box-shadow: 0 0 0 1px #161414, 0 0 0 3px #a96c46, 0px 0 0 11px #6b3309;
+    width: calc(var(--base) * 750);
+    height: calc(var(--base) * 400);
+    padding: calc(var(--base) * 50);
+    border-radius: calc(var(--base) * 200);
+    box-shadow: 0 0 0 1px #161414, 
+                0 0 0 calc(var(--base) * 3) #a96c46, 
+                0px 0 0 calc(var(--base) * 11) #6b3309;
 }
 
 .table__wrapper{  
@@ -23,20 +25,20 @@
 }
 
 .table_card {  
-    margin: 5px;
+    margin: calc(var(--base) * 5);
     width: var(--card-width);
     height: calc(var(--card-width) * 1.5);
-    border-radius: 5px;    
+    border-radius: calc(var(--base) * 5);    
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: -2px center;
-    box-shadow: 2px 3px 5px #222121;
+    background-position: calc(var(--base) * -2) center;
+    box-shadow: calc(var(--base) * 2) calc(var(--base) * 3) calc(var(--base) * 5) #222121;
     transition: transform 0.3s ease;
 }
 
 .winner-card {
-    border: 3px solid #f00;
-    box-shadow: 0px 0px 10px #f00;
+    border: calc(var(--base) * 3) solid #f00;
+    box-shadow: 0px 0px calc(var(--base) * 10) #f00;
     transform: scale(1.2);
 }
 
@@ -47,7 +49,7 @@
 
 @keyframes card0{
     0%{
-        transform: translate(-100px, -100px) rotate(75deg);
+        transform: translate(calc(var(--base) * -100), calc(var(--base) * -100)) rotate(75deg);
     }
     50%{
         transform: translate(0px, 0px);
@@ -63,10 +65,10 @@
 
 @keyframes card1{
     0%{
-        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 1)) rotate(75deg);
+        transform: translate(calc(var(--base) * -100), calc(var(--base) * -100)) translate(calc(0px - (var(--card-width) + 2 * calc(var(--base) * 5)) * 1)) rotate(75deg);
     }
     50%{
-        transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 1), 0px)
+        transform: translate(calc(0px - (var(--card-width) + 2 * calc(var(--base) * 5)) * 1), 0px)
     }
     100%{
         transform: translate(0, 0) rotate(0deg);
@@ -79,7 +81,7 @@
 
 @keyframes card2{
     0%{
-        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 2)) rotate(75deg);
+        transform: translate(calc(var(--base) * -100), calc(var(--base) * -100)) translate(calc(0px - (var(--card-width) + 2 * calc(var(--base) * -5)) * 2)) rotate(75deg);
     }
     /* 50%{
         transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 2), 0px)
@@ -96,7 +98,7 @@
 
 @keyframes card3{
     0%{
-        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 3), 0px) rotate(75deg);
+        transform: translate(calc(var(--base) * -100), calc(var(--base) * -100)) translate(calc(0px - (var(--card-width) + 2 * calc(var(--base) * 5)) * 3), 0px) rotate(75deg);
     }
     100%{
         transform: translate(0, 0) rotate(0deg);
@@ -109,7 +111,7 @@
 
 @keyframes card4{
     0%{
-        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 4), 0px) rotate(75deg);
+        transform: translate(calc(var(--base) * -100), calc(var(--base) * -100)) translate(calc(0px - (var(--card-width) + 2 * 5px) * 4), 0px) rotate(75deg);
     }
     100%{
         transform: translate(0, 0) rotate(0deg);
@@ -117,12 +119,12 @@
 }
 
 .table__bank {
-    width: 100px;
+    width: calc(var(--base) * 100);
     position: absolute;
-    top: 44px;
+    top: calc(var(--base) * 44);
     left: 50%;
-    margin-left: -50px;
+    margin-left: calc(var(--base) * -50);
     color: #fff;
-    font-size: 26px;    
+    font-size: calc(var(--base) * 26);  
     text-align: center;   
 }

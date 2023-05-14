@@ -4,7 +4,7 @@
 
 .main-player {
     position: absolute;
-    top: calc((100% - 40px) / 1);
+    top: calc((100% - calc(var(--base) * 40)) / 1);
     left: calc((100% - var(--player-width)) / 1.9);
     border: 1px solid blue;
     width: var(--player-width);
@@ -15,23 +15,23 @@
 
 .main-player__chair {
     position: absolute;
-    width: 200px;
-    height: 130px;
-    top: 68px;
-    left: -10px;
+    width: calc(var(--base) * 200);
+    height: calc(var(--base) * 130);
+    top: calc(var(--base) * 68);
+    left: calc(var(--base) * -10);
 }
 
 .player1{
     background-color: #fff5;
     width: var(--player-width);
-    padding: 5px;
-    border-radius: 10px;
+    padding: calc(var(--base) * 5);
+    border-radius: calc(var(--base) * 10);
     z-index: 1000;
 }
 
 .player--winner {
-    border: 3px solid #f00;
-    box-shadow: 0px 0px 10px #f00;
+    border: calc(var(--base) * 3) solid #f00;
+    box-shadow: 0px 0px calc(var(--base) * 10) #f00;
 }
 
 .main-player__wrapper {
@@ -50,14 +50,14 @@
 
 .main-player__name {
     text-align: center;
-    font-size: 16px;
+    font-size: calc(var(--base) * 16);
     font-weight: bold;
     color: #fff;
     text-transform: uppercase;
 }
 
 .main-player__timer {
-    margin-top: 10px;
+    margin-top: calc(var(--base) * 10);
     display: flex;
     flex-direction: column-reverse;
     justify-content: flex-start;
@@ -70,9 +70,9 @@
     justify-content: center;
     background-color: #000;
     color: #fff;
-    font-size: 32px;
-    width: 100px;
-    height: 100px;
+    font-size: calc(var(--base) * 32);
+    width: calc(var(--base) * 100);
+    height: calc(var(--base) * 100);
     border-radius: 100%;
     overflow: hidden;
 }
@@ -83,7 +83,7 @@
 
 .main-player__time{
     background-color: #ff0;
-    padding: 5px;
+    padding: calc(var(--base) * 5);
     border: 1px solid #000;
     border-radius: 100%;
     --progress: 0;
@@ -95,9 +95,9 @@
 } */
 
 .main-player__bank{
-    margin-top: 5px;
-    padding: 5px;
-    padding-right: 10px;
+    margin-top: calc(var(--base) * 5);
+    padding: calc(var(--base) * 5);
+    padding-right: calc(var(--base) * 10);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -105,19 +105,19 @@
 }
 
 .main-player__chips {
-    font-size: 16px;
+    font-size: calc(var(--base) * 16);
     color: #fff;
 }
 
 .main-player__bet {
-    font-size: 16px;
+    font-size: calc(var(--base) * 16);
     font-weight: bold;
     color: #ff0;
 }
 
 .main-player__fold {
     position: absolute;
-    top: 50px;
+    top: calc(var(--base) * 50);
     color: #fff;
-    font-size: 18px;    
+    font-size: calc(var(--base) * 18);
 }

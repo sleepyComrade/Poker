@@ -1,8 +1,8 @@
 .bank-coin {
     flex-shrink: 0;
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: calc(var(--base) * 50);
+    height: calc(var(--base) * 50);
     /* background-color: #F00; */
     border: 6px dashed #fff;
     display: flex;
@@ -20,13 +20,13 @@
 
 .bank-coin__inner {
     background: #fff;
-    width: 30px;
-    height: 31px;
+    width: calc(var(--base) * 30);
+    height: calc(var(--base) * 31);
     border-radius: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: #000;
-    font-size: 19px;
+    font-size: calc(var(--base) * 19);
     font-weight: bolder;
 }

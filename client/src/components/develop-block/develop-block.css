@@ -1,14 +1,14 @@
 .develop-block {  
   position: absolute;
-  bottom: 30px;
-  right: 30px;
+  bottom: calc(var(--base) * 30);
+  right: calc(var(--base) * 30);
   display: flex;
   justify-content: center;
   align-items: center;  
 }
 
 .develop-block__wrapper {
-  padding: 15px;
+  padding: calc(var(--base) * 15);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,9 +17,9 @@
 .develop-block__btn {
   display: block;
   position: relative;
-  width: 100px;
-  height: 100px;
-  font-size: 20px;
+  width: calc(var(--base) * 100);
+  height: calc(var(--base) * 100);
+  font-size: calc(var(--base) * 20);
   background-color: #fff;
   border-radius: 50%;
   color: #fff;
@@ -41,8 +41,8 @@
   background-color: transparent;
   border-radius: 50%;
   opacity: 0;  
-  outline: 3px dashed rgba(255,255,255,0.8);
-  outline-offset: 15px;
+  outline: calc(var(--base) * 3) dashed rgba(255,255,255,0.8);
+  outline-offset: calc(var(--base) * 15);
 }
 
 .develop-block__btn:hover::after {
@@ -69,14 +69,14 @@
 }
 
 .develop-block__link {
-  width: 50px;
-  height: 50px;
+  width: calc(var(--base) * 50);
+  height: calc(var(--base) * 50);
   position: relative;
   display: inline-block;
   text-decoration: none;
-  margin-right: 25px;
+  margin-right: calc(var(--base) * 25);
   background-image: url('../../assets/github.svg');
-  background-size: 50px 50px;
+  background-size: calc(var(--base) * 50) calc(var(--base) * 50);
   background-position: center;
   background-repeat: no-repeat;
   transition: all 0.3s ease;
@@ -90,10 +90,10 @@
 
 .develop-block__link::before {  
   position: absolute;
-  top: -30px;
-  width: 130px;
-  font-size: 18px;
-  line-height: 22px;
+  top: calc(var(--base) * -30);
+  width: calc(var(--base) * 130);
+  font-size: calc(var(--base) * 18);
+  line-height: calc(var(--base) * 22);
   font-weight: bold;
   text-align: center;
   color: #fff;
@@ -103,22 +103,22 @@
 
 .develop-block__link--InikonZS::before {
   content: 'InikonZS';
-  left: -37px;
+  left: calc(var(--base) * -37);
 }
 
 .develop-block__link--sleepyComrade::before {
   content: 'sleepyComrade';
-  left: -37px;
+  left: calc(var(--base) * -37);
 }
 
 .develop-block__link--ramitsan::before {
   content: 'Ramitsan';
-  left: -40px;
+  left: calc(var(--base) * -40);
 }
 
 .develop-block__link--max-romanov::before {
   content: 'max-romanov';
-  left: -46px;
+  left: calc(var(--base) * -46);
 }
 
 .develop-block__link--InikonZS:hover::before,

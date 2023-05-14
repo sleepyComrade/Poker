@@ -1,6 +1,6 @@
 .players-list {
     position: absolute;
-    width: 800px;
-    height: 450px;
+    width: calc(var(--base) * 800);
+    height: calc(var(--base) * 450);
     /* top: 284px; */
 }

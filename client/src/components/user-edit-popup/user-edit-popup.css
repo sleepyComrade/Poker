@@ -1,31 +1,31 @@
 .user-edit-popup {
-  width: 370px;
+  width: calc(var(--base) * 370);
   position: absolute;
-  top: 336px;
-  left: 20px;
-  padding: 15px;
-  font-size: 20px;
+  top: calc(var(--base) * 336);
+  left: calc(var(--base) * 20);
+  padding: calc(var(--base) * 15);
+  font-size: calc(var(--base) * 20);
   line-height: 150%;
   background-color: #1b1d1b;
   border: 1px solid red;
   z-index: 1000;
-  border-radius: 7px;
-  box-shadow: 0px 0px 10px #f00; 
+  border-radius: calc(var(--base) * 7);
+  box-shadow: 0px 0px calc(var(--base) * 10) #f00; 
   animation: user-edit-popup-open 1s;
 }
 
 
 @keyframes user-edit-popup-open {
   0% {
-    transform: translateX(-2000px);
+    transform: translateX(calc(var(--base) * -2000));
   }
 
   70% {
-    transform: translateX(20px);
+    transform: translateX(calc(var(--base) * 20));
   }
 
   90% {
-    transform: translateX(-10px);
+    transform: translateX(calc(var(--base) * -10));
   }
 
   100% {
@@ -40,11 +40,11 @@
 
 @keyframes user-edit-popup-close {
   0% {
-    transform: translateX(20px);
+    transform: translateX(calc(var(--base) * 20));
   }
 
   100% {
-    transform: translateX(-2000px);
+    transform: translateX(calc(var(--base) * -2000));
   }
 }
 
@@ -58,7 +58,7 @@
 
 .user-edit-popup__canvas {
   border-radius: 50%;
-  margin-bottom: 20px;
+  margin-bottom: calc(var(--base) * 20);
 }
 
 .user-edit-popup__input-wrapper {
@@ -77,10 +77,10 @@
   position: relative;
   width: 50%;
   display: block;
-  max-width: 300px;
+  max-width: calc(var(--base) * 300);
   margin: 0 auto;
   color: #fff;
-  font-size: 24px;
+  font-size: calc(var(--base) * 24);
   line-height: 130%;
   font-weight: bold;
   cursor: pointer;
@@ -90,10 +90,10 @@
 .user-edit-popup__label::before {
   content: "";
   position: absolute;
-  bottom: -6px;
+  bottom: calc(var(--base) * -6);
   left: 0;
   width: 100%;
-  height: 3px;
+  height: calc(var(--base) * 3);
   background-color: #fff;
   transform: scaleX(0);
   transition: all 0.5s;
@@ -101,29 +101,28 @@
 
 .user-edit-popup__label:focus:before, 
 .user-edit-popup__label:hover:before {
-
   transform: scaleX(1);
-  height: 3px;
+  height: calc(var(--base) * 3);
 }
 
 .user-edit-popup__buttons-wrapper {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  margin-top: 15px;
+  margin-top: calc(var(--base) * 15);
 }
 
 .user-edit-popup__button {
   position: relative;
   overflow: hidden;
-  min-width: 100px;
+  min-width: calc(var(--base) * 100);
   width: 40%;
-  height: 45px;
-  margin: 15px;
-  padding: 10px 5px;
-  font-size: 20px;
+  height: calc(var(--base) * 45);
+  margin: calc(var(--base) * 15);
+  padding: calc(var(--base) * 10) calc(var(--base) * 5);
+  font-size: calc(var(--base) * 20);
   transition: all 0.3s ease;
-  border-radius: 7px; 
+  border-radius: calc(var(--base) * 7);
 }
 
 .user-edit-popup__button--ok {

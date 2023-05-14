@@ -26,7 +26,7 @@ const values = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
 export default function Card({ value, type }: CardProps) {
     return (
         <div className={`card card-adaptive ${type == 1 || type == 2 ? 'card-adaptive--red' : 'card-adaptive--black'}`} style={{ width: "100%", height: "100%"}}>
-            <div className='card-adaptive__wrapper card_base card_a' style={{ '--value': value, '--type': type}}>              
+            <div className='card-adaptive__wrapper card_base card_a' style={{ '--value': value, '--type': type }}>
                 <div className='card-adaptive__value'>{values[value]}</div>
                 <div className='card-adaptive__type'>{types[type]}</div>                
             </div>
