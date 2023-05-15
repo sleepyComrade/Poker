@@ -14,6 +14,7 @@ type TableProps = {
     winCards: Array<ICard> | null;
     winInfo: IDataWinner;
     playerIndex: number;
+    scale: number;
 }
 
 
@@ -72,7 +73,7 @@ const BankStacks = (winInfo: IDataWinnerLegacy, bankCoin: IChipStack[], splitAni
     return <ChipsStack name={name} stacks={stacks} baseX = {(!splitAnimationFlag && winLeft) || left} baseY = {(!splitAnimationFlag && winTop) || top} baseTime ={time}/>
 }
 
-export default function Table({ cards, players, bank, winCards, winInfo, playerIndex }: TableProps) {
+export default function Table({ cards, players, bank, winCards, winInfo, playerIndex, scale }: TableProps) {
     const [betCoins, setBetCoins] = useState<{ count: number, coinValue: number }[][]>([]);
     useEffect(() => {
         setBetCoins(last => {
@@ -123,7 +124,7 @@ export default function Table({ cards, players, bank, winCards, winInfo, playerI
                 <div className="table_stack">
                     {cards.map((card, index) => (
                         <div key={index} className={`table_card ani_card${index} ${winCards?.find(it => (it.type == card.type) && (it.value == card.value)) ? 'winner-card' : ''}` } >
-                            <Card key={index} value={card.value} type={card.type - 1} selected={false} ></Card>
+                            <Card key={index} value={card.value} type={card.type - 1} selected={false} scale={scale}></Card>
                         </div>))}                        
                 </div>
                 <div className="table__bank-coin-wrapper">

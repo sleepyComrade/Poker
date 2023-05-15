@@ -7,6 +7,7 @@ import { Player } from './game/players';
 import { IUserData } from '../../interfaces/IUser';
 import { Authorization } from './authorization/authorization';
 import { IMessage } from '../../interfaces/IMessage';
+import { AppContext } from './context';
 
 const routes = {
   lobby: Lobby,
@@ -37,8 +38,8 @@ export function App() {
     const resize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      let w = 1200;
-      let h = 856;
+      let w = 1350;
+      let h = 900;
       // if (matchMedia('(min-aspect-ratio: 1/1)').matches){
       //     w = 1130 / 3 * 4;
       //     h = 1130;
@@ -183,7 +184,7 @@ export function App() {
           // setIsGuest(true);
           setActivePage('lobby');
         }} socket={socket} socketState={socketState} /> :
-        <Poker onPlaceClick={enterPlace} onStateChange={(bool: boolean)=> {
+        <Poker scale={scale} onPlaceClick={enterPlace} onStateChange={(bool: boolean)=> {
           setIsClientOut(bool);
         }} isClientOut={isClientOut} player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => {
           player.leave().then(() => {

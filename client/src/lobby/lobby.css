@@ -4,7 +4,7 @@
   position: relative;
   background: url('../assets/lobby-img-bg.png'), url('../assets/background.png');
   background-size: calc(var(--base) * 350) auto,  auto;
-  background-position: center calc(var(--base) * 50) top left;
+  background-position: center calc(var(--base) * 50), top left;
   background-repeat: no-repeat, repeat;
 }
 

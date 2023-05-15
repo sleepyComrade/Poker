@@ -9,7 +9,7 @@
     width: calc(var(--base) * 950);
     position: relative;
     margin: 0 auto;
-    height: calc(100vh - calc(var(--base) * 85));
+    height: calc(100vh - calc(var(--base) * 113));
     display: flex;
     flex-direction: column;
     justify-content: center;

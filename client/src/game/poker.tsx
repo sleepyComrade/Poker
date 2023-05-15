@@ -19,6 +19,7 @@ interface IProps {
   onPlaceClick: (index: number) => void;
   isClientOut:boolean;
   onStateChange: (bool: boolean) => void;
+  scale: number;
 }
 
 export function Poker(props: IProps) {
@@ -183,7 +184,7 @@ export function Poker(props: IProps) {
 
   return (
     <div>
-      <Game isStarted={roomState?.isStarted || false} players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex}
+      <Game scale={props.scale} isStarted={roomState?.isStarted || false} players={players} actions={actions} cards={tableCards} player={players[myPlayerIndex]} dealerIndex={dealerIndex}
         currentPlayerIndex={currentPlayerIndex} bank={pot} winInfo={winInfo} chatMessages={chatMessages} playerClient={props.player}
         onPlaceClick={(index) => {
           console.log('place index:', index);
