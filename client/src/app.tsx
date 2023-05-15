@@ -160,7 +160,7 @@ export function App() {
   }
 
   return (
-    <>
+    <AppContext.Provider value={{scale: scale}}>
       {activePage === 'lobby' ?  
         <Lobby onUserUpdate={(user: IUserData) => {
           setUser(user);
@@ -184,13 +184,13 @@ export function App() {
           // setIsGuest(true);
           setActivePage('lobby');
         }} socket={socket} socketState={socketState} /> :
-        <Poker scale={scale} onPlaceClick={enterPlace} onStateChange={(bool: boolean)=> {
+        <Poker onPlaceClick={enterPlace} onStateChange={(bool: boolean)=> {
           setIsClientOut(bool);
         }} isClientOut={isClientOut} player={player} roomLogic={roomLogic} socket={socket} currentRoom={currentRoom} playerIndex={playerIndex} name={userName} onGameExit={() => {
           player.leave().then(() => {
             setActivePage('lobby');
           });
         }}/> }         
-    </>
+    </AppContext.Provider>
   )
 }

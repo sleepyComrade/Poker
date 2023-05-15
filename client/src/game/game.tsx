@@ -30,10 +30,9 @@ type GameProps = {
   isStarted: boolean;
   onPlaceClick: (index: number) => void;
   currentRoom: string;
-  scale: number;
 }
 
-export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted, onPlaceClick, currentRoom, scale }: GameProps) {
+export default function Game({ players, actions, cards, player, currentPlayerIndex, bank, winInfo, onGameExit, onBackToGame, isMultiPlayer, isClientOut, isWaiting, dealerIndex, chatMessages, playerClient, isStarted, onPlaceClick, currentRoom }: GameProps) {
   const _players = [...players];
   const playerIndex = _players.indexOf(player) + 3;
   const [mute, setMute] = useState(true);
@@ -104,7 +103,7 @@ export default function Game({ players, actions, cards, player, currentPlayerInd
               const cycleIndex = (maxPlayers * 2 + index + playerIndex) % maxPlayers;
               onPlaceClick(cycleIndex);
             }} />
-          <Table cards={cards} players={_players.map(it => it)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards} scale={scale}/>
+          <Table cards={cards} players={_players.map(it => it)} winInfo = {winInfo} playerIndex = {playerIndex} bank={bank} winCards={winInfo?.cards}/>
         </div>
         <ControlPanel dataAsk={actions} />
       </div>

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ICard, IDataWinner } from "../../interfaces";
 import '../../style.css';
 import './card.css';
+import { useAppContext } from "../../context";
 
 type CardProps = {
     value: number;
     type: number;
     selected: boolean;
-    scale: number;
 }
 
 // export default function Card({ value, type }: CardProps) {
@@ -24,7 +24,8 @@ type CardProps = {
 const types = ['\u2663', '\u2666', '\u2665', '\u2660'];
 const values = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
 
-export default function Card({ value, type, scale }: CardProps) {
+export default function Card({ value, type }: CardProps) {
+    const scale = useAppContext().scale;
     return scale < 0.8 ? 
     (
         <div className={`card card-adaptive ${type == 1 || type == 2 ? 'card-adaptive--red' : 'card-adaptive--black'}`} style={{ width: "100%", height: "100%"}}>
