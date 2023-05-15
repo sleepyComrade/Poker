@@ -3,16 +3,16 @@
   height: 100vh;
   position: relative;
   background: url('../assets/lobby-img-bg.png'), url('../assets/background.png');
-  background-size: 350px auto,  auto;
-  background-position: center 50px, top left;
+  background-size: calc(var(--base) * 350) auto,  auto;
+  background-position: center calc(var(--base) * 50) top left;
   background-repeat: no-repeat, repeat;
 }
 
 .lobby__wrapper {
-  width: 950px;
+  width: calc(var(--base) * 950);
   height: 100%;
   margin: 0 auto;
-  height: calc(100vh - 85px);
+  height: calc(100vh - calc(var(--base) * 85));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -20,24 +20,24 @@
 }
 
 .lobby__button {
-  width: 150px;
-  height: 45px;
-  margin: 20px;
-  padding: 10px 5px;
-  font-size: 20px;
+  width: calc(var(--base) * 150);
+  height: calc(var(--base) * 45);
+  margin: calc(var(--base) * 20);
+  padding: calc(var(--base) * 10) calc(var(--base) * 5);
+  font-size: calc(var(--base) * 20);
   color: #fff;
-  border-radius: 5px;
+  border-radius: calc(var(--base) * 5);
   transition: all 0.3s ease;
-  border-radius: 7px;
+  border-radius: calc(var(--base) * 7);
 }
 
 .lobby__button--log-out {
-  padding-left: 40px;
+  padding-left: calc(var(--base) * 40);
   background-color: #265bec;
   background: url('../assets//arrow-left.svg'), linear-gradient(to bottom, #265bec 0%, #110268 100%);
   background-repeat: no-repeat;
-  background-size: 30px auto, 100%;
-  background-position: center left 15px, top left;
+  background-size: calc(var(--base) * 30) auto, 100%;
+  background-position: center left calc(var(--base) * 15), top left;
   border-bottom: 1px solid #110268;
 }
 
@@ -69,44 +69,44 @@
 .lobby__start-game {
   display: none;
   width: 70%;
-  padding: 10px 15px;
+  padding: calc(var(--base) * 10) calc(var(--base) * 15);
   background-color: #fff5;
-  border-radius: 5px;
-  margin-bottom: 20px;
+  border-radius: calc(var(--base) * 5);
+  margin-bottom: calc(var(--base) * 20);
 }
 
 .lobby__label--user-name {
   display: inline-block;
-  margin-bottom: 10px;
-  font-size: 22px;
+  margin-bottom: calc(var(--base) * 10);
+  font-size: calc(var(--base) * 22);
   font-weight: bold;
 }
 
 .lobby__input {
-  width: 200px;
+  width: calc(var(--base) * 200);
   outline: none;
-  padding: 8px;
-  border-radius: 3px;
+  padding: calc(var(--base) * 8);
+  border-radius: calc(var(--base) * 3);
   background-color: #1b1d1b;
   border: 1px solid #737070;
-  box-shadow: 0px 0px 7px #737070;
-  font-size: 20px;
+  box-shadow: 0px 0px calc(var(--base) * 7) #737070;
+  font-size: calc(var(--base) * 20);
   transition: all 0.3s ease;
 }
 
 .lobby__input--user-name {
-  width: 200px;
-  padding: 10px;
+  width: calc(var(--base) * 200);
+  padding: calc(var(--base) * 10);
   outline: none;
   border: 1px solid #b32d04;
-  margin-right: 20px;
-  border-radius: 5px;
+  margin-right: calc(var(--base) * 20);
+  border-radius: calc(var(--base) * 5);
 }
 
 .lobby__button--local {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: calc(var(--base) * 100);
+  height: calc(var(--base) * 100);
   border-radius: 50%;
   background-color: #e75f04;
   background: linear-gradient(to bottom, #e75f04 0%, #b32d04 100%);
@@ -124,8 +124,8 @@
   background-color: transparent;
   border-radius: 50%;
   opacity: 0;  
-  outline: 3px dashed rgba(255,255,255,0.8);
-  outline-offset: 15px;
+  outline: calc(var(--base) * 3) dashed rgba(255,255,255,0.8);
+  outline-offset: calc(var(--base) * 15);
 }
 
 .lobby__button--local:hover::after {
@@ -142,54 +142,53 @@
 
 .lobby__rooms {
   width: 70%;
-  padding: 10px 15px;
-  margin-bottom: 20px;
+  padding: calc(var(--base) * 10) calc(var(--base) * 15);
+  margin-bottom: calc(var(--base) * 20);
 }
 
 .lobby__select-rooms {
-  padding: 0px 10px;
+  padding: 0px calc(var(--base) * 10);
   border: 1px solid #0dce07;;
-  border-radius: 7px;
+  border-radius: calc(var(--base) * 7);
 }
 
 .lobby__rooms-title {
-  font-size: 22px;
+  font-size: calc(var(--base) * 22);
 }
 
 .lobby__rooms-title--rooms {
-  padding: 0 10px;
+  padding: 0 calc(var(--base) * 10);
   color: #0dce07;
 }
 
 .lobby__title {
-  font-size: 22px;
+  font-size: calc(var(--base) * 22);
   font-weight: bold;
 }
 
 .lobby__rooms-list {
-  padding: 10px 15px;
-  border-radius: 5px;
-
-  max-height: 500px;
+  padding: calc(var(--base) * 10) calc(var(--base) * 15);
+  border-radius: calc(var(--base) * 5);
+  max-height: calc(var(--base) * 500);
   overflow-y: auto;
 }
 
 /* Работает в Chrome, Opera и Safari */
 .lobby__rooms-list::-webkit-scrollbar {
-  width: 8px;
+  width: calc(var(--base) * 8);
 }
 
 .lobby__rooms-list::-webkit-scrollbar-track {
   background: #737070;
-  border-radius: 10px;
+  border-radius: calc(var(--base) * 10);
 }
 
 .lobby__rooms-list::-webkit-scrollbar-thumb {
-  width: 6px;
+  width: calc(var(--base) * 6);
   height: 20%;
   background: #0dce07;
   border: 1px solid #737070;
-  border-radius: 5px;
+  border-radius: calc(var(--base) * 5);
   cursor: pointer;
 }
 
@@ -200,8 +199,8 @@
 }
 
 .lobby__rooms-item {
-  font-size: 22px;
-  line-height: 30px;
+  font-size: calc(var(--base) * 22);
+  line-height: calc(var(--base) * 30);
   color: #fff;
   cursor: pointer;
 }
@@ -212,18 +211,18 @@
 
 .lobby__chat {
   width: 70%;
-  padding: 10px 15px;
+  padding: calc(var(--base) * 10) calc(var(--base) * 15);
   background-color: #fff5;
-  border-radius: 5px;
+  border-radius: calc(var(--base) * 5);
 }
 
 .lobby__input--chat-message {
-  width: 200px;
-  padding: 10px;
+  width: calc(var(--base) * 200);
+  padding: calc(var(--base) * 10);
   outline: none;
   border: 1px solid #265bec;
-  margin-right: 20px;
-  border-radius: 5px;
+  margin-right: calc(var(--base) * 20);
+  border-radius: calc(var(--base) * 5);
 }
 
 .lobby__button--chat-send {
@@ -234,31 +233,31 @@
 
 .user-info {
   position: absolute;
-  top: 96px;
-  left: 20px;
-  width: 370px;
-  padding: 15px;
-  font-size: 20px;
+  top: calc(var(--base) * 96);
+  left: calc(var(--base) * 20);
+  width: calc(var(--base) * 370);
+  padding: calc(var(--base) * 15);
+  font-size: calc(var(--base) * 20);
   line-height: 150%;
   color: #fff;
-  border: 2px solid #f00;
-  border-radius: 7px;
-  box-shadow: 0px 0px 10px #f00;
+  border: calc(var(--base) * 2) solid #f00;
+  border-radius: calc(var(--base) * 7);
+  box-shadow: 0px 0px calc(var(--base) * 10) #f00;
   animation: user 1s;
   z-index: 1000;
 }
 
 @keyframes user {
   0% {
-      transform: translateX(-2000px);
+      transform: translateX(calc(var(--base) * -2000));
   }
 
   70% {
-      transform: translateX(20px);
+      transform: translateX(calc(var(--base) * 20));
   }
 
   90% {
-      transform: translateX(-10px);
+      transform: translateX(calc(var(--base) * -10));
   }
 
   100% {
@@ -273,16 +272,16 @@
 
 .user-info__picture {
   position: relative;
-  width: 100px;
-  height: 100px;
-  margin-right: 20px;
-  border: 3px solid #f00;
+  width: calc(var(--base) * 100);
+  height: calc(var(--base) * 100);
+  margin-right: calc(var(--base) * 20);
+  border: calc(var(--base) * 3) solid #f00;
   border-radius: 50%;
   background-image: url('../assets/user-avatar.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
- overflow: hidden;
+  overflow: hidden;
   cursor: pointer;
 }
 
@@ -302,12 +301,12 @@
 .user-info__picture::after {
   content: 'change avatar';
   position: absolute;
-  top: 28px;
-  left: 10px;
+  top: calc(var(--base) * 28);
+  left: calc(var(--base) * 10);
   width: 80%;
   height: 100%;
-  font-size: 18px;
-  line-height: 22px;
+  font-size: calc(var(--base) * 18);
+  line-height: calc(var(--base) * 22);
   font-weight: bold;
   text-align: center;
   color: #f00;
@@ -323,7 +322,7 @@
 }
 
 .user-info__info-block {
-  margin-bottom: 20px;
+  margin-bottom: calc(var(--base) * 20);
 }
 
 .user-info__username span,
@@ -332,14 +331,14 @@
 }
 
 .user-info__username span {
-  font-size: 26px;
+  font-size: calc(var(--base) * 26);
   font-weight: bold;
 }
 
 .user-info__message {
   display: inline-block;
-  width: 300px;
-  padding: 6px 10px;
+  width: calc(var(--base) * 300);
+  padding: calc(var(--base) * 6) calc(var(--base) * 10);
   text-align: center;
   background-color: #e75f04;
   color: #fff;

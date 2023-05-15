@@ -6,11 +6,10 @@
 }
 
 .game__wrapper {
-    width: 950px;
+    width: calc(var(--base) * 950);
     position: relative;
-    /* border: 1px solid red; */
     margin: 0 auto;
-    height: calc(100vh - 85px);
+    height: calc(100vh - calc(var(--base) * 85));
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -18,29 +17,29 @@
 }
 
 .game__winner-message {
-    width: 440px;
+    width: calc(var(--base) * 440);
     position: absolute;
-    top: 20px;
+    top: calc(var(--base) * 20);
     left: 50%;
-    margin-left: -220px;
-    border-radius: 5px;
+    margin-left: calc(var(--base) * -220);
+    border-radius: calc(var(--base) * 5);
     background-color: #000;
-    border: 2px solid #23e711;
+    border: calc(var(--base) * 2) solid #23e711;
     animation: winner 1s;
     z-index: 1001;
 }
 
 @keyframes winner {
     0% {
-        transform: translateY(-2000px);
+        transform: translateY(calc(var(--base) * -2000));
     }
 
     70% {
-        transform: translateY(30px);
+        transform: translateY(calc(var(--base) * 30));
     }
 
     90% {
-        transform: translateY(-10px);
+        transform: translateY(calc(var(--base) * -10));
     }
 
     100% {
@@ -50,7 +49,7 @@
 
 .game__winner-wrapper {
     width: 100%;
-    padding: 15px 10px;
+    padding: calc(var(--base) * 15) calc(var(--base) * 10);
     text-align: center;
 }
 
@@ -58,7 +57,7 @@
 .game__winner-cards,
 .game__winner-combo,
 .game__winner-bank {
-    font-size: 18px;
+    font-size: calc(var(--base) * 18);
     color: #fff;
 }
 
@@ -66,7 +65,7 @@
 .game__winner-cards span,
 .game__winner-combo span,
 .game__winner-bank span {
-    font-size: 26px;
+    font-size: calc(var(--base) * 26);
     font-weight: bold;
     color: #23e711;
 }
@@ -84,25 +83,25 @@
 }
 
 .game__button {
-    min-width: 150px;
-    height: 45px;
-    margin: 20px;
-    padding: 10px 5px;
-    font-size: 20px;
+    min-width: calc(var(--base) * 150);
+    height: calc(var(--base) * 45);
+    margin: calc(var(--base) * 20);
+    padding: calc(var(--base) * 10) calc(var(--base) * 5);
+    font-size: calc(var(--base) * 20);
     color: #fff;
-    border-radius: 5px;
+    border-radius: calc(var(--base) * 5);
     transition: all 0.3s ease;
 }
 
 .game__button--exit {
-    padding-left: 16px;
+    padding-left: calc(var(--base) * 16);
     background-color: #265bec;
     background: url('../assets//arrow-left.svg'), linear-gradient(to bottom, #265bec 0%, #110268 100%);
     background-repeat: no-repeat;
-    background-size: 30px auto, 100%;
-    background-position: center left 15px, top left;
+    background-size: calc(var(--base) * 30) auto, 100%;
+    background-position: center left calc(var(--base) * 15), top left;
     border-bottom: 1px solid #110268;
-    border-radius: 7px;
+    border-radius: calc(var(--base) * 7);
 }
 
 .game__button--back-to-game {
@@ -120,36 +119,36 @@
 
 .game__info-message {
     position: absolute;
-    top: 28px;
+    top: calc(var(--base) * 28);
     left: 50%;
     transform: translateX(-50%);
     display: inline-block;
-    width: 280px;
-    padding: 6px 10px;
+    width: calc(var(--base) * 280);
+    padding: calc(var(--base) * 6) calc(var(--base) * 10);
     text-align: center;
     background: radial-gradient(#144508, #046415, #05360d);
-    border-radius: 7px;
+    border-radius: calc(var(--base) * 7);
     color: #fff;
-    font-size: 20px;
+    font-size: calc(var(--base) * 20);
 }
 
 .game__chat-wrapper {
     position: absolute;
-    top: 28px;
-    right: 20px;
+    top: calc(var(--base) * 28);
+    right: calc(var(--base) * 20);
     width: 18%;
-    max-height: 300px;
-    padding: 10px;
+    max-height: calc(var(--base) * 300);
+    padding: calc(var(--base) * 10);
     border: 1px solid #737070;
-    border-radius: 7px;
+    border-radius: calc(var(--base) * 7);
     background-color: #1b1d1b; 
-    box-shadow: 0px 0px 7px #737070;
+    box-shadow: 0px 0px calc(var(--base) * 7) #737070;
     overflow: hidden;
     z-index: 1000;
 }
 
 .game__chat-toggle {
-    font-size: 26px;
+    font-size: calc(var(--base) * 26);
     line-height: 150%;
     color: #f00;
     text-align: center;
@@ -157,11 +156,11 @@
 }
 
 .game__sound {
-    padding-left: 16px;
+    padding-left: calc(var(--base) * 16);
     background-color: #265bec;
     background: linear-gradient(to bottom, #265bec 0%, #110268 100%);
     border-bottom: 1px solid #110268;
-    border-radius: 7px;
+    border-radius: calc(var(--base) * 7);
 }
 
 .game__sound:focus,
@@ -183,18 +182,18 @@
 
 .game__room-name {
     position: absolute;
-    top: 90px;
-    left: 20px;
+    top: calc(var(--base) * 90);
+    left: calc(var(--base) * 20);
     display: flex;
-    padding: 0 10px;
+    padding: 0 calc(var(--base) * 10);
     justify-content: center;
     align-items: center;
-    height: 40px;
-    font-size: 22px;
+    height: calc(var(--base) * 40);
+    font-size: calc(var(--base) * 22);
     /* background: radial-gradient(#144508, #046415, #05360d); */
     /* font-size: 28px; */
     /* background-color: #e75f04; */
-    border-radius: 5px;
+    border-radius: calc(var(--base) * 5);
     color: red;
     font-weight: bold;
 }
