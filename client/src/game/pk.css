@@ -1,0 +1,318 @@
+* {
+    box-sizing: border-box;
+}
+
+body{
+    --player-width: 200px;
+    --card-width: 80px;
+}
+
+.player{
+    background-color: #fff5;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: var(--player-width);
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.player_ava{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    color: #fff;
+    font-size: 32px;
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+}
+
+.player_nc_wrapper{
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.player_name{
+    background-color: #0000;
+    font-size: 14px;
+}
+
+.player_cash{
+    background-color: #0000;
+    font-size: 24px;
+}
+
+.player_time{
+    background-color: #ff0;
+    padding: 5px;
+    border: 1px solid #000;
+    margin-right: 10px;
+    border-radius: 100%;
+    --progress: 30;
+    background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%))
+}
+
+.game_scene{
+    perspective: 1000px;
+}
+
+.card_stack{
+    display: flex;
+}
+
+.card_wrapper{
+    width: 100px;
+    height: 150px;
+    position: relative;
+    perspective: 1000px;
+    --c-phase: 0;
+    margin: 0px;
+    
+}
+
+.card_base{
+    border: 1px solid;
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;  
+}
+
+.card_a{
+    background-color: #f00;
+    transform: rotateY(calc(180deg * var(--c-phase) / 100));
+}
+
+.card_b{
+    background-color: #ff0;
+    transform: rotateY(calc(180deg + (180deg * var(--c-phase) / 100)));
+}
+
+.hand_zero{
+    width: 30px;
+}
+
+.card_wrapper_second{
+    transform: rotateZ(15deg);
+}
+
+.controls_wrapper{
+    display: flex;
+}
+
+.controls_button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 5px;
+    background: #fff3;
+}
+
+.controls_fold{
+
+}
+
+@property --phase{
+    syntax: '<number>'; /* <- defined as type number for the transition to work */
+    initial-value: 0;
+    inherits: false;
+  }
+
+.shine{
+    /* --phase: 0; */
+    animation: shine 5s infinite;
+    background-image: linear-gradient(45deg, transparent calc(-100% + var(--phase) * 2%), white calc(-50% + var(--phase) * 2%), transparent calc(0% + var(--phase) * 2%));
+}
+
+@keyframes shine{
+    0%{
+        --phase:0;
+    }
+
+    80%{
+        --phase:0;
+    }
+
+    100%{
+        --phase:100;
+    }
+}
+
+.table_around{
+    background-color: rgb(100, 100, 100);
+    position: relative;
+    width: 700px;
+    height: 450px;
+    padding: 50px;
+}
+
+.table_wrapper{
+    background-color: rgb(50, 100, 50);
+    width: 100%;
+    height: 100%;
+    border-radius: 90px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table_place{
+    position: absolute;
+    background-color: rgb(1, 87, 1);
+    width: 40px;
+    height: 40px;
+}
+
+.tp1{
+    top: 0%;
+    left: 0%;
+}
+
+.abs{
+    position: absolute;
+}
+
+.tp2{
+    top: 0%;
+    left: calc((100% - var(--player-width)) / 2);
+}
+
+.tp3{
+    top: 0%;
+    left: calc((100% - var(--player-width)) / 1);
+}
+
+.tp4{
+    top: calc((100% - 40px) / 1);
+    left: 0%;
+}
+
+.tp5{
+    top: calc((100% - 40px) / 1);
+    left: calc((100% - var(--player-width)) / 2);
+}
+
+.tp6{
+    top: calc((100% - 40px) / 1);
+    left: calc((100% - var(--player-width)) / 1);
+}
+
+.table_stack{
+    display: flex;
+}
+
+.table_card{
+    background-color: #f00;
+    margin: 5px;
+    width: var(--card-width);
+    height: calc(var(--card-width) * 1.5);
+}
+
+.ani_card0{
+    animation: card0 0.7s;
+}
+
+@keyframes card0{
+    0%{
+        transform: translate(-100px, -100px) rotate(75deg);
+    }
+    50%{
+        transform: translate(0px, 0px);
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.ani_card1{
+    animation: card1 0.7s;
+}
+
+@keyframes card1{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 1)) rotate(75deg);
+    }
+    50%{
+        transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 1), 0px)
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.ani_card2{
+    animation: card2 1s;
+}
+
+@keyframes card2{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 2)) rotate(75deg);
+    }
+    50%{
+        transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 2), 0px)
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+
+.ani_card3{
+    animation: card3 1s;
+}
+
+@keyframes card3{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 3), 0px) rotate(75deg);
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.ani_card4{
+    animation: card4 1s;
+}
+
+@keyframes card4{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 4), 0px) rotate(75deg);
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.door_wrapper{
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.door_item{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid;
+    background-color: #f00;
+}
+
+.card_img{
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    --type: 0;
+    --value: 0;
+    background-image: url("./card.png");
+    background-size: calc(100% * 13) calc(100% * 5);
+    background-position: calc(100% / 12  * var(--value)) calc(100% / 4 * var(--type));
+}

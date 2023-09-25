@@ -1,0 +1,128 @@
+.table {
+    background-color: rgb(50, 100, 50);
+    background: radial-gradient(#3da125, #046415, #05360d);
+    position: relative;
+    width: 750px;
+    height: 400px;
+    padding: 50px;
+    border-radius: 200px;
+    box-shadow: 0 0 0 1px #161414, 0 0 0 3px #a96c46, 0px 0 0 11px #6b3309;
+}
+
+.table__wrapper{  
+    position: relative; 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table_stack{
+    display: flex;
+}
+
+.table_card {  
+    margin: 5px;
+    width: var(--card-width);
+    height: calc(var(--card-width) * 1.5);
+    border-radius: 5px;    
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: -2px center;
+    box-shadow: 2px 3px 5px #222121;
+    transition: transform 0.3s ease;
+}
+
+.winner-card {
+    border: 3px solid #f00;
+    box-shadow: 0px 0px 10px #f00;
+    transform: scale(1.2);
+}
+
+
+.ani_card0{
+    animation: card0 0.7s;
+}
+
+@keyframes card0{
+    0%{
+        transform: translate(-100px, -100px) rotate(75deg);
+    }
+    50%{
+        transform: translate(0px, 0px);
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.ani_card1{
+    animation: card1 0.7s;
+}
+
+@keyframes card1{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 1)) rotate(75deg);
+    }
+    50%{
+        transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 1), 0px)
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.ani_card2{
+    animation: card2 1s;
+}
+
+@keyframes card2{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 2)) rotate(75deg);
+    }
+    /* 50%{
+        transform: translate(calc(0px - (var(--card-width) + 2 * 5px) * 2), 0px)
+    } */
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+
+.ani_card3{
+    animation: card3 1s;
+}
+
+@keyframes card3{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 3), 0px) rotate(75deg);
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.ani_card4{
+    animation: card4 1s;
+}
+
+@keyframes card4{
+    0%{
+        transform: translate(-100px, -100px) translate(calc(0px - (var(--card-width) + 2 * 5px) * 4), 0px) rotate(75deg);
+    }
+    100%{
+        transform: translate(0, 0) rotate(0deg);
+    } 
+}
+
+.table__bank {
+    width: 100px;
+    position: absolute;
+    top: 44px;
+    left: 50%;
+    margin-left: -50px;
+    color: #fff;
+    font-size: 26px;    
+    text-align: center;   
+}

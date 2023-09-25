@@ -1,0 +1,157 @@
+.abs{
+    position: absolute;
+}
+
+.player{
+    background-color: #fff5;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    width: var(--player-width);
+    padding: 5px;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.player--winner {
+    border: 3px solid #f00;
+    box-shadow: 0px 0px 10px #f00;
+}
+
+.player__wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.player__info {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.player__name {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.player__timer {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.player__ava{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    color: #fff;
+    font-size: 32px;
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+    overflow: hidden;
+}
+
+.player__ava-img {
+    width: 100%;
+}
+
+.player__time{
+    background-color: #ff0;
+    padding: 5px;
+    border: 1px solid #000;
+    border-radius: 100%;
+    --progress: 30;
+    background: conic-gradient(#0000 calc(var(--progress) * 1%), rgb(calc(var(--progress) * 2.55), calc((100 - var(--progress)) * 2.55), 0) calc(var(--progress) * 1%))
+}
+
+.player__bank{
+    position: relative;
+    margin-top: 5px;
+    padding: 5px;
+    padding-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player__chips {
+    font-size: 16px;
+    color: #fff;
+}
+
+.player__bet {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff0;
+}
+
+.player__fold {
+    position: absolute;
+    top: 25px;
+    color: #fff;
+    font-size: 18px;    
+}
+
+.tp1{
+    top: 12%;
+    left: -8%;   
+}
+
+.tp2{
+    top: -20%;
+    left: calc((100% - var(--player-width)) / 3.5);
+}
+
+.tp3{
+    top: -20%;
+    left: calc((100% - var(--player-width)) / 1.4);
+}
+
+.tp4{
+    top: 12%;
+    left:  calc((100% - var(--player-width)) / 0.9);
+}
+
+.tp5{
+    top: 48%;
+    left: calc((100% - var(--player-width)) / 0.9);
+}
+
+.tp6{
+    top: calc((100% - 40px) / 1.1);
+    left: calc((100% - var(--player-width)) / 1.1);
+}
+
+.tp8{
+    top: calc((100% - 40px) / 1.1);
+    left: calc((100% - var(--player-width)) / 10);
+}
+
+.tp9{
+    top: 48%;
+    left: -8%;
+}
+
+.tp7{
+    top: calc((100% - 40px) / 1);
+    left: calc((100% - var(--player-width)) / 1.9);
+}
+
+.tp3 .player__info,
+.tp4 .player__info,
+.tp5 .player__info,
+.tp6 .player__info {
+    flex-direction: row-reverse;
+}
